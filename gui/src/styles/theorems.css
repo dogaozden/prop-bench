@@ -1,0 +1,788 @@
+/* PropBench GUI — Theorem Explorer & Proof Viewer Styles */
+
+/* ─── Difficulty badges ─────────────────────────────────────────────────── */
+
+.difficulty-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.difficulty-badge--baby {
+  background: rgba(147, 197, 253, 0.15);
+  color: #93c5fd;
+}
+
+.difficulty-badge--easy {
+  background: rgba(74, 222, 128, 0.15);
+  color: #4ade80;
+}
+
+.difficulty-badge--medium {
+  background: rgba(251, 191, 36, 0.15);
+  color: #fbbf24;
+}
+
+.difficulty-badge--hard {
+  background: rgba(248, 113, 113, 0.15);
+  color: #f87171;
+}
+
+.difficulty-badge--expert {
+  background: rgba(168, 85, 247, 0.15);
+  color: #a855f7;
+}
+
+.difficulty-badge--nightmare {
+  background: rgba(220, 38, 38, 0.15);
+  color: #dc2626;
+}
+
+.difficulty-badge--marathon {
+  background: rgba(249, 115, 22, 0.15);
+  color: #f97316;
+}
+
+.difficulty-badge--absurd {
+  background: rgba(236, 72, 153, 0.15);
+  color: #ec4899;
+}
+
+.difficulty-badge--cosmic {
+  background: rgba(99, 102, 241, 0.15);
+  color: #6366f1;
+}
+
+.difficulty-badge--mind {
+  background: rgba(14, 165, 233, 0.15);
+  color: #0ea5e9;
+}
+
+.difficulty-badge--custom {
+  background: rgba(156, 163, 175, 0.15);
+  color: #9ca3af;
+}
+
+/* ─── Generate mode tabs ────────────────────────────────────────────────── */
+
+.generate-mode-tabs {
+  display: flex;
+  gap: 4px;
+}
+
+.generate-mode-tab {
+  flex: 1;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 8px 12px;
+  cursor: pointer;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--text-secondary);
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+
+.generate-mode-tab:hover {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+}
+
+.generate-mode-tab--active {
+  border-color: var(--accent-dim);
+  color: var(--accent);
+  background: var(--bg-secondary);
+}
+
+/* ─── Spec preview (read-only tier info) ────────────────────────────────── */
+
+.generate-spec-preview {
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 10px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.generate-spec-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+}
+
+.generate-spec-label {
+  color: var(--text-muted);
+}
+
+.generate-spec-value {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+/* ─── Custom spec grid ──────────────────────────────────────────────────── */
+
+.generate-spec-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.generate-spec-input-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.generate-spec-input-item .generate-spec-label {
+  font-size: 11px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.generate-radio-group {
+  display: flex;
+  gap: 16px;
+  padding: 4px 0;
+}
+
+.generate-radio-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--text-secondary);
+  cursor: pointer;
+}
+
+.generate-radio-item input[type="radio"] {
+  accent-color: var(--accent);
+}
+
+/* ─── Theorem Explorer layout ───────────────────────────────────────────── */
+
+.theorem-explorer {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.theorem-explorer-header h2 {
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.theorem-explorer-header p {
+  color: var(--text-muted);
+  font-size: 13px;
+}
+
+.theorem-explorer-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.theorem-explorer-body {
+  display: flex;
+  gap: 24px;
+  min-height: 0;
+}
+
+.theorem-explorer-list {
+  flex: 0 0 420px;
+  max-height: calc(100vh - 200px);
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.theorem-explorer-detail {
+  flex: 1;
+  min-width: 0;
+  max-height: calc(100vh - 200px);
+  overflow-y: auto;
+}
+
+/* ─── Theorem list controls ─────────────────────────────────────────────── */
+
+.theorem-list-controls {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+
+.theorem-search {
+  flex: 1;
+  min-width: 160px;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 7px 12px;
+  color: var(--text-primary);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  outline: none;
+}
+
+.theorem-search:focus {
+  border-color: var(--accent-dim);
+}
+
+.theorem-search::placeholder {
+  color: var(--text-muted);
+}
+
+.difficulty-filter {
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 7px 12px;
+  color: var(--text-primary);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  outline: none;
+  cursor: pointer;
+}
+
+.difficulty-filter:focus {
+  border-color: var(--accent-dim);
+}
+
+/* ─── Theorem list items ────────────────────────────────────────────────── */
+
+.theorem-list-items {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.theorem-list-count {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+}
+
+.theorem-list-item {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 10px 14px;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.theorem-list-item:hover {
+  background: var(--bg-hover);
+}
+
+.theorem-list-item--selected {
+  border-color: var(--accent-dim);
+  background: var(--bg-tertiary);
+}
+
+.theorem-list-item-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.theorem-list-item-id {
+  font-weight: 600;
+  font-size: 13px;
+  color: var(--text-primary);
+}
+
+.theorem-list-item-dv {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-left: auto;
+}
+
+.theorem-list-item-formula {
+  font-size: 12px;
+  color: var(--text-secondary);
+  font-family: var(--font-mono);
+}
+
+.theorem-list-item-formula .premise {
+  color: var(--text-muted);
+}
+
+.theorem-list-item-formula .turnstile {
+  color: var(--accent);
+  margin: 0 4px;
+}
+
+/* ─── Theorem detail panel ──────────────────────────────────────────────── */
+
+.theorem-detail {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 24px;
+}
+
+.theorem-detail-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.theorem-detail-header h3 {
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.theorem-detail-meta {
+  display: flex;
+  gap: 24px;
+  margin-bottom: 20px;
+  font-size: 13px;
+}
+
+.theorem-detail-meta-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.theorem-detail-meta-item .meta-label {
+  font-size: 11px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.theorem-detail-meta-item .meta-value {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.theorem-detail-formula {
+  background: var(--bg-primary);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 14px 18px;
+  font-family: var(--font-mono);
+  font-size: 15px;
+  margin-bottom: 24px;
+  line-height: 1.8;
+}
+
+.theorem-detail-formula .premise-line {
+  color: var(--text-secondary);
+}
+
+.theorem-detail-formula .conclusion-line {
+  color: var(--text-primary);
+  font-weight: 600;
+  border-top: 1px solid var(--border);
+  padding-top: 8px;
+  margin-top: 8px;
+}
+
+.theorem-detail-formula .turnstile {
+  color: var(--accent);
+  margin-right: 8px;
+}
+
+/* ─── Proofs section in detail ──────────────────────────────────────────── */
+
+.theorem-detail-proofs {
+  margin-top: 24px;
+}
+
+.theorem-detail-proofs h4 {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-bottom: 12px;
+}
+
+.proof-tabs {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.proof-tab {
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 6px 14px;
+  cursor: pointer;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--text-secondary);
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+
+.proof-tab:hover {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+}
+
+.proof-tab--active {
+  border-color: var(--accent-dim);
+  color: var(--accent);
+  background: var(--bg-secondary);
+}
+
+.proof-tab--compare {
+  color: var(--warning);
+  border-color: rgba(251, 191, 36, 0.3);
+}
+
+/* ─── Proof viewer (Fitch-style) ────────────────────────────────────────── */
+
+.proof-viewer {
+  background: var(--bg-primary);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 16px;
+  overflow-x: auto;
+}
+
+.proof-viewer-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+  font-size: 12px;
+}
+
+.proof-viewer-model {
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.proof-viewer-line-count {
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1px 8px;
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.proof-viewer-valid {
+  color: var(--success);
+  font-weight: 600;
+}
+
+.proof-viewer-invalid {
+  color: var(--error);
+  font-weight: 600;
+}
+
+.proof-lines {
+  display: flex;
+  flex-direction: column;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+.proof-line {
+  display: flex;
+  align-items: baseline;
+  gap: 0;
+  padding: 1px 0;
+  border-radius: 3px;
+}
+
+.proof-line--valid {
+  color: var(--text-primary);
+}
+
+.proof-line--invalid {
+  color: var(--error);
+  background: rgba(248, 113, 113, 0.05);
+}
+
+.proof-line-number {
+  flex: 0 0 36px;
+  text-align: right;
+  padding-right: 10px;
+  color: var(--text-muted);
+  font-size: 11px;
+  user-select: none;
+}
+
+.proof-line-depth {
+  flex: 0 0 auto;
+  display: flex;
+}
+
+.proof-line-bar {
+  width: 16px;
+  border-left: 2px solid var(--border);
+  flex-shrink: 0;
+}
+
+.proof-line-formula {
+  flex: 1;
+  padding-left: 4px;
+  min-width: 0;
+}
+
+.proof-line-justification {
+  flex: 0 0 auto;
+  text-align: right;
+  padding-left: 24px;
+  color: var(--text-muted);
+  font-size: 11px;
+  white-space: nowrap;
+}
+
+.proof-errors {
+  margin-top: 12px;
+  padding: 10px 14px;
+  background: rgba(248, 113, 113, 0.08);
+  border: 1px solid rgba(248, 113, 113, 0.2);
+  border-radius: 6px;
+}
+
+.proof-errors h5 {
+  font-size: 12px;
+  color: var(--error);
+  margin-bottom: 6px;
+}
+
+.proof-errors ul {
+  list-style: none;
+  font-size: 12px;
+  color: var(--error);
+}
+
+.proof-errors li {
+  padding: 2px 0;
+}
+
+.proof-errors li::before {
+  content: "- ";
+  color: var(--error);
+}
+
+/* ─── Proof comparison ──────────────────────────────────────────────────── */
+
+.proof-comparison {
+  margin-top: 16px;
+}
+
+.proof-comparison-selectors {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.proof-comparison-selectors label {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.proof-comparison-selectors select {
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 6px 10px;
+  color: var(--text-primary);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  outline: none;
+  cursor: pointer;
+}
+
+.proof-comparison-selectors select:focus {
+  border-color: var(--accent-dim);
+}
+
+.proof-comparison-vs {
+  font-size: 12px;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+.proof-comparison-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.proof-comparison-winner {
+  text-align: center;
+  margin-top: 12px;
+  font-size: 13px;
+}
+
+.proof-comparison-winner .winner-label {
+  color: var(--success);
+  font-weight: 600;
+}
+
+.proof-comparison-winner .tie-label {
+  color: var(--warning);
+  font-weight: 600;
+}
+
+.proof-comparison-winner .line-diff {
+  color: var(--text-muted);
+  font-size: 12px;
+  margin-left: 8px;
+}
+
+/* ─── Raw response viewer ──────────────────────────────────────────────── */
+
+.proof-latency {
+  margin-top: 10px;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.proof-latency .meta-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.proof-raw {
+  margin-top: 12px;
+}
+
+.proof-raw-toggle {
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 6px 14px;
+  cursor: pointer;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--text-secondary);
+  transition: background 0.15s, color 0.15s;
+}
+
+.proof-raw-toggle:hover {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+}
+
+.proof-raw-content {
+  margin-top: 8px;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 14px 18px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--text-secondary);
+  white-space: pre-wrap;
+  word-break: break-word;
+  max-height: 500px;
+  overflow-y: auto;
+}
+
+/* ─── No selection state ────────────────────────────────────────────────── */
+
+.theorem-detail-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 300px;
+  color: var(--text-muted);
+  font-size: 14px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   Light mode overrides — all hardcoded dark-mode colors in this file
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ─── Difficulty badge variants ─────────────────────────────────────────── */
+/* Dark theme uses very low-opacity tints that wash out on a white background.
+   Light theme uses slightly higher-opacity tints of a darker shade + dark text. */
+
+[data-theme="light"] .difficulty-badge--baby {
+  background: rgba(59, 130, 246, 0.1);
+  color: #2563eb;
+}
+
+[data-theme="light"] .difficulty-badge--easy {
+  background: rgba(93, 126, 62, 0.12);
+  color: #4a6b2a;
+}
+
+[data-theme="light"] .difficulty-badge--medium {
+  background: rgba(196, 136, 29, 0.12);
+  color: #a06e10;
+}
+
+[data-theme="light"] .difficulty-badge--hard {
+  background: rgba(168, 70, 50, 0.12);
+  color: #a84632;
+}
+
+[data-theme="light"] .difficulty-badge--expert {
+  background: rgba(139, 92, 246, 0.1);
+  color: #7c3aed;
+}
+
+[data-theme="light"] .difficulty-badge--nightmare {
+  background: rgba(185, 28, 28, 0.1);
+  color: #b91c1c;
+}
+
+[data-theme="light"] .difficulty-badge--marathon {
+  background: rgba(234, 88, 12, 0.1);
+  color: #ea580c;
+}
+
+[data-theme="light"] .difficulty-badge--absurd {
+  background: rgba(219, 39, 119, 0.1);
+  color: #db2777;
+}
+
+[data-theme="light"] .difficulty-badge--cosmic {
+  background: rgba(79, 70, 229, 0.1);
+  color: #4f46e5;
+}
+
+[data-theme="light"] .difficulty-badge--mind {
+  background: rgba(2, 132, 199, 0.1);
+  color: #0284c7;
+}
+
+[data-theme="light"] .difficulty-badge--custom {
+  background: rgba(107, 101, 90, 0.1);
+  color: #6b635a;
+}
+
+/* ─── Proof viewer ──────────────────────────────────────────────────────── */
+
+/* Invalid proof line: very faint red tint — bump opacity slightly */
+[data-theme="light"] .proof-line--invalid {
+  background: rgba(168, 70, 50, 0.06);
+}
+
+/* Proof errors box: adjust tints for light bg */
+[data-theme="light"] .proof-errors {
+  background: rgba(168, 70, 50, 0.06);
+  border-color: rgba(168, 70, 50, 0.2);
+}

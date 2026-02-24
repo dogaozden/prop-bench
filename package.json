@@ -1,0 +1,25 @@
+{
+  "name": "propbench",
+  "version": "0.1.0",
+  "engines": { "node": ">=22.0.0" },
+  "description": "LLM benchmark harness for propositional logic proof efficiency",
+  "private": true,
+  "scripts": {
+    "build": "tsc",
+    "typecheck": "tsc --noEmit",
+    "bench": "ts-node harness.ts",
+    "migrate": "ts-node migrate.ts"
+  },
+  "dependencies": {
+    "@google/genai": "^1.0.0",
+    "better-sqlite3": "^12.6.2",
+    "dotenv": "^17.2.4",
+    "openai": "^4.77.0"
+  },
+  "devDependencies": {
+    "@types/better-sqlite3": "^7.6.13",
+    "@types/node": "^20.14.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.5.0"
+  }
+}

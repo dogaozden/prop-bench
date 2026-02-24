@@ -1,0 +1,82 @@
+{
+  "baby": {
+    "variables": 2,
+    "passes": 1,
+    "transforms_per_pass": 2,
+    "base_complexity": "simple",
+    "substitution_depth": 0,
+    "bridge_atoms": 0
+  },
+  "easy": {
+    "variables": 3,
+    "passes": 1,
+    "transforms_per_pass": 5,
+    "base_complexity": "simple",
+    "substitution_depth": 0,
+    "bridge_atoms": 0
+  },
+  "medium": {
+    "variables": 4,
+    "passes": 1,
+    "transforms_per_pass": 10,
+    "base_complexity": "complex",
+    "substitution_depth": 0,
+    "bridge_atoms": 0
+  },
+  "hard": {
+    "variables": 5,
+    "passes": 1,
+    "transforms_per_pass": 15,
+    "base_complexity": "complex",
+    "substitution_depth": 2,
+    "bridge_atoms": 0
+  },
+  "expert": {
+    "variables": 5,
+    "passes": 2,
+    "transforms_per_pass": 15,
+    "base_complexity": "complex",
+    "substitution_depth": 3,
+    "bridge_atoms": 0
+  },
+  "nightmare": {
+    "variables": 5,
+    "passes": 3,
+    "transforms_per_pass": 15,
+    "base_complexity": "complex",
+    "substitution_depth": 4,
+    "bridge_atoms": 1
+  },
+  "marathon": {
+    "variables": 6,
+    "passes": 5,
+    "transforms_per_pass": 20,
+    "base_complexity": "complex",
+    "substitution_depth": 4,
+    "bridge_atoms": 1
+  },
+  "absurd": {
+    "variables": 7,
+    "passes": 10,
+    "transforms_per_pass": 20,
+    "base_complexity": "complex",
+    "substitution_depth": 4,
+    "bridge_atoms": 1
+  },
+  "cosmic": {
+    "variables": 7,
+    "passes": 20,
+    "transforms_per_pass": 24,
+    "base_complexity": "complex",
+    "substitution_depth": 4,
+    "bridge_atoms": 2
+  },
+  "mind": {
+    "variables": 7,
+    "passes": 50,
+    "transforms_per_pass": 50,
+    "base_complexity": "complex",
+    "substitution_depth": 10,
+    "bridge_atoms": 2
+  }
+}

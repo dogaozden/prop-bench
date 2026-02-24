@@ -1,0 +1,124 @@
+/* PropBench GUI — Leaderboard Page Styles */
+
+/* ─── Page Container ────────────────────────────────────────────────────── */
+
+.leaderboard-page {
+  /* padding inherited from .main-content; no extra needed */
+}
+
+/* ─── Header ────────────────────────────────────────────────────────────── */
+
+.leaderboard-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 32px;
+}
+
+.leaderboard-header h2 {
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 0;
+}
+
+.leaderboard-header select {
+  font-size: 15px;
+  padding: 8px 12px;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-family: var(--font-mono);
+  min-width: 280px;
+}
+
+/* ─── Summary Cards ─────────────────────────────────────────────────────── */
+
+.leaderboard-summary {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 32px;
+  flex-wrap: wrap;
+}
+
+.leaderboard-summary-card {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 16px 24px;
+  min-width: 160px;
+}
+
+.leaderboard-summary-card .summary-value {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.leaderboard-summary-card .summary-label {
+  font-size: 11px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-top: 4px;
+}
+
+/* ─── Medal Ranks ───────────────────────────────────────────────────────── */
+
+.leaderboard-rank--gold {
+  color: #ffd700;
+}
+
+.leaderboard-rank--silver {
+  color: #c0c0c0;
+}
+
+.leaderboard-rank--bronze {
+  color: #cd7f32;
+}
+
+/* ─── Rank Cell ─────────────────────────────────────────────────────────── */
+
+.leaderboard-rank-cell {
+  font-weight: 700;
+  text-align: center;
+  font-size: 15px;
+}
+
+/* ─── Model Cell ────────────────────────────────────────────────────────── */
+
+.leaderboard-model-cell {
+  font-weight: 500;
+}
+
+/* ─── Valid Count ───────────────────────────────────────────────────────── */
+
+.leaderboard-valid-count {
+  font-weight: 600;
+  color: var(--success);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ─── Rate Bar (inline valid-rate visualization) ────────────────────────── */
+
+.leaderboard-rate-cell {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.leaderboard-valid-bar {
+  flex: 1;
+  height: 6px;
+  background: var(--bg-tertiary);
+  border-radius: 3px;
+  overflow: hidden;
+  min-width: 60px;
+}
+
+.leaderboard-valid-bar-fill {
+  height: 100%;
+  border-radius: 3px;
+  background: linear-gradient(90deg, var(--success), #22c55e);
+  transition: width 0.3s ease;
+}

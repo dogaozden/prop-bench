@@ -1,0 +1,635 @@
+/* PropBench GUI — Benchmark Runner Styles */
+
+/* ─── Page Layout ────────────────────────────────────────────────────────── */
+
+.runner-page {
+  max-width: 1200px;
+}
+
+.runner-header {
+  margin-bottom: 28px;
+}
+
+.runner-header h2 {
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.runner-header p {
+  color: var(--text-muted);
+  font-size: 13px;
+}
+
+.runner-error {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 14px;
+  margin-bottom: 20px;
+  background: #7f1d1d33;
+  border: 1px solid var(--error);
+  border-radius: 6px;
+  color: var(--error);
+  font-size: 13px;
+}
+
+.runner-layout {
+  display: flex;
+  gap: 28px;
+  align-items: flex-start;
+}
+
+.runner-left {
+  width: 360px;
+  min-width: 320px;
+  flex-shrink: 0;
+}
+
+.runner-right {
+  flex: 1;
+  min-width: 0;
+}
+
+@media (max-width: 900px) {
+  .runner-layout {
+    flex-direction: column;
+  }
+  .runner-left {
+    width: 100%;
+    min-width: 0;
+  }
+}
+
+/* ─── Run Config ─────────────────────────────────────────────────────────── */
+
+.run-config {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 20px;
+}
+
+.run-config-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-bottom: 16px;
+}
+
+.config-section {
+  margin-bottom: 16px;
+}
+
+.config-section--row {
+  display: flex;
+  gap: 12px;
+}
+
+.config-section--row > div {
+  flex: 1;
+}
+
+.config-label {
+  display: block;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-muted);
+  margin-bottom: 6px;
+  font-weight: 600;
+}
+
+.config-input {
+  width: 100%;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  padding: 7px 10px;
+  color: var(--text-primary);
+  font-family: var(--font-mono);
+  font-size: 13px;
+}
+
+.config-input:focus {
+  outline: none;
+  border-color: var(--accent-dim);
+}
+
+.config-input:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.config-input--sm {
+  max-width: 120px;
+}
+
+.config-slider {
+  width: 100%;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+
+.config-slider:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Select styling */
+select.config-input {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+  background-position: right 8px center;
+  background-repeat: no-repeat;
+  background-size: 16px;
+  padding-right: 32px;
+  cursor: pointer;
+}
+
+/* ─── Model Checkboxes ───────────────────────────────────────────────────── */
+
+.model-checkboxes {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.model-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 13px;
+  transition: border-color 0.15s;
+}
+
+.model-checkbox:hover {
+  border-color: var(--accent-dim);
+}
+
+.model-checkbox input[type="checkbox"] {
+  accent-color: var(--accent);
+  width: 15px;
+  height: 15px;
+  cursor: pointer;
+}
+
+.model-checkbox-name {
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.model-checkbox-detail {
+  color: var(--text-muted);
+  font-size: 11px;
+  flex: 1;
+}
+
+.api-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.api-dot--ok {
+  background: var(--success);
+}
+
+.api-dot--missing {
+  background: var(--error);
+}
+
+/* ─── Buttons ────────────────────────────────────────────────────────────── */
+
+.btn-start {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  margin-top: 8px;
+  background: #22c55e;
+  border: none;
+  border-radius: 6px;
+  color: #000;
+  font-family: var(--font-mono);
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.btn-start:hover:not(:disabled) {
+  background: #16a34a;
+}
+
+.btn-start:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.btn-toggle-command {
+  display: block;
+  width: 100%;
+  padding: 6px;
+  margin-top: 8px;
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s;
+}
+
+.btn-toggle-command:hover {
+  color: var(--text-secondary);
+  border-color: var(--accent-dim);
+}
+
+.btn-stop {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  margin-top: 12px;
+  background: #dc2626;
+  border: none;
+  border-radius: 6px;
+  color: #fff;
+  font-family: var(--font-mono);
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.btn-stop:hover {
+  background: #b91c1c;
+}
+
+/* ─── Run Progress ───────────────────────────────────────────────────────── */
+
+.run-progress {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.run-progress-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+
+.run-progress-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.progress-elapsed {
+  font-size: 14px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+}
+
+/* Current status */
+.progress-current {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+  padding: 8px 12px;
+  background: var(--bg-tertiary);
+  border-radius: 5px;
+  font-size: 12px;
+}
+
+.progress-current-model {
+  font-weight: 700;
+  color: var(--accent);
+}
+
+.progress-current-theorem {
+  color: var(--text-primary);
+  font-family: var(--font-mono);
+}
+
+.progress-current-difficulty {
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+/* Command block */
+.command-block {
+  background: var(--bg-primary);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  margin-top: 8px;
+  overflow: hidden;
+}
+
+.command-block-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  background: var(--bg-tertiary);
+  border-bottom: 1px solid var(--border);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-muted);
+}
+
+.btn-copy {
+  background: var(--bg-hover);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 2px 10px;
+  color: var(--accent);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.btn-copy:hover {
+  background: var(--accent-dim);
+  color: var(--text-primary);
+}
+
+.command-text {
+  padding: 12px;
+  color: var(--text-primary);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  line-height: 1.8;
+  white-space: pre-wrap;
+  word-break: break-all;
+  margin: 0;
+}
+
+/* Progress bar */
+.progress-bar-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.progress-bar {
+  flex: 1;
+  height: 8px;
+  background: var(--bg-tertiary);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  background: var(--accent);
+  border-radius: 4px;
+  transition: width 0.3s ease;
+}
+
+.progress-label {
+  font-size: 12px;
+  color: var(--text-muted);
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Stats */
+.progress-stats {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 8px;
+}
+
+.progress-stat {
+  font-size: 12px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.progress-stat--valid {
+  color: var(--success);
+}
+
+.progress-stat--invalid {
+  color: var(--error);
+}
+
+.progress-stat--error {
+  color: var(--warning);
+}
+
+.progress-stat--skipped {
+  color: var(--text-muted);
+}
+
+/* Live log area */
+.progress-log {
+  max-height: 260px;
+  overflow-y: auto;
+  margin-top: 12px;
+  padding: 10px;
+  background: var(--bg-primary);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  line-height: 1.6;
+  color: var(--text-secondary);
+}
+
+.progress-log-line {
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
+.progress-hint {
+  color: var(--text-muted);
+  font-size: 13px;
+  margin-top: 12px;
+}
+
+/* ─── Run History ────────────────────────────────────────────────────────── */
+
+.run-history {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 20px;
+}
+
+.run-history-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-bottom: 14px;
+}
+
+.run-history-empty {
+  color: var(--text-muted);
+  font-size: 13px;
+}
+
+.run-history-error {
+  color: var(--error);
+  font-size: 13px;
+  margin-bottom: 8px;
+}
+
+.run-history-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.run-history-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 12px;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  gap: 12px;
+}
+
+.run-history-item-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.run-history-ts {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.run-history-models {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.run-history-counts {
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.run-history-status {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.run-history-status--running {
+  color: var(--accent);
+}
+
+.run-history-status--completed {
+  color: var(--success);
+}
+
+.run-history-status--stopped {
+  color: var(--warning);
+}
+
+.run-history-status--error {
+  color: var(--error);
+}
+
+.text-success {
+  color: var(--success);
+}
+
+.text-error {
+  color: var(--error);
+}
+
+.text-warning {
+  color: var(--warning);
+}
+
+.run-history-actions {
+  display: flex;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.btn-sm {
+  background: var(--bg-hover);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 4px 10px;
+  color: var(--text-secondary);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+.btn-sm:hover {
+  background: var(--accent-dim);
+  color: var(--text-primary);
+}
+
+.btn-sm--danger:hover {
+  background: #7f1d1d;
+  color: var(--error);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   Light mode overrides — all hardcoded dark-mode colors in this file
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* Error banner: dark maroon bg → subtle earth-tone red tint */
+[data-theme="light"] .runner-error {
+  background: rgba(168, 70, 50, 0.08);
+}
+
+/* Start button: muted olive green to match earth-tone palette */
+[data-theme="light"] .btn-start {
+  background: #5d7e3e;
+  color: #faf8f4;
+}
+
+[data-theme="light"] .btn-start:hover:not(:disabled) {
+  background: #4a6b2a;
+}
+
+/* Stop button: earth-tone red */
+[data-theme="light"] .btn-stop {
+  background: #a84632;
+  color: #faf8f4;
+}
+
+[data-theme="light"] .btn-stop:hover {
+  background: #8b3526;
+}
+
+/* Danger small button hover: light red tint */
+[data-theme="light"] .btn-sm--danger:hover {
+  background: rgba(168, 70, 50, 0.15);
+  color: var(--error);
+}
+
+/* Select dropdown arrow: stroke='%236b7280' (gray-500) is already readable
+   on light backgrounds, so no SVG override is needed here */

@@ -1,0 +1,25 @@
+.DS_Store
+
+# Build output
+node_modules/
+target/
+dist/
+*.js
+*.js.map
+*.d.ts
+
+# Data
+benchmarks/
+results/
+theorems.json
+*.db
+*.db-shm
+*.db-wal
+
+# Secrets
+.env
+
+# Local files
+todo.md
+.claude/.DS_Store
+.venv/
