@@ -1,12 +1,10 @@
 # PropBench
 
-A benchmark that measures how efficiently LLMs can prove propositional logic tautologies using Fitch-style natural deduction.
+A saturation-proof benchmark that measures the ability of AI models to prove propositional logic theorems using Fitch-style natural deduction.
 
 ## Why PropBench?
 
-Most LLM benchmarks check binary correctness — right or wrong. PropBench scores models on **proof efficiency**: the fewest lines needed to complete a valid proof. This captures reasoning quality beyond pass/fail, and because theorems can be made arbitrarily difficult, the benchmark doesn't saturate.
-
-All proofs are mechanically verified by the same Rust engine that powers the Logic Proof Trainer app (vendored in `crates/`).
+This is the first reasoning benchmark that I am aware of which can be made arbitrarily difficult simply by tweaking a few variables. True, a benchmark simply testing multiplication of large numbers can be made arbitrarily difficult, but such a benchmark would become trivial with tool use. Automated theorem proving is an area of active research, and no set of tools currently exist that could turn this benchmark trivial, though I am sure agentic scaffolding would improve performance. 
 
 ## How It Works
 
@@ -119,3 +117,53 @@ prop-bench/
 ├── gui/                 # React + Express web interface
 └── benchmarks/          # User-generated theorem sets
 ```
+## Theorem Generation Algorithm Simplified
+
+(1) Pick a base argument form using one of the inference forms (1-8 in rules.md).
+
+Looks like: 
+p ⊃ q
+p  /∴  q
+
+(2) Wrap it as a tautology.
+
+Looks like:
+[(p ⊃ q) . p] ⊃ q
+
+(3) Substitute atoms with compound formulas (if substitution_depth > 0).      
+                                                                                
+Replace each simple atom with a formula built from fresh atoms:               
+  p  →  (R . T)                                                                 
+  q  →  (S ∨ ~T) 
+
+Now it looks like:
+{[(R . T) ⊃ (S ∨ ~T)] · (R . T)} ⊃ (S ∨ ~T)
+
+(4) Apply equivalence rules (9-18 in rules.md) at random positions, in random directions, repeatedly. 
+ Equivalence rules are selected randomly with weighted probability. Distribution is down-weighted (0.2) to keep theorem size more predictable. Tautology expansion is blocked entirely because it bloats formula size without adding much in terms of difficulty. 
+
+For example, apply Implication (rule 15) to the inner ⊃:
+(R . T) ⊃ (S ∨ ~T)  →  ~(R . T) ∨ (S ∨ ~T)
+Then DeMorgan (rule 10) on ~(R . T):
+  ~(R . T)  →  (~R ∨ ~T)
+
+Then Commutation (rule 11), Association (rule 12), more Implication,
+Contraposition... dozens of times across multiple passes.
+
+The formula becomes unrecognizable, but it's still the same tautology—every equivalence rule preserves truth by definition!
+
+(5) Output: A single formula the LLM must prove is a tautology, using the same 18 rules + CP/IP that were used to obfuscate it.
+
+See *generation_algorithm.md* for more details.
+
+## Hierarchy of brackets
+1. (P v Q)
+2. [(P v Q) . R]
+3. {[(P v Q) . R] ⊃ S}
+4. {{[(P v Q) . R] ⊃ S} . T} ⊃ Y 
+  
+  And so on. Curly brackets are stacked on top of each other after we run out of parentheses and square brackets. This is done to make it harder for the LLM to parse the formula.
+
+![PropBench Theorem Generation Algo Settings](./assets/gui_screenshot.png)
+
+![Example Theorems](./assets/example_theorems.png)
