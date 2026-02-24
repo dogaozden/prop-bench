@@ -5,7 +5,8 @@
     "transforms_per_pass": 2,
     "base_complexity": "simple",
     "substitution_depth": 0,
-    "bridge_atoms": 0
+    "bridge_atoms": 0,
+    "gnarly_combos": false
   },
   "easy": {
     "variables": 3,
@@ -13,7 +14,8 @@
     "transforms_per_pass": 5,
     "base_complexity": "simple",
     "substitution_depth": 0,
-    "bridge_atoms": 0
+    "bridge_atoms": 0,
+    "gnarly_combos": false
   },
   "medium": {
     "variables": 4,
@@ -21,7 +23,8 @@
     "transforms_per_pass": 10,
     "base_complexity": "complex",
     "substitution_depth": 0,
-    "bridge_atoms": 0
+    "bridge_atoms": 0,
+    "gnarly_combos": false
   },
   "hard": {
     "variables": 5,
@@ -29,7 +32,8 @@
     "transforms_per_pass": 15,
     "base_complexity": "complex",
     "substitution_depth": 2,
-    "bridge_atoms": 0
+    "bridge_atoms": 0,
+    "gnarly_combos": false
   },
   "expert": {
     "variables": 5,
@@ -37,7 +41,8 @@
     "transforms_per_pass": 15,
     "base_complexity": "complex",
     "substitution_depth": 3,
-    "bridge_atoms": 0
+    "bridge_atoms": 0,
+    "gnarly_combos": true
   },
   "nightmare": {
     "variables": 5,
@@ -45,7 +50,8 @@
     "transforms_per_pass": 15,
     "base_complexity": "complex",
     "substitution_depth": 4,
-    "bridge_atoms": 1
+    "bridge_atoms": 1,
+    "gnarly_combos": true
   },
   "marathon": {
     "variables": 6,
@@ -53,7 +59,8 @@
     "transforms_per_pass": 20,
     "base_complexity": "complex",
     "substitution_depth": 4,
-    "bridge_atoms": 1
+    "bridge_atoms": 1,
+    "gnarly_combos": true
   },
   "absurd": {
     "variables": 7,
@@ -61,7 +68,8 @@
     "transforms_per_pass": 20,
     "base_complexity": "complex",
     "substitution_depth": 4,
-    "bridge_atoms": 1
+    "bridge_atoms": 1,
+    "gnarly_combos": true
   },
   "cosmic": {
     "variables": 7,
@@ -69,7 +77,8 @@
     "transforms_per_pass": 24,
     "base_complexity": "complex",
     "substitution_depth": 4,
-    "bridge_atoms": 2
+    "bridge_atoms": 2,
+    "gnarly_combos": true
   },
   "mind": {
     "variables": 7,
@@ -77,6 +86,7 @@
     "transforms_per_pass": 50,
     "base_complexity": "complex",
     "substitution_depth": 10,
-    "bridge_atoms": 2
+    "bridge_atoms": 2,
+    "gnarly_combos": true
   }
 }

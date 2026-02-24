@@ -537,7 +537,7 @@ function RunConfig({ config, onChange, running, onStart }: RunConfigProps) {
             disabled={running || continueLocked}
           />
           <span className="model-checkbox-name">Tier-based output token budgets</span>
-          <span className="model-checkbox-detail">Cap output tokens per difficulty tier to prevent spiraling</span>
+          <span className="model-checkbox-detail">Cap output tokens (not including thinking tokens) per difficulty tier to prevent spiraling</span>
         </label>
 
         {config.tierBudgetsEnabled && (

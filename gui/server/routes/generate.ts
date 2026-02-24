@@ -5,7 +5,7 @@ const router = Router();
 
 router.post("/", async (req: Request, res: Response) => {
   try {
-    const { count, distribution, tier, spec, name, maxNodes, maxDepth } = req.body;
+    const { count, distribution, tier, spec, name, maxNodes, maxDepth, gnarlyCombos } = req.body;
 
     console.log(`[generate] POST / - Generating ${count} theorems for set '${name}' (mode: ${tier ? "tier" : spec ? "spec" : "distribution"})`);
 
@@ -45,7 +45,12 @@ router.post("/", async (req: Request, res: Response) => {
       return;
     }
 
-    const result = await generate({ count, name, distribution, tier, spec, maxNodes, maxDepth });
+    if (gnarlyCombos !== undefined && typeof gnarlyCombos !== "boolean") {
+      res.status(400).json({ error: "gnarlyCombos must be a boolean" });
+      return;
+    }
+
+    const result = await generate({ count, name, distribution, tier, spec, maxNodes, maxDepth, gnarlyCombos });
     console.log(`[generate] Successfully generated ${result.theorems.length} theorems at ${result.path}`);
     res.json({ success: true, path: result.path, theorems: result.theorems });
   } catch (err) {

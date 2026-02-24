@@ -33,6 +33,10 @@ pub struct DifficultySpec {
     pub max_formula_depth: Option<u32>,  // None = use default (100)
     #[serde(default)]
     pub bridge_atoms: Option<u8>,  // None = use default for tier, Some(n) = n bridge atoms
+    /// Whether to force multi-rule transformation chains (Contraposition+DeMorgan, etc.).
+    /// None = auto (derived from difficulty_value >= 85), Some(bool) = explicit override.
+    #[serde(default)]
+    pub gnarly_combos: Option<bool>,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
@@ -53,16 +57,16 @@ pub enum DifficultyTier {
 impl DifficultySpec {
     pub fn from_tier(tier: DifficultyTier) -> Self {
         match tier {
-            DifficultyTier::Baby      => Self { variables: 2, passes: 1,  transforms_per_pass: 2,  base_complexity: BaseComplexity::Simple,  substitution_depth: 0, max_formula_nodes: None, max_formula_depth: None, bridge_atoms: Some(0) },
-            DifficultyTier::Easy      => Self { variables: 2, passes: 1,  transforms_per_pass: 2,  base_complexity: BaseComplexity::Simple,  substitution_depth: 0, max_formula_nodes: None, max_formula_depth: None, bridge_atoms: Some(0) },
-            DifficultyTier::Medium    => Self { variables: 3, passes: 1,  transforms_per_pass: 5,  base_complexity: BaseComplexity::Simple,  substitution_depth: 0, max_formula_nodes: None, max_formula_depth: None, bridge_atoms: Some(0) },
-            DifficultyTier::Hard      => Self { variables: 4, passes: 1,  transforms_per_pass: 10, base_complexity: BaseComplexity::Complex, substitution_depth: 0, max_formula_nodes: None, max_formula_depth: None, bridge_atoms: Some(0) },
-            DifficultyTier::Expert    => Self { variables: 5, passes: 1,  transforms_per_pass: 15, base_complexity: BaseComplexity::Complex, substitution_depth: 2, max_formula_nodes: None, max_formula_depth: None, bridge_atoms: Some(0) },
-            DifficultyTier::Nightmare => Self { variables: 5, passes: 2,  transforms_per_pass: 12, base_complexity: BaseComplexity::Complex, substitution_depth: 3, max_formula_nodes: None, max_formula_depth: None, bridge_atoms: Some(1) },
-            DifficultyTier::Marathon  => Self { variables: 5, passes: 3,  transforms_per_pass: 15, base_complexity: BaseComplexity::Complex, substitution_depth: 4, max_formula_nodes: None, max_formula_depth: None, bridge_atoms: Some(1) },
-            DifficultyTier::Absurd    => Self { variables: 6, passes: 5,  transforms_per_pass: 20, base_complexity: BaseComplexity::Complex, substitution_depth: 4, max_formula_nodes: None, max_formula_depth: None, bridge_atoms: Some(1) },
-            DifficultyTier::Cosmic    => Self { variables: 7, passes: 10, transforms_per_pass: 20, base_complexity: BaseComplexity::Complex, substitution_depth: 4, max_formula_nodes: None, max_formula_depth: None, bridge_atoms: Some(2) },
-            DifficultyTier::Mind      => Self { variables: 7, passes: 20, transforms_per_pass: 24, base_complexity: BaseComplexity::Complex, substitution_depth: 4, max_formula_nodes: None, max_formula_depth: None, bridge_atoms: Some(2) },
+            DifficultyTier::Baby      => Self { variables: 2, passes: 1,  transforms_per_pass: 2,  base_complexity: BaseComplexity::Simple,  substitution_depth: 0, max_formula_nodes: None, max_formula_depth: None, bridge_atoms: Some(0), gnarly_combos: Some(false) },
+            DifficultyTier::Easy      => Self { variables: 2, passes: 1,  transforms_per_pass: 2,  base_complexity: BaseComplexity::Simple,  substitution_depth: 0, max_formula_nodes: None, max_formula_depth: None, bridge_atoms: Some(0), gnarly_combos: Some(false) },
+            DifficultyTier::Medium    => Self { variables: 3, passes: 1,  transforms_per_pass: 5,  base_complexity: BaseComplexity::Simple,  substitution_depth: 0, max_formula_nodes: None, max_formula_depth: None, bridge_atoms: Some(0), gnarly_combos: Some(false) },
+            DifficultyTier::Hard      => Self { variables: 4, passes: 1,  transforms_per_pass: 10, base_complexity: BaseComplexity::Complex, substitution_depth: 0, max_formula_nodes: None, max_formula_depth: None, bridge_atoms: Some(0), gnarly_combos: Some(false) },
+            DifficultyTier::Expert    => Self { variables: 5, passes: 1,  transforms_per_pass: 15, base_complexity: BaseComplexity::Complex, substitution_depth: 2, max_formula_nodes: None, max_formula_depth: None, bridge_atoms: Some(0), gnarly_combos: Some(true) },
+            DifficultyTier::Nightmare => Self { variables: 5, passes: 2,  transforms_per_pass: 12, base_complexity: BaseComplexity::Complex, substitution_depth: 3, max_formula_nodes: None, max_formula_depth: None, bridge_atoms: Some(1), gnarly_combos: Some(true) },
+            DifficultyTier::Marathon  => Self { variables: 5, passes: 3,  transforms_per_pass: 15, base_complexity: BaseComplexity::Complex, substitution_depth: 4, max_formula_nodes: None, max_formula_depth: None, bridge_atoms: Some(1), gnarly_combos: Some(true) },
+            DifficultyTier::Absurd    => Self { variables: 6, passes: 5,  transforms_per_pass: 20, base_complexity: BaseComplexity::Complex, substitution_depth: 4, max_formula_nodes: None, max_formula_depth: None, bridge_atoms: Some(1), gnarly_combos: Some(true) },
+            DifficultyTier::Cosmic    => Self { variables: 7, passes: 10, transforms_per_pass: 20, base_complexity: BaseComplexity::Complex, substitution_depth: 4, max_formula_nodes: None, max_formula_depth: None, bridge_atoms: Some(2), gnarly_combos: Some(true) },
+            DifficultyTier::Mind      => Self { variables: 7, passes: 20, transforms_per_pass: 24, base_complexity: BaseComplexity::Complex, substitution_depth: 4, max_formula_nodes: None, max_formula_depth: None, bridge_atoms: Some(2), gnarly_combos: Some(true) },
         }
     }
 
@@ -102,6 +106,7 @@ impl DifficultySpec {
             max_formula_nodes: None,
             max_formula_depth: None,
             bridge_atoms: None,
+            gnarly_combos: None,
         }
     }
 }

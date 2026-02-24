@@ -42,16 +42,16 @@ export function loadTierPresets(): Record<string, DifficultySpec> {
   } catch {
     // Hardcoded defaults matching the JSON file
     return {
-      baby: { variables: 2, passes: 1, transforms_per_pass: 2, base_complexity: "simple", substitution_depth: 0, bridge_atoms: 0 },
-      easy: { variables: 2, passes: 1, transforms_per_pass: 2, base_complexity: "simple", substitution_depth: 0, bridge_atoms: 0 },
-      medium: { variables: 3, passes: 1, transforms_per_pass: 5, base_complexity: "simple", substitution_depth: 0, bridge_atoms: 0 },
-      hard: { variables: 4, passes: 1, transforms_per_pass: 10, base_complexity: "complex", substitution_depth: 0, bridge_atoms: 0 },
-      expert: { variables: 5, passes: 1, transforms_per_pass: 15, base_complexity: "complex", substitution_depth: 2, bridge_atoms: 0 },
-      nightmare: { variables: 5, passes: 2, transforms_per_pass: 12, base_complexity: "complex", substitution_depth: 3, bridge_atoms: 1 },
-      marathon: { variables: 5, passes: 3, transforms_per_pass: 15, base_complexity: "complex", substitution_depth: 4, bridge_atoms: 1 },
-      absurd: { variables: 6, passes: 5, transforms_per_pass: 20, base_complexity: "complex", substitution_depth: 4, bridge_atoms: 1 },
-      cosmic: { variables: 7, passes: 10, transforms_per_pass: 20, base_complexity: "complex", substitution_depth: 4, bridge_atoms: 2 },
-      mind: { variables: 7, passes: 20, transforms_per_pass: 24, base_complexity: "complex", substitution_depth: 4, bridge_atoms: 2 },
+      baby: { variables: 2, passes: 1, transforms_per_pass: 2, base_complexity: "simple", substitution_depth: 0, bridge_atoms: 0, gnarly_combos: false },
+      easy: { variables: 2, passes: 1, transforms_per_pass: 2, base_complexity: "simple", substitution_depth: 0, bridge_atoms: 0, gnarly_combos: false },
+      medium: { variables: 3, passes: 1, transforms_per_pass: 5, base_complexity: "simple", substitution_depth: 0, bridge_atoms: 0, gnarly_combos: false },
+      hard: { variables: 4, passes: 1, transforms_per_pass: 10, base_complexity: "complex", substitution_depth: 0, bridge_atoms: 0, gnarly_combos: false },
+      expert: { variables: 5, passes: 1, transforms_per_pass: 15, base_complexity: "complex", substitution_depth: 2, bridge_atoms: 0, gnarly_combos: true },
+      nightmare: { variables: 5, passes: 2, transforms_per_pass: 12, base_complexity: "complex", substitution_depth: 3, bridge_atoms: 1, gnarly_combos: true },
+      marathon: { variables: 5, passes: 3, transforms_per_pass: 15, base_complexity: "complex", substitution_depth: 4, bridge_atoms: 1, gnarly_combos: true },
+      absurd: { variables: 6, passes: 5, transforms_per_pass: 20, base_complexity: "complex", substitution_depth: 4, bridge_atoms: 1, gnarly_combos: true },
+      cosmic: { variables: 7, passes: 10, transforms_per_pass: 20, base_complexity: "complex", substitution_depth: 4, bridge_atoms: 2, gnarly_combos: true },
+      mind: { variables: 7, passes: 20, transforms_per_pass: 24, base_complexity: "complex", substitution_depth: 4, bridge_atoms: 2, gnarly_combos: true },
     };
   }
 }
@@ -73,6 +73,7 @@ export interface DifficultySpec {
   bridge_atoms?: number;
   max_formula_nodes?: number;
   max_formula_depth?: number;
+  gnarly_combos?: boolean;
 }
 
 export interface GenerateOpts {
@@ -83,6 +84,7 @@ export interface GenerateOpts {
   spec?: DifficultySpec;    // custom spec mode
   maxNodes?: number;        // max AST node count for obfuscation pipeline
   maxDepth?: number;        // max formula nesting depth for obfuscation pipeline
+  gnarlyCombos?: boolean;   // explicit gnarly combos override (false = disable)
 }
 
 export async function generate(opts: GenerateOpts): Promise<{ path: string; theorems: unknown[] }> {
@@ -115,17 +117,31 @@ export async function generate(opts: GenerateOpts): Promise<{ path: string; theo
     if (spec.max_formula_depth !== undefined) {
       args.push("--max-depth", String(spec.max_formula_depth));
     }
+    if (spec.gnarly_combos === false) {
+      args.push("--no-gnarly-combos");
+    } else if (spec.gnarly_combos === true) {
+      args.push("--gnarly-combos");
+    }
     return args;
   };
 
-  // Helper to run one generation call
-  const generateBatch = async (count: number, extraArgs: string[], tmpFile: string): Promise<unknown[]> => {
+  // Helper to run one generation call.
+  // When skipGnarlyOverride is true, the global gnarlyCombos from opts is NOT
+  // appended — the spec's own gnarly_combos (set via specArgs) takes precedence.
+  const generateBatch = async (count: number, extraArgs: string[], tmpFile: string, skipGnarlyOverride = false): Promise<unknown[]> => {
     const args = ["generate", "--count", String(count), "--output", tmpFile, ...extraArgs];
     if (opts.maxNodes !== undefined) {
       args.push("--max-nodes", String(opts.maxNodes));
     }
     if (opts.maxDepth !== undefined) {
       args.push("--max-depth", String(opts.maxDepth));
+    }
+    if (!skipGnarlyOverride) {
+      if (opts.gnarlyCombos === false) {
+        args.push("--no-gnarly-combos");
+      } else if (opts.gnarlyCombos === true) {
+        args.push("--gnarly-combos");
+      }
     }
     const { stderr } = await execFileAsync(PROPBENCH_BIN, args, {
       timeout: 120_000,
@@ -137,11 +153,20 @@ export async function generate(opts: GenerateOpts): Promise<{ path: string; theo
 
   let allTheorems: unknown[] = [];
 
+  // Helper to apply gnarlyCombos override from opts to a spec
+  const applyGnarlyOverride = (spec: DifficultySpec): DifficultySpec => {
+    if (opts.gnarlyCombos !== undefined) {
+      return { ...spec, gnarly_combos: opts.gnarlyCombos };
+    }
+    return spec;
+  };
+
   if (opts.tier) {
     // Tier mode: resolve from config
     const tierSpec = presets[opts.tier];
     if (tierSpec) {
-      allTheorems = await generateBatch(opts.count, specArgs(tierSpec), outFile);
+      const effectiveSpec = applyGnarlyOverride(tierSpec);
+      allTheorems = await generateBatch(opts.count, specArgs(effectiveSpec), outFile);
       // Fix difficulty label (CLI sets it to "Custom" when using spec args)
       const label = opts.tier.charAt(0).toUpperCase() + opts.tier.slice(1);
       for (const t of allTheorems as any[]) {
@@ -154,7 +179,8 @@ export async function generate(opts: GenerateOpts): Promise<{ path: string; theo
     }
   } else if (opts.spec) {
     // Custom spec mode: pass directly
-    allTheorems = await generateBatch(opts.count, specArgs(opts.spec), outFile);
+    const effectiveSpec = applyGnarlyOverride(opts.spec);
+    allTheorems = await generateBatch(opts.count, specArgs(effectiveSpec), outFile);
   } else if (opts.distribution) {
     // Distribution mode: parse and resolve each tier from config
     const segments = opts.distribution.split(",").map(s => {
@@ -168,12 +194,13 @@ export async function generate(opts: GenerateOpts): Promise<{ path: string; theo
       const tierSpec = presets[seg.tier];
       let extraArgs: string[];
       if (tierSpec) {
+        // Distribution mode: use the tier's own gnarly_combos, no global override
         extraArgs = specArgs(tierSpec);
       } else {
         // Fallback for unknown tiers
         extraArgs = ["--tier", seg.tier];
       }
-      const batch = await generateBatch(seg.count, extraArgs, tmpFile);
+      const batch = await generateBatch(seg.count, extraArgs, tmpFile, true);
 
       // Set difficulty label and spec on each theorem
       const label = seg.tier.charAt(0).toUpperCase() + seg.tier.slice(1);
@@ -209,11 +236,12 @@ export async function generate(opts: GenerateOpts): Promise<{ path: string; theo
       const tierSpec = presets[seg.tier];
       let extraArgs: string[];
       if (tierSpec) {
+        // Default distribution: use the tier's own gnarly_combos, no global override
         extraArgs = specArgs(tierSpec);
       } else {
         extraArgs = ["--tier", seg.tier];
       }
-      const batch = await generateBatch(seg.count, extraArgs, tmpFile);
+      const batch = await generateBatch(seg.count, extraArgs, tmpFile, true);
 
       // Set difficulty label and spec on each theorem
       const label = seg.tier.charAt(0).toUpperCase() + seg.tier.slice(1);

@@ -26,6 +26,7 @@ export interface GenerateOpts {
   spec?: DifficultySpec;    // custom spec mode
   maxNodes?: number;        // max AST node count for obfuscation pipeline
   maxDepth?: number;        // max formula nesting depth for obfuscation pipeline
+  gnarlyCombos?: boolean;   // explicit gnarly combos override
 }
 
 export interface GenerateResult {

@@ -69,6 +69,14 @@ enum Commands {
         #[arg(long)]
         max_depth: Option<u32>,
 
+        /// Disable gnarly combos (forced multi-rule transformation chains)
+        #[arg(long)]
+        no_gnarly_combos: bool,
+
+        /// Enable gnarly combos (forced multi-rule transformation chains)
+        #[arg(long, conflicts_with = "no_gnarly_combos")]
+        gnarly_combos: bool,
+
         /// Output file path
         #[arg(short, long, default_value = "theorems.json")]
         output: PathBuf,
@@ -229,6 +237,7 @@ fn resolve_generate_mode(
     max_nodes: &Option<u32>,
     max_depth: &Option<u32>,
     distribution: &Option<String>,
+    gnarly_override: Option<bool>,
 ) -> Result<GenerateMode, String> {
     // Mode 1: --tier
     if let Some(tier_name) = tier {
@@ -243,6 +252,9 @@ fn resolve_generate_mode(
         }
         if let Some(ba) = bridge_atoms {
             spec.bridge_atoms = Some(*ba);
+        }
+        if let Some(gnarly) = gnarly_override {
+            spec.gnarly_combos = Some(gnarly);
         }
         return Ok(GenerateMode::Tier(dt, spec, dt.label().to_string()));
     }
@@ -261,6 +273,7 @@ fn resolve_generate_mode(
             bridge_atoms: *bridge_atoms,
             max_formula_nodes: *max_nodes,
             max_formula_depth: *max_depth,
+            gnarly_combos: gnarly_override,
         };
         return Ok(GenerateMode::CustomSpec(spec));
     }
@@ -283,9 +296,10 @@ fn cmd_generate(
     bridge_atoms: &Option<u8>,
     max_nodes: &Option<u32>,
     max_depth: &Option<u32>,
+    gnarly_override: Option<bool>,
     output: &PathBuf,
 ) -> Result<(), String> {
-    let mode = resolve_generate_mode(tier, variables, passes, transforms, base, substitution, bridge_atoms, max_nodes, max_depth, distribution)?;
+    let mode = resolve_generate_mode(tier, variables, passes, transforms, base, substitution, bridge_atoms, max_nodes, max_depth, distribution, gnarly_override)?;
 
     let mut rng = rand::thread_rng();
     let mut theorems: Vec<BenchTheorem> = Vec::with_capacity(count);
@@ -349,7 +363,9 @@ fn cmd_generate(
                         }
                     }
                     DistributionEntry::Spec { count: tier_count, tier, spec, tier_name } => {
-                        // Apply max_nodes/max_depth overrides if provided
+                        // Apply max_nodes/max_depth overrides if provided.
+                        // gnarly_combos is NOT overridden — each tier's spec from
+                        // DifficultySpec::from_tier() already has the correct per-tier default.
                         let mut spec = spec.clone();
                         if let Some(nodes) = max_nodes_override {
                             spec.max_formula_nodes = Some(nodes);
@@ -684,8 +700,17 @@ fn main() {
             bridge_atoms,
             max_nodes,
             max_depth,
+            no_gnarly_combos,
+            gnarly_combos,
             output,
         } => {
+            let gnarly_override = if gnarly_combos {
+                Some(true)
+            } else if no_gnarly_combos {
+                Some(false)
+            } else {
+                None
+            };
             cmd_generate(
                 count,
                 &difficulty_distribution,
@@ -698,6 +723,7 @@ fn main() {
                 &bridge_atoms,
                 &max_nodes,
                 &max_depth,
+                gnarly_override,
                 &output,
             )
         }

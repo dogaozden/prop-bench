@@ -164,6 +164,14 @@ See *generation_algorithm.md* for more details.
   
   And so on. Curly brackets are stacked on top of each other after we run out of parentheses and square brackets. This is done to make it harder for the LLM to parse the formula.
 
+### Screenshots
+
+Theorem Generation Screen:
+
+
 ![PropBench Theorem Generation Algo Settings](./assets/gui_screenshot.png)
+
+Example Theorems:
+
 
 ![Example Theorems](./assets/example_theorems.png)

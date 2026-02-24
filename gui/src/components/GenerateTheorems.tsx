@@ -65,11 +65,24 @@ export default function GenerateTheorems({
   const [maxNodes, setMaxNodes] = useState<number | null>(null);
   // Max depth (optional nesting depth limit)
   const [maxDepth, setMaxDepth] = useState<number | null>(null);
+  // Gnarly combos (forced multi-rule transformation chains)
+  const [gnarlyCombos, setGnarlyCombos] = useState<boolean>(false);
 
   // Load tier presets from API on mount
   useEffect(() => {
     api.getTierPresets()
-      .then(p => { setTierPresets(p); setPresetsLoading(false); })
+      .then(p => {
+        setTierPresets(p);
+        setPresetsLoading(false);
+        // Auto-adjust gnarlyCombos from the currently selected tier's preset
+        const preset = p[tier];
+        if (preset?.gnarly_combos !== undefined) {
+          setGnarlyCombos(preset.gnarly_combos);
+        } else {
+          // Default: Expert+ tiers get gnarly combos
+          setGnarlyCombos(["expert", "nightmare", "marathon", "absurd", "cosmic", "mind"].includes(tier));
+        }
+      })
       .catch(err => { setPresetsError(String(err)); setPresetsLoading(false); });
   }, []);
 
@@ -87,7 +100,7 @@ export default function GenerateTheorems({
     setError("");
 
     const count = total ?? DEFAULT_TOTAL;
-    const opts = { count, name, ...(maxNodes != null && { maxNodes }), ...(maxDepth != null && { maxDepth }) };
+    const opts = { count, name, ...(maxNodes != null && { maxNodes }), ...(maxDepth != null && { maxDepth }), ...(mode !== "distribution" && { gnarlyCombos }) };
     try {
       if (mode === "distribution") {
         const distribution = Object.entries(dist)
@@ -193,6 +206,23 @@ export default function GenerateTheorems({
             </span>
           </label>
 
+          {mode !== "distribution" && (
+            <label className="generate-field">
+              <span className="generate-label">Gnarly Combos</span>
+              <label style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                <input
+                  type="checkbox"
+                  checked={gnarlyCombos}
+                  onChange={(e) => setGnarlyCombos(e.target.checked)}
+                  disabled={generating}
+                />
+                <span style={{ fontSize: 12, color: "var(--text-muted)" }}>
+                  Force multi-rule transformation chains (auto-enabled for Expert+ tiers)
+                </span>
+              </label>
+            </label>
+          )}
+
           {/* Mode selector tabs */}
           <div className="generate-field">
             <span className="generate-label">Generation Mode</span>
@@ -253,7 +283,12 @@ export default function GenerateTheorems({
               <select
                 className="difficulty-filter"
                 value={tier}
-                onChange={(e) => setTier(e.target.value)}
+                onChange={(e) => {
+                  const t = e.target.value;
+                  setTier(t);
+                  const gnarly = ["expert", "nightmare", "marathon", "absurd", "cosmic", "mind"].includes(t);
+                  setGnarlyCombos(gnarly);
+                }}
                 disabled={generating || presetsLoading}
                 style={{ width: "100%", marginBottom: 12 }}
               >

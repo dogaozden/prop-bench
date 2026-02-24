@@ -25,6 +25,8 @@ pub struct ObfuscateConfig {
     pub substitution_depth: usize,
     /// Number of bridge atoms that appear in multiple substitution partitions
     pub bridge_atoms: usize,
+    /// Whether to force multi-rule transformation chains (gnarly combos)
+    pub gnarly_combos: bool,
 }
 
 impl ObfuscateConfig {
@@ -79,6 +81,7 @@ impl ObfuscateConfig {
             difficulty_value: d,
             substitution_depth,
             bridge_atoms: 0,
+            gnarly_combos: d >= 85,
         }
     }
 
@@ -102,6 +105,7 @@ impl ObfuscateConfig {
             difficulty_value,
             substitution_depth: spec.substitution_depth as usize,
             bridge_atoms: spec.bridge_atoms.unwrap_or(0) as usize,
+            gnarly_combos: spec.gnarly_combos.unwrap_or(difficulty_value >= 85),
         }
     }
 
@@ -1016,8 +1020,8 @@ impl ObfuscateGenerator {
 
     /// Apply random equivalence transformations
     fn apply_transformations(&self, mut formula: Formula, rng: &mut impl Rng) -> Formula {
-        // For difficulty ≥ 85 (Nightmare/Marathon), force gnarly combinations first
-        if self.config.difficulty_value >= 85 {
+        // Force gnarly transformation combos when enabled
+        if self.config.gnarly_combos {
             formula = self.apply_gnarly_combos(formula, rng);
         }
 
@@ -1707,6 +1711,7 @@ mod tests {
             max_formula_nodes: None,
             max_formula_depth: None,
             bridge_atoms: None,
+            gnarly_combos: None,
         });
         let gen = ObfuscateGenerator::new(config);
         let mut rng = rand::thread_rng();
@@ -1762,6 +1767,7 @@ mod tests {
             max_formula_nodes: None,
             max_formula_depth: None,
             bridge_atoms: Some(2),
+            gnarly_combos: None,
         };
 
         let config = ObfuscateConfig::from_spec(&spec);
@@ -1791,6 +1797,7 @@ mod tests {
             max_formula_nodes: None,
             max_formula_depth: None,
             bridge_atoms: Some(0),
+            gnarly_combos: None,
         };
 
         let mut rng = rand::thread_rng();

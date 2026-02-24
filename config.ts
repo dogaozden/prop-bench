@@ -37,6 +37,7 @@ export interface DifficultySpec {
   bridge_atoms?: number;
   max_formula_nodes?: number;
   max_formula_depth?: number;
+  gnarly_combos?: boolean;
 }
 
 // ─── Proof types ────────────────────────────────────────────────────────────
