@@ -1,0 +1,8 @@
+cff-version: 1.2.0
+message: "If you use PropBench in your research, please cite it as below."
+authors:
+  - family-names: "Özden"
+    given-names: "Doğa"
+title: "PropBench: A Saturation-Proof Benchmark for LLM Reasoning"
+date-released: 2026-02-24
+url: "https://github.com/dogaozden/prop-bench"
