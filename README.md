@@ -72,25 +72,7 @@ GEMINI_API_KEY=...
 OPENROUTER_API_KEY=...
 ```
 
-### 4. Generate theorems
-
-```bash
-./target/release/propbench generate --tier nightmare --count 20 --output benchmarks/my-set/theorems.json
-```
-
-### 5. Run a benchmark (CLI)
-
-```bash
-npx ts-node harness.ts \
-  --theorems benchmarks/my-set/theorems.json \
-  --models gemini-2.5-flash,anthropic/claude-sonnet-4.5 \
-  --workers 5 \
-  --propbench-bin ./target/release/propbench
-```
-
-Or use the npm script shorthand: `npm run bench -- --theorems ...`
-
-### 6. Run the GUI
+### 4. Run the GUI
 
 ```bash
 cd gui && npm run dev
