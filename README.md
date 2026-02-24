@@ -6,6 +6,8 @@ A saturation-proof reasoning benchmark that measures the ability of AI models to
 
 This is the first reasoning benchmark that I am aware of which can be made arbitrarily difficult simply by tweaking a few variables. True, a benchmark simply testing multiplication of large numbers can be made arbitrarily difficult, but such a benchmark would become trivial with tool use. Automated theorem proving is an area of active research, and no set of tools currently exist that could turn this benchmark trivial, though I am sure agentic scaffolding would improve performance. 
 
+I also suspect doing RLVR on this would be fruitful.
+
 ## How It Works
 
 1. **Generate theorems** — The Rust CLI produces tautologies at configurable difficulty tiers (Baby → Mind), controlling variables, transformation passes, substitution depth, and bridge atoms.

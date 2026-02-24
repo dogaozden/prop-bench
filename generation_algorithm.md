@@ -27,7 +27,8 @@ The generation pipeline lives in `crates/logic-proof-trainer-lib/src/services/ob
 
 ```
 Input: DifficultySpec { variables, passes, transforms_per_pass, base_complexity,
-                        substitution_depth, bridge_atoms, max_formula_nodes }
+                        substitution_depth, bridge_atoms, max_formula_nodes,
+                        max_formula_depth, gnarly_combos }
 
 Stage 1: Pick a base argument form (one of rules 1-8, or a compound variant)
      ↓
@@ -232,9 +233,9 @@ A formula with more nodes has more subformulas, which means more sites available
 
 Without multiple passes, transformations are limited to the initial flat structure. With 20 passes (Cosmic tier) or 50 passes (Mind tier), transformations cascade: a single atom in the original can end up buried under many layers of connectives, each introduced by a different pass.
 
-### Gnarly Combos (Nightmare+ only)
+### Gnarly Combos (Expert+ by default, configurable)
 
-For difficulty ≥ 85 (all tiers from Nightmare through Mind), before the random transformation loop, 2-3 specific two-rule sequences are forced. These are hand-picked combinations that create particularly hard-to-unwind patterns:
+When `gnarly_combos` is enabled, before the random transformation loop, 2-3 specific two-rule sequences are forced onto the formula. These are hand-picked combinations that create particularly hard-to-unwind patterns:
 
 | Combo | Rules | Effect |
 |-------|-------|--------|
@@ -244,8 +245,10 @@ For difficulty ≥ 85 (all tiers from Nightmare through Mind), before the random
 | 4 | Equivalence + DeMorgan | Unpacks a biconditional (if one exists) then applies DeMorgan |
 
 The number of combos applied:
-- Difficulty 85-95 (Nightmare, Marathon): 2 combos
+- Difficulty 85-95 (Expert, Nightmare, Marathon): 2 combos
 - Difficulty 96+ (Absurd, Cosmic, Mind): 3 combos
+
+By default, gnarly combos are **on** for Expert, Nightmare, Marathon, Absurd, Cosmic, and Mind, and **off** for Baby, Easy, Medium, and Hard. This can be overridden: the GUI has a "Gnarly Combos" checkbox (visible in Tier and Custom Spec modes), and the CLI has `--gnarly-combos` / `--no-gnarly-combos` flags. In distribution mode, each tier uses its own default — there is no global override.
 
 ---
 
@@ -336,24 +339,39 @@ An AST node is every "piece" of the formula represented as a tree — each atom,
 
 A Baby-tier theorem might have 10-20 nodes. A Mind-tier theorem could approach the 20,000 default cap.
 
+### `max_formula_depth` (default: 100)
+
+**What it controls**: the maximum nesting depth of the formula's AST. Like `max_formula_nodes`, this is checked between passes — if the formula's depth reaches the limit, remaining passes are skipped. This prevents deeply nested but narrow formulas (e.g., long chains of negations or nested conditionals) that might slip under the node count limit while still being impractically deep.
+
+Depth is the longest path from the root to any leaf. An atom has depth 0. `~P` has depth 1. `(P · Q) ⊃ R` has depth 2.
+
+### `gnarly_combos` (default: auto per tier)
+
+**What it controls**: whether forced multi-rule transformation chains (see "Gnarly Combos" above) are applied before the random transformation loop.
+
+- `true`: gnarly combos are applied (2-3 forced two-rule sequences)
+- `false`: gnarly combos are skipped; only the random transformation loop runs
+
+Each tier preset sets this explicitly: **on** for Expert through Mind, **off** for Baby through Hard. In the GUI, a checkbox lets you override this for Tier and Custom Spec modes. In the CLI, use `--gnarly-combos` or `--no-gnarly-combos`.
+
 ---
 
 ## Difficulty Tier Presets
 
 Each tier maps to a specific `DifficultySpec`. These are defined in `tier-presets.json`:
 
-| Tier | variables | passes | transforms/pass | base_complexity | substitution_depth | bridge_atoms |
-|------|-----------|--------|-----------------|-----------------|-------------------|--------------|
-| **Baby** | 2 | 1 | 2 | simple | 0 | 0 |
-| **Easy** | 3 | 1 | 5 | simple | 0 | 0 |
-| **Medium** | 4 | 1 | 10 | complex | 0 | 0 |
-| **Hard** | 5 | 1 | 15 | complex | 2 | 0 |
-| **Expert** | 5 | 2 | 15 | complex | 3 | 0 |
-| **Nightmare** | 6 | 3 | 15 | complex | 4 | 1 |
-| **Marathon** | 6 | 5 | 20 | complex | 4 | 1 |
-| **Absurd** | 7 | 10 | 20 | complex | 4 | 1 |
-| **Cosmic** | 7 | 20 | 24 | complex | 4 | 2 |
-| **Mind** | 7 | 50 | 50 | complex | 10 | 2 |
+| Tier | variables | passes | transforms/pass | base_complexity | substitution_depth | bridge_atoms | gnarly_combos |
+|------|-----------|--------|-----------------|-----------------|-------------------|--------------|---------------|
+| **Baby** | 2 | 1 | 2 | simple | 0 | 0 | no |
+| **Easy** | 3 | 1 | 5 | simple | 0 | 0 | no |
+| **Medium** | 4 | 1 | 10 | complex | 0 | 0 | no |
+| **Hard** | 5 | 1 | 15 | complex | 2 | 0 | no |
+| **Expert** | 5 | 2 | 15 | complex | 3 | 0 | **yes** |
+| **Nightmare** | 6 | 3 | 15 | complex | 4 | 1 | **yes** |
+| **Marathon** | 6 | 5 | 20 | complex | 4 | 1 | **yes** |
+| **Absurd** | 7 | 10 | 20 | complex | 4 | 1 | **yes** |
+| **Cosmic** | 7 | 20 | 24 | complex | 4 | 2 | **yes** |
+| **Mind** | 7 | 50 | 50 | complex | 10 | 2 | **yes** |
 
 ### Progression Pattern
 
@@ -361,8 +379,8 @@ The tiers escalate along multiple axes simultaneously:
 
 - **Baby → Easy → Medium**: more atoms, more transforms, switch to complex base forms
 - **Medium → Hard**: substitution begins (depth 2), increasing formula surface area
-- **Hard → Expert**: multiple passes begin (2), substitution deepens (3)
-- **Expert → Nightmare**: bridge atoms appear (1), gnarly combos activate, passes increase (3)
+- **Hard → Expert**: multiple passes begin (2), substitution deepens (3), gnarly combos activate
+- **Expert → Nightmare**: bridge atoms appear (1), passes increase (3), substitution deepens (4)
 - **Nightmare → Marathon → Absurd**: more atoms, more passes, more transforms per pass
 - **Absurd → Cosmic → Mind**: maximum atoms (7), extreme pass counts (20-50), double bridge atoms (2), Mind tier has substitution depth 10
 
@@ -376,7 +394,8 @@ Several mechanisms prevent the generator from producing degenerate or excessivel
 
 - **`MAX_FORMULA_NODES = 20,000`**: if the formula exceeds this node count between passes, remaining passes are skipped
 - **`MAX_FORMULA_DEPTH = 100`**: same check for tree depth
-- **`max_formula_nodes` parameter**: user-configurable override for the node limit
+- **`max_formula_nodes` parameter**: user-configurable override for the node limit (GUI + CLI)
+- **`max_formula_depth` parameter**: user-configurable override for the depth limit (GUI + CLI)
 
 ### Transformation Throttles
 
