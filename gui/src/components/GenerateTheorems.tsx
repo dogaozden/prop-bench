@@ -286,7 +286,7 @@ export default function GenerateTheorems({
                 onChange={(e) => {
                   const t = e.target.value;
                   setTier(t);
-                  const gnarly = ["expert", "nightmare", "marathon", "absurd", "cosmic", "mind"].includes(t);
+                  const gnarly = tierPresets?.[t]?.gnarly_combos ?? ["expert", "nightmare", "marathon", "absurd", "cosmic", "mind"].includes(t);
                   setGnarlyCombos(gnarly);
                 }}
                 disabled={generating || presetsLoading}

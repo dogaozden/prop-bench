@@ -43,15 +43,15 @@ export function loadTierPresets(): Record<string, DifficultySpec> {
     // Hardcoded defaults matching the JSON file
     return {
       baby: { variables: 2, passes: 1, transforms_per_pass: 2, base_complexity: "simple", substitution_depth: 0, bridge_atoms: 0, gnarly_combos: false },
-      easy: { variables: 2, passes: 1, transforms_per_pass: 2, base_complexity: "simple", substitution_depth: 0, bridge_atoms: 0, gnarly_combos: false },
-      medium: { variables: 3, passes: 1, transforms_per_pass: 5, base_complexity: "simple", substitution_depth: 0, bridge_atoms: 0, gnarly_combos: false },
-      hard: { variables: 4, passes: 1, transforms_per_pass: 10, base_complexity: "complex", substitution_depth: 0, bridge_atoms: 0, gnarly_combos: false },
-      expert: { variables: 5, passes: 1, transforms_per_pass: 15, base_complexity: "complex", substitution_depth: 2, bridge_atoms: 0, gnarly_combos: true },
-      nightmare: { variables: 5, passes: 2, transforms_per_pass: 12, base_complexity: "complex", substitution_depth: 3, bridge_atoms: 1, gnarly_combos: true },
-      marathon: { variables: 5, passes: 3, transforms_per_pass: 15, base_complexity: "complex", substitution_depth: 4, bridge_atoms: 1, gnarly_combos: true },
-      absurd: { variables: 6, passes: 5, transforms_per_pass: 20, base_complexity: "complex", substitution_depth: 4, bridge_atoms: 1, gnarly_combos: true },
-      cosmic: { variables: 7, passes: 10, transforms_per_pass: 20, base_complexity: "complex", substitution_depth: 4, bridge_atoms: 2, gnarly_combos: true },
-      mind: { variables: 7, passes: 20, transforms_per_pass: 24, base_complexity: "complex", substitution_depth: 4, bridge_atoms: 2, gnarly_combos: true },
+      easy: { variables: 3, passes: 1, transforms_per_pass: 5, base_complexity: "simple", substitution_depth: 0, bridge_atoms: 0, gnarly_combos: false },
+      medium: { variables: 4, passes: 1, transforms_per_pass: 10, base_complexity: "complex", substitution_depth: 0, bridge_atoms: 0, gnarly_combos: false },
+      hard: { variables: 5, passes: 1, transforms_per_pass: 15, base_complexity: "complex", substitution_depth: 2, bridge_atoms: 0, gnarly_combos: false },
+      expert: { variables: 5, passes: 2, transforms_per_pass: 15, base_complexity: "complex", substitution_depth: 3, bridge_atoms: 0, gnarly_combos: true },
+      nightmare: { variables: 5, passes: 3, transforms_per_pass: 15, base_complexity: "complex", substitution_depth: 4, bridge_atoms: 1, gnarly_combos: true },
+      marathon: { variables: 6, passes: 5, transforms_per_pass: 20, base_complexity: "complex", substitution_depth: 4, bridge_atoms: 1, gnarly_combos: true },
+      absurd: { variables: 7, passes: 10, transforms_per_pass: 20, base_complexity: "complex", substitution_depth: 4, bridge_atoms: 1, gnarly_combos: true },
+      cosmic: { variables: 7, passes: 20, transforms_per_pass: 24, base_complexity: "complex", substitution_depth: 4, bridge_atoms: 2, gnarly_combos: true },
+      mind: { variables: 7, passes: 50, transforms_per_pass: 50, base_complexity: "complex", substitution_depth: 10, bridge_atoms: 2, gnarly_combos: true },
     };
   }
 }
@@ -166,12 +166,12 @@ export async function generate(opts: GenerateOpts): Promise<{ path: string; theo
     const tierSpec = presets[opts.tier];
     if (tierSpec) {
       const effectiveSpec = applyGnarlyOverride(tierSpec);
-      allTheorems = await generateBatch(opts.count, specArgs(effectiveSpec), outFile);
+      allTheorems = await generateBatch(opts.count, specArgs(effectiveSpec), outFile, true);
       // Fix difficulty label (CLI sets it to "Custom" when using spec args)
       const label = opts.tier.charAt(0).toUpperCase() + opts.tier.slice(1);
       for (const t of allTheorems as any[]) {
         (t as any).difficulty = label;
-        (t as any).difficulty_spec = tierSpec;
+        (t as any).difficulty_spec = effectiveSpec;
       }
     } else {
       // Fallback to CLI's hardcoded tier
@@ -180,7 +180,11 @@ export async function generate(opts: GenerateOpts): Promise<{ path: string; theo
   } else if (opts.spec) {
     // Custom spec mode: pass directly
     const effectiveSpec = applyGnarlyOverride(opts.spec);
-    allTheorems = await generateBatch(opts.count, specArgs(effectiveSpec), outFile);
+    allTheorems = await generateBatch(opts.count, specArgs(effectiveSpec), outFile, true);
+    // Stamp each theorem with the effective spec (including gnarly override)
+    for (const t of allTheorems as any[]) {
+      (t as any).difficulty_spec = effectiveSpec;
+    }
   } else if (opts.distribution) {
     // Distribution mode: parse and resolve each tier from config
     const segments = opts.distribution.split(",").map(s => {

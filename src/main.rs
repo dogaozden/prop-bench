@@ -187,22 +187,18 @@ fn parse_difficulty_distribution(spec: &str) -> Result<Vec<DistributionEntry>, S
             .map_err(|_| format!("Invalid count: '{}'", parts[0]))?;
         let tier_name = parts[1].trim().to_lowercase();
 
-        // Check if it's one of the extended tiers that need spec-based generation
+        // All known tiers use the spec-based generation path
         if let Some(dt) = DifficultyTier::from_str(&tier_name) {
-            match dt {
-                DifficultyTier::Baby | DifficultyTier::Absurd | DifficultyTier::Cosmic | DifficultyTier::Mind => {
-                    result.push(DistributionEntry::Spec {
-                        count,
-                        tier: dt,
-                        spec: DifficultySpec::from_tier(dt),
-                        tier_name: dt.label().to_string(),
-                    });
-                    continue;
-                }
-                _ => {}
-            }
+            result.push(DistributionEntry::Spec {
+                count,
+                tier: dt,
+                spec: DifficultySpec::from_tier(dt),
+                tier_name: dt.label().to_string(),
+            });
+            continue;
         }
 
+        // Fallback for unknown tier names: use legacy range-based path
         let (min, max) = tier_range_extended(&tier_name)?;
         result.push(DistributionEntry::Range {
             count,
@@ -279,6 +275,9 @@ fn resolve_generate_mode(
     }
 
     // Mode 3: --difficulty-distribution or default
+    if gnarly_override.is_some() {
+        eprintln!("Warning: --gnarly-combos/--no-gnarly-combos is ignored in distribution mode. Each tier uses its own default.");
+    }
     let dist_str = distribution.clone()
         .unwrap_or_else(|| "30:easy,30:medium,20:hard,15:expert,5:nightmare".to_string());
     Ok(GenerateMode::Distribution(dist_str, *max_nodes, *max_depth))
