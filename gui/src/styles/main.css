@@ -593,6 +593,7 @@ body {
   max-width: 90vw;
   max-height: 90vh;
   overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .generate-modal-header {
@@ -643,20 +644,22 @@ body {
 
 .generate-dist-grid {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 8px;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px 12px;
 }
 
 .generate-dist-item {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 6px;
+  gap: 5px;
 }
 
-.generate-dist-input {
+.generate-dist-grid .generate-dist-input {
   width: 100%;
+  min-width: 0;
   text-align: center;
+  padding: 5px 4px;
 }
 
 .generate-dist-sum {

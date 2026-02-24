@@ -71,6 +71,8 @@ export interface DifficultySpec {
   base_complexity: "simple" | "complex";
   substitution_depth: number;
   bridge_atoms?: number;
+  max_formula_nodes?: number;
+  max_formula_depth?: number;
 }
 
 export interface GenerateOpts {
@@ -80,6 +82,7 @@ export interface GenerateOpts {
   tier?: string;            // tier preset mode
   spec?: DifficultySpec;    // custom spec mode
   maxNodes?: number;        // max AST node count for obfuscation pipeline
+  maxDepth?: number;        // max formula nesting depth for obfuscation pipeline
 }
 
 export async function generate(opts: GenerateOpts): Promise<{ path: string; theorems: unknown[] }> {
@@ -106,6 +109,12 @@ export async function generate(opts: GenerateOpts): Promise<{ path: string; theo
     if (spec.bridge_atoms !== undefined && spec.bridge_atoms > 0) {
       args.push("--bridge-atoms", String(spec.bridge_atoms));
     }
+    if (spec.max_formula_nodes !== undefined) {
+      args.push("--max-nodes", String(spec.max_formula_nodes));
+    }
+    if (spec.max_formula_depth !== undefined) {
+      args.push("--max-depth", String(spec.max_formula_depth));
+    }
     return args;
   };
 
@@ -114,6 +123,9 @@ export async function generate(opts: GenerateOpts): Promise<{ path: string; theo
     const args = ["generate", "--count", String(count), "--output", tmpFile, ...extraArgs];
     if (opts.maxNodes !== undefined) {
       args.push("--max-nodes", String(opts.maxNodes));
+    }
+    if (opts.maxDepth !== undefined) {
+      args.push("--max-depth", String(opts.maxDepth));
     }
     const { stderr } = await execFileAsync(PROPBENCH_BIN, args, {
       timeout: 120_000,

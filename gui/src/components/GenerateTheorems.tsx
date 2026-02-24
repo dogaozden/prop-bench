@@ -63,6 +63,8 @@ export default function GenerateTheorems({
 
   // Max nodes (optional AST node limit)
   const [maxNodes, setMaxNodes] = useState<number | null>(null);
+  // Max depth (optional nesting depth limit)
+  const [maxDepth, setMaxDepth] = useState<number | null>(null);
 
   // Load tier presets from API on mount
   useEffect(() => {
@@ -85,7 +87,7 @@ export default function GenerateTheorems({
     setError("");
 
     const count = total ?? DEFAULT_TOTAL;
-    const opts = { count, name, ...(maxNodes != null && { maxNodes }) };
+    const opts = { count, name, ...(maxNodes != null && { maxNodes }), ...(maxDepth != null && { maxDepth }) };
     try {
       if (mode === "distribution") {
         const distribution = Object.entries(dist)
@@ -160,12 +162,34 @@ export default function GenerateTheorems({
               className="theorem-search"
               min={1000}
               value={maxNodes ?? ""}
-              onChange={(e) => setMaxNodes(e.target.value === "" ? null : parseInt(e.target.value, 10))}
+              onChange={(e) => {
+                const v = parseInt(e.target.value, 10);
+                setMaxNodes(Number.isNaN(v) ? null : Math.max(1000, v));
+              }}
               disabled={generating}
               placeholder="20000 (default)"
             />
             <span style={{ fontSize: 11, color: "var(--text-muted)", marginTop: 2 }}>
               AST node limit for obfuscation pipeline
+            </span>
+          </label>
+
+          <label className="generate-field">
+            <span className="generate-label">Max Formula Depth (optional)</span>
+            <input
+              type="number"
+              className="theorem-search"
+              min={1}
+              value={maxDepth ?? ""}
+              onChange={(e) => {
+                const v = parseInt(e.target.value, 10);
+                setMaxDepth(Number.isNaN(v) ? null : Math.max(1, v));
+              }}
+              disabled={generating}
+              placeholder="100 (default)"
+            />
+            <span style={{ fontSize: 11, color: "var(--text-muted)", marginTop: 2 }}>
+              Nesting depth limit for obfuscation pipeline
             </span>
           </label>
 

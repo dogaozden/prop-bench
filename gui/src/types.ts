@@ -35,6 +35,8 @@ export interface DifficultySpec {
   base_complexity: BaseComplexity;
   substitution_depth: number;
   bridge_atoms?: number;
+  max_formula_nodes?: number;
+  max_formula_depth?: number;
 }
 
 export interface Theorem {

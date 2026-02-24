@@ -1,6 +1,6 @@
 # PropBench
 
-A saturation-proof benchmark that measures the ability of AI models to prove propositional logic theorems using Fitch-style natural deduction.
+A saturation-proof reasoning benchmark that measures the ability of AI models to prove propositional logic theorems using Fitch-style natural deduction.
 
 ## Why PropBench?
 

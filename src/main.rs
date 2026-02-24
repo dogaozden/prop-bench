@@ -65,6 +65,10 @@ enum Commands {
         #[arg(long)]
         max_nodes: Option<u32>,
 
+        /// Maximum formula depth (default: 100) for custom spec
+        #[arg(long)]
+        max_depth: Option<u32>,
+
         /// Output file path
         #[arg(short, long, default_value = "theorems.json")]
         output: PathBuf,
@@ -160,8 +164,8 @@ fn tier_range_extended(name: &str) -> Result<(u8, u8), String> {
 enum DistributionEntry {
     /// Legacy mode: generate with random difficulty value in range
     Range { count: usize, min_val: u8, max_val: u8, tier_name: String },
-    /// Spec mode: generate with a DifficultySpec
-    Spec { count: usize, spec: DifficultySpec, tier_name: String },
+    /// Spec mode: generate with a DifficultySpec (tier is known)
+    Spec { count: usize, tier: DifficultyTier, spec: DifficultySpec, tier_name: String },
 }
 
 fn parse_difficulty_distribution(spec: &str) -> Result<Vec<DistributionEntry>, String> {
@@ -181,6 +185,7 @@ fn parse_difficulty_distribution(spec: &str) -> Result<Vec<DistributionEntry>, S
                 DifficultyTier::Baby | DifficultyTier::Absurd | DifficultyTier::Cosmic | DifficultyTier::Mind => {
                     result.push(DistributionEntry::Spec {
                         count,
+                        tier: dt,
                         spec: DifficultySpec::from_tier(dt),
                         tier_name: dt.label().to_string(),
                     });
@@ -206,11 +211,11 @@ fn parse_difficulty_distribution(spec: &str) -> Result<Vec<DistributionEntry>, S
 /// Determine the generation mode from CLI flags.
 enum GenerateMode {
     /// --tier <name>: all theorems use one tier preset
-    Tier(DifficultySpec, String),
+    Tier(DifficultyTier, DifficultySpec, String),
     /// --variables/--passes/... custom spec
     CustomSpec(DifficultySpec),
-    /// --difficulty-distribution or default, with optional max_nodes override
-    Distribution(String, Option<u32>),
+    /// --difficulty-distribution or default, with optional max_nodes/max_depth overrides
+    Distribution(String, Option<u32>, Option<u32>),
 }
 
 fn resolve_generate_mode(
@@ -222,6 +227,7 @@ fn resolve_generate_mode(
     substitution: &Option<u8>,
     bridge_atoms: &Option<u8>,
     max_nodes: &Option<u32>,
+    max_depth: &Option<u32>,
     distribution: &Option<String>,
 ) -> Result<GenerateMode, String> {
     // Mode 1: --tier
@@ -232,13 +238,16 @@ fn resolve_generate_mode(
         if let Some(nodes) = max_nodes {
             spec.max_formula_nodes = Some(*nodes);
         }
+        if let Some(depth) = max_depth {
+            spec.max_formula_depth = Some(*depth);
+        }
         if let Some(ba) = bridge_atoms {
             spec.bridge_atoms = Some(*ba);
         }
-        return Ok(GenerateMode::Tier(spec, dt.label().to_string()));
+        return Ok(GenerateMode::Tier(dt, spec, dt.label().to_string()));
     }
 
-    // Mode 2: any custom spec flag (except max_nodes which is orthogonal)
+    // Mode 2: any custom spec flag (except max_nodes/max_depth which are orthogonal)
     if variables.is_some() || passes.is_some() || transforms.is_some() || base.is_some() || substitution.is_some() {
         let spec = DifficultySpec {
             variables: variables.unwrap_or(3),
@@ -251,6 +260,7 @@ fn resolve_generate_mode(
             substitution_depth: substitution.unwrap_or(0),
             bridge_atoms: *bridge_atoms,
             max_formula_nodes: *max_nodes,
+            max_formula_depth: *max_depth,
         };
         return Ok(GenerateMode::CustomSpec(spec));
     }
@@ -258,7 +268,7 @@ fn resolve_generate_mode(
     // Mode 3: --difficulty-distribution or default
     let dist_str = distribution.clone()
         .unwrap_or_else(|| "30:easy,30:medium,20:hard,15:expert,5:nightmare".to_string());
-    Ok(GenerateMode::Distribution(dist_str, *max_nodes))
+    Ok(GenerateMode::Distribution(dist_str, *max_nodes, *max_depth))
 }
 
 fn cmd_generate(
@@ -272,19 +282,20 @@ fn cmd_generate(
     substitution: &Option<u8>,
     bridge_atoms: &Option<u8>,
     max_nodes: &Option<u32>,
+    max_depth: &Option<u32>,
     output: &PathBuf,
 ) -> Result<(), String> {
-    let mode = resolve_generate_mode(tier, variables, passes, transforms, base, substitution, bridge_atoms, max_nodes, distribution)?;
+    let mode = resolve_generate_mode(tier, variables, passes, transforms, base, substitution, bridge_atoms, max_nodes, max_depth, distribution)?;
 
     let mut rng = rand::thread_rng();
     let mut theorems: Vec<BenchTheorem> = Vec::with_capacity(count);
     let mut theorem_id = 1usize;
 
     match mode {
-        GenerateMode::Tier(spec, tier_name) => {
+        GenerateMode::Tier(dt, spec, tier_name) => {
             eprintln!("Generating {} {} theorems via tier spec...", count, tier_name);
             for _ in 0..count {
-                let theorem = ObfuscateGenerator::generate_with_spec(&spec, &mut rng);
+                let theorem = ObfuscateGenerator::generate_with_tier_spec(dt, &spec, &mut rng);
                 let mut bench = BenchTheorem::from(&theorem);
                 bench.id = format!("v1-{:03}", theorem_id);
                 bench.difficulty = tier_name.clone();
@@ -310,7 +321,7 @@ fn cmd_generate(
             }
         }
 
-        GenerateMode::Distribution(dist_str, max_nodes_override) => {
+        GenerateMode::Distribution(dist_str, max_nodes_override, max_depth_override) => {
             let entries = parse_difficulty_distribution(&dist_str)?;
             let total: usize = entries.iter().map(|e| match e {
                 DistributionEntry::Range { count, .. } => *count,
@@ -337,15 +348,18 @@ fn cmd_generate(
                             theorem_id += 1;
                         }
                     }
-                    DistributionEntry::Spec { count: tier_count, spec, tier_name } => {
-                        // Apply max_nodes override if provided
+                    DistributionEntry::Spec { count: tier_count, tier, spec, tier_name } => {
+                        // Apply max_nodes/max_depth overrides if provided
                         let mut spec = spec.clone();
                         if let Some(nodes) = max_nodes_override {
                             spec.max_formula_nodes = Some(nodes);
                         }
+                        if let Some(depth) = max_depth_override {
+                            spec.max_formula_depth = Some(depth);
+                        }
                         eprintln!("Generating {} {} theorems via spec...", tier_count, tier_name);
                         for _ in 0..*tier_count {
-                            let theorem = ObfuscateGenerator::generate_with_spec(&spec, &mut rng);
+                            let theorem = ObfuscateGenerator::generate_with_tier_spec(*tier, &spec, &mut rng);
                             let mut bench = BenchTheorem::from(&theorem);
                             bench.id = format!("v1-{:03}", theorem_id);
                             bench.difficulty = tier_name.clone();
@@ -669,6 +683,7 @@ fn main() {
             substitution,
             bridge_atoms,
             max_nodes,
+            max_depth,
             output,
         } => {
             cmd_generate(
@@ -682,6 +697,7 @@ fn main() {
                 &substitution,
                 &bridge_atoms,
                 &max_nodes,
+                &max_depth,
                 &output,
             )
         }

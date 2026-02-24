@@ -94,14 +94,48 @@ impl ObfuscateConfig {
     /// Create configuration from a DifficultySpec.
     pub fn from_spec(spec: &DifficultySpec) -> Self {
         let atoms = build_atom_pool(spec.variables);
+        let difficulty_value = Self::difficulty_value_from_spec(spec);
         Self {
             atom_pool: atoms,
             transform_count: spec.transforms_per_pass as usize,
-            difficulty: Difficulty::Expert, // All spec-based generation uses Expert as base
-            difficulty_value: 100, // Max value — spec controls actual complexity
+            difficulty: Self::preset_for_value(difficulty_value),
+            difficulty_value,
             substitution_depth: spec.substitution_depth as usize,
             bridge_atoms: spec.bridge_atoms.unwrap_or(0) as usize,
         }
+    }
+
+    /// Derive a legacy 1-100 difficulty value from a DifficultySpec.
+    ///
+    /// Uses total effective transforms (`passes * transforms_per_pass`) plus a
+    /// bonus for substitution depth so that low-tier specs (Baby, Easy) stay well
+    /// below the gnarly-combo threshold (85) while Expert+ tiers exceed it.
+    ///
+    /// Reference tier mappings:
+    ///   Baby/Easy  (1*2=2,  sub 0) -> ~13
+    ///   Medium     (1*5=5,  sub 0) -> ~38
+    ///   Hard       (1*10=10,sub 0) -> ~62
+    ///   Expert     (1*15=15,sub 2) -> ~88  (triggers gnarly combos)
+    ///   Nightmare  (2*12=24,sub 3) -> ~95
+    ///   Marathon+  (3*15+)         -> 100
+    fn difficulty_value_from_spec(spec: &DifficultySpec) -> u8 {
+        let total_transforms = (spec.passes as u32) * (spec.transforms_per_pass as u32);
+        // Base: map total transforms to difficulty using the same breakpoints
+        // as for_difficulty_value (which maps single-pass transform counts).
+        let base = match total_transforms {
+            0..=3   => 1 + (total_transforms.saturating_sub(1)) * 24 / 2,   // 1-25
+            4..=6   => 26 + (total_transforms - 4) * 19 / 2,                // 26-45
+            7..=11  => 46 + (total_transforms - 7) * 24 / 4,                // 46-70
+            12..=16 => 71 + (total_transforms - 12) * 14 / 4,               // 71-85
+            17..=20 => 86 + (total_transforms - 17) * 9 / 3,                // 86-95
+            _       => 96 + (total_transforms.saturating_sub(21)).min(4),    // 96-100
+        } as u8;
+
+        // Substitution depth bonus: each level adds 3 points,
+        // so Expert (sub 2) gets +6, Nightmare (sub 3) gets +9.
+        let sub_bonus = (spec.substitution_depth as u8) * 3;
+
+        base.saturating_add(sub_bonus).min(100)
     }
 }
 
@@ -306,6 +340,21 @@ impl ObfuscateGenerator {
         )
     }
 
+    /// Generate an obfuscated theorem for a specific DifficultyTier using a
+    /// (possibly overridden) DifficultySpec. The spec controls the pipeline
+    /// parameters while the tier determines the theorem's metadata (difficulty
+    /// label and tier field).
+    pub fn generate_with_tier_spec(tier: DifficultyTier, spec: &DifficultySpec, rng: &mut impl Rng) -> Theorem {
+        let formula = Self::run_spec_pipeline(spec, rng);
+
+        Theorem::from_tier(
+            vec![],
+            formula,
+            tier,
+            Some(Theme::Equivalence),
+        )
+    }
+
     /// Core spec-based pipeline: generates a tautology formula from a DifficultySpec.
     fn run_spec_pipeline(spec: &DifficultySpec, rng: &mut impl Rng) -> Formula {
         let config = ObfuscateConfig::from_spec(spec);
@@ -345,6 +394,15 @@ impl ObfuscateGenerator {
                 "Formula should remain a tautology after pass"
             );
         }
+
+        // Defence-in-depth: verify the final formula is still a tautology.
+        // The per-pass check above only fires inside the loop and only in debug
+        // builds; this catches any issue introduced by the very last pass
+        // (including simplify_negations) regardless of where the loop exited.
+        debug_assert!(
+            is_tautology_dynamic(&formula),
+            "Final formula after all passes must be a tautology"
+        );
 
         formula
     }
@@ -1647,6 +1705,7 @@ mod tests {
             base_complexity: BaseComplexity::Complex,
             substitution_depth: 2,
             max_formula_nodes: None,
+            max_formula_depth: None,
             bridge_atoms: None,
         });
         let gen = ObfuscateGenerator::new(config);
@@ -1701,6 +1760,7 @@ mod tests {
             base_complexity: BaseComplexity::Complex,
             substitution_depth: 2,
             max_formula_nodes: None,
+            max_formula_depth: None,
             bridge_atoms: Some(2),
         };
 
@@ -1729,6 +1789,7 @@ mod tests {
             base_complexity: BaseComplexity::Simple,
             substitution_depth: 1,
             max_formula_nodes: None,
+            max_formula_depth: None,
             bridge_atoms: Some(0),
         };
 

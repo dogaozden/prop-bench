@@ -25,6 +25,7 @@ export interface GenerateOpts {
   tier?: string;            // tier preset mode
   spec?: DifficultySpec;    // custom spec mode
   maxNodes?: number;        // max AST node count for obfuscation pipeline
+  maxDepth?: number;        // max formula nesting depth for obfuscation pipeline
 }
 
 export interface GenerateResult {
