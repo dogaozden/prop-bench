@@ -137,9 +137,9 @@ impl ObfuscateConfig {
 
         // Substitution depth bonus: each level adds 3 points,
         // so Expert (sub 2) gets +6, Nightmare (sub 3) gets +9.
-        let sub_bonus = (spec.substitution_depth as u8) * 3;
+        let sub_bonus = (spec.substitution_depth as u16) * 3;
 
-        base.saturating_add(sub_bonus).min(100)
+        ((base as u16).saturating_add(sub_bonus).min(100)) as u8
     }
 }
 

@@ -43,11 +43,11 @@ enum Commands {
 
         /// Number of passes (1-20) for custom spec
         #[arg(long)]
-        passes: Option<u8>,
+        passes: Option<u16>,
 
         /// Transforms per pass (1-24) for custom spec
         #[arg(long)]
-        transforms: Option<u8>,
+        transforms: Option<u16>,
 
         /// Base complexity (simple/complex) for custom spec
         #[arg(long)]
@@ -55,7 +55,7 @@ enum Commands {
 
         /// Substitution depth (0-4) for custom spec
         #[arg(long)]
-        substitution: Option<u8>,
+        substitution: Option<u16>,
 
         /// Number of bridge atoms (0-5) for cross-zone interdependencies
         #[arg(long)]
@@ -225,10 +225,10 @@ enum GenerateMode {
 fn resolve_generate_mode(
     tier: &Option<String>,
     variables: &Option<u8>,
-    passes: &Option<u8>,
-    transforms: &Option<u8>,
+    passes: &Option<u16>,
+    transforms: &Option<u16>,
     base: &Option<String>,
-    substitution: &Option<u8>,
+    substitution: &Option<u16>,
     bridge_atoms: &Option<u8>,
     max_nodes: &Option<u32>,
     max_depth: &Option<u32>,
@@ -288,10 +288,10 @@ fn cmd_generate(
     distribution: &Option<String>,
     tier: &Option<String>,
     variables: &Option<u8>,
-    passes: &Option<u8>,
-    transforms: &Option<u8>,
+    passes: &Option<u16>,
+    transforms: &Option<u16>,
     base: &Option<String>,
-    substitution: &Option<u8>,
+    substitution: &Option<u16>,
     bridge_atoms: &Option<u8>,
     max_nodes: &Option<u32>,
     max_depth: &Option<u32>,

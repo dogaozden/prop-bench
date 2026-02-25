@@ -23,10 +23,10 @@ pub enum BaseComplexity {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct DifficultySpec {
     pub variables: u8,              // 2-20
-    pub passes: u8,                 // 1-N
-    pub transforms_per_pass: u8,    // per pass
+    pub passes: u16,                // 1-N
+    pub transforms_per_pass: u16,   // per pass
     pub base_complexity: BaseComplexity,
-    pub substitution_depth: u8,     // 0-4
+    pub substitution_depth: u16,    // 0-N
     #[serde(default)]
     pub max_formula_nodes: Option<u32>,  // None = use default (20,000)
     #[serde(default)]
@@ -86,7 +86,7 @@ impl DifficultySpec {
             71..=85 => 11 + (d_clamped - 71) * 5 / 14,
             86..=95 => 16 + (d_clamped - 86) * 4 / 9,
             _ => 20 + (d_clamped - 96) * 4 / 4,
-        } as u8;
+        } as u16;
         let substitution_depth = match d_clamped {
             1..=69 => 0,
             70..=84 => 1,
