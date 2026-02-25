@@ -146,7 +146,7 @@ See *generation_algorithm.md* for more details.
 3. {[(P v Q) . R] ⊃ S}
 4. {{[(P v Q) . R] ⊃ S} . T} ⊃ Y 
   
-  And so on. Curly brackets are stacked on top of each other after we run out of parentheses and square brackets. This is done to make it harder for the LLM to parse the formula.
+  And so on. Curly brackets are stacked on top of each other after we run out of parentheses and square brackets.
 
 ### Screenshots
 
