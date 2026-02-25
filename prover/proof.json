@@ -1,0 +1,1478 @@
+[
+  {
+    "line_number": 1,
+    "formula": "~(B v ~B)",
+    "justification": "Assumption (IP)",
+    "depth": 1
+  },
+  {
+    "line_number": 2,
+    "formula": "~B . ~~B",
+    "justification": "DeM 1",
+    "depth": 1
+  },
+  {
+    "line_number": 3,
+    "formula": "~B",
+    "justification": "Simp 2",
+    "depth": 1
+  },
+  {
+    "line_number": 4,
+    "formula": "~~B",
+    "justification": "Simp 2",
+    "depth": 1
+  },
+  {
+    "line_number": 5,
+    "formula": "~B . ~~B",
+    "justification": "Conj 3,4",
+    "depth": 1
+  },
+  {
+    "line_number": 6,
+    "formula": "B v ~B",
+    "justification": "IP 1-5",
+    "depth": 0
+  },
+  {
+    "line_number": 7,
+    "formula": "~(C v ~C)",
+    "justification": "Assumption (IP)",
+    "depth": 1
+  },
+  {
+    "line_number": 8,
+    "formula": "~C . ~~C",
+    "justification": "DeM 7",
+    "depth": 1
+  },
+  {
+    "line_number": 9,
+    "formula": "~C",
+    "justification": "Simp 8",
+    "depth": 1
+  },
+  {
+    "line_number": 10,
+    "formula": "~~C",
+    "justification": "Simp 8",
+    "depth": 1
+  },
+  {
+    "line_number": 11,
+    "formula": "~C . ~~C",
+    "justification": "Conj 9,10",
+    "depth": 1
+  },
+  {
+    "line_number": 12,
+    "formula": "C v ~C",
+    "justification": "IP 7-11",
+    "depth": 0
+  },
+  {
+    "line_number": 13,
+    "formula": "~(D v ~D)",
+    "justification": "Assumption (IP)",
+    "depth": 1
+  },
+  {
+    "line_number": 14,
+    "formula": "~D . ~~D",
+    "justification": "DeM 13",
+    "depth": 1
+  },
+  {
+    "line_number": 15,
+    "formula": "~D",
+    "justification": "Simp 14",
+    "depth": 1
+  },
+  {
+    "line_number": 16,
+    "formula": "~~D",
+    "justification": "Simp 14",
+    "depth": 1
+  },
+  {
+    "line_number": 17,
+    "formula": "~D . ~~D",
+    "justification": "Conj 15,16",
+    "depth": 1
+  },
+  {
+    "line_number": 18,
+    "formula": "D v ~D",
+    "justification": "IP 13-17",
+    "depth": 0
+  },
+  {
+    "line_number": 19,
+    "formula": "~(E v ~E)",
+    "justification": "Assumption (IP)",
+    "depth": 1
+  },
+  {
+    "line_number": 20,
+    "formula": "~E . ~~E",
+    "justification": "DeM 19",
+    "depth": 1
+  },
+  {
+    "line_number": 21,
+    "formula": "~E",
+    "justification": "Simp 20",
+    "depth": 1
+  },
+  {
+    "line_number": 22,
+    "formula": "~~E",
+    "justification": "Simp 20",
+    "depth": 1
+  },
+  {
+    "line_number": 23,
+    "formula": "~E . ~~E",
+    "justification": "Conj 21,22",
+    "depth": 1
+  },
+  {
+    "line_number": 24,
+    "formula": "E v ~E",
+    "justification": "IP 19-23",
+    "depth": 0
+  },
+  {
+    "line_number": 25,
+    "formula": "B",
+    "justification": "Assumption (CP)",
+    "depth": 1
+  },
+  {
+    "line_number": 26,
+    "formula": "C",
+    "justification": "Assumption (CP)",
+    "depth": 2
+  },
+  {
+    "line_number": 27,
+    "formula": "D",
+    "justification": "Assumption (CP)",
+    "depth": 3
+  },
+  {
+    "line_number": 28,
+    "formula": "E",
+    "justification": "Assumption (CP)",
+    "depth": 4
+  },
+  {
+    "line_number": 29,
+    "formula": "~~D",
+    "justification": "DN 27",
+    "depth": 4
+  },
+  {
+    "line_number": 30,
+    "formula": "~~D v ~~C",
+    "justification": "Add 29",
+    "depth": 4
+  },
+  {
+    "line_number": 31,
+    "formula": "~(~D . ~C)",
+    "justification": "DeM 30",
+    "depth": 4
+  },
+  {
+    "line_number": 32,
+    "formula": "~~C",
+    "justification": "DN 26",
+    "depth": 4
+  },
+  {
+    "line_number": 33,
+    "formula": "~(~D . ~C) . ~~C",
+    "justification": "Conj 31,32",
+    "depth": 4
+  },
+  {
+    "line_number": 34,
+    "formula": "~((~D . ~C) v ~C)",
+    "justification": "DeM 33",
+    "depth": 4
+  },
+  {
+    "line_number": 35,
+    "formula": "E > ((~D . ~C) v ~C)",
+    "justification": "Assumption (IP)",
+    "depth": 5
+  },
+  {
+    "line_number": 36,
+    "formula": "(~D . ~C) v ~C",
+    "justification": "MP 28,35",
+    "depth": 5
+  },
+  {
+    "line_number": 37,
+    "formula": "((~D . ~C) v ~C) . ~((~D . ~C) v ~C)",
+    "justification": "Conj 36,34",
+    "depth": 5
+  },
+  {
+    "line_number": 38,
+    "formula": "~(E > ((~D . ~C) v ~C))",
+    "justification": "IP 35-37",
+    "depth": 4
+  },
+  {
+    "line_number": 39,
+    "formula": "~(E > ((~D . ~C) v ~C)) v ~(B > ((D v C) . C))",
+    "justification": "Add 38",
+    "depth": 4
+  },
+  {
+    "line_number": 40,
+    "formula": "~(B > ((D v C) . C)) v ~(E > ((~D . ~C) v ~C))",
+    "justification": "Comm 39",
+    "depth": 4
+  },
+  {
+    "line_number": 41,
+    "formula": "~((B > ((D v C) . C)) . (E > ((~D . ~C) v ~C)))",
+    "justification": "DeM 40",
+    "depth": 4
+  },
+  {
+    "line_number": 42,
+    "formula": "~((B > ((D v C) . C)) . (E > ((~D . ~C) v ~C))) v ~B",
+    "justification": "Add 41",
+    "depth": 4
+  },
+  {
+    "line_number": 43,
+    "formula": "~B v ~((B > ((D v C) . C)) . (E > ((~D . ~C) v ~C)))",
+    "justification": "Comm 42",
+    "depth": 4
+  },
+  {
+    "line_number": 44,
+    "formula": "~(B . ((B > ((D v C) . C)) . (E > ((~D . ~C) v ~C))))",
+    "justification": "DeM 43",
+    "depth": 4
+  },
+  {
+    "line_number": 45,
+    "formula": "~(B . ((B > ((D v C) . C)) . (E > ((~D . ~C) v ~C)))) v ~E",
+    "justification": "Add 44",
+    "depth": 4
+  },
+  {
+    "line_number": 46,
+    "formula": "(B . ((B > ((D v C) . C)) . (E > ((~D . ~C) v ~C)))) > ~E",
+    "justification": "Impl 45",
+    "depth": 4
+  },
+  {
+    "line_number": 47,
+    "formula": "E > ((B . ((B > ((D v C) . C)) . (E > ((~D . ~C) v ~C)))) > ~E)",
+    "justification": "CP 28-46",
+    "depth": 3
+  },
+  {
+    "line_number": 48,
+    "formula": "~E",
+    "justification": "Assumption (CP)",
+    "depth": 4
+  },
+  {
+    "line_number": 49,
+    "formula": "~E v ~(B . ((B > ((D v C) . C)) . (E > ((~D . ~C) v ~C))))",
+    "justification": "Add 48",
+    "depth": 4
+  },
+  {
+    "line_number": 50,
+    "formula": "~(B . ((B > ((D v C) . C)) . (E > ((~D . ~C) v ~C)))) v ~E",
+    "justification": "Comm 49",
+    "depth": 4
+  },
+  {
+    "line_number": 51,
+    "formula": "(B . ((B > ((D v C) . C)) . (E > ((~D . ~C) v ~C)))) > ~E",
+    "justification": "Impl 50",
+    "depth": 4
+  },
+  {
+    "line_number": 52,
+    "formula": "~E > ((B . ((B > ((D v C) . C)) . (E > ((~D . ~C) v ~C)))) > ~E)",
+    "justification": "CP 48-51",
+    "depth": 3
+  },
+  {
+    "line_number": 53,
+    "formula": "((B . ((B > ((D v C) . C)) . (E > ((~D . ~C) v ~C)))) > ~E) v ((B . ((B > ((D v C) . C)) . (E > ((~D . ~C) v ~C)))) > ~E)",
+    "justification": "CD 24,47,52",
+    "depth": 3
+  },
+  {
+    "line_number": 54,
+    "formula": "(B . ((B > ((D v C) . C)) . (E > ((~D . ~C) v ~C)))) > ~E",
+    "justification": "Taut 53",
+    "depth": 3
+  },
+  {
+    "line_number": 55,
+    "formula": "D > ((B . ((B > ((D v C) . C)) . (E > ((~D . ~C) v ~C)))) > ~E)",
+    "justification": "CP 27-54",
+    "depth": 2
+  },
+  {
+    "line_number": 56,
+    "formula": "~D",
+    "justification": "Assumption (CP)",
+    "depth": 3
+  },
+  {
+    "line_number": 57,
+    "formula": "E",
+    "justification": "Assumption (CP)",
+    "depth": 4
+  },
+  {
+    "line_number": 58,
+    "formula": "~~C",
+    "justification": "DN 26",
+    "depth": 4
+  },
+  {
+    "line_number": 59,
+    "formula": "~~C v ~~D",
+    "justification": "Add 58",
+    "depth": 4
+  },
+  {
+    "line_number": 60,
+    "formula": "~~D v ~~C",
+    "justification": "Comm 59",
+    "depth": 4
+  },
+  {
+    "line_number": 61,
+    "formula": "~(~D . ~C)",
+    "justification": "DeM 60",
+    "depth": 4
+  },
+  {
+    "line_number": 62,
+    "formula": "~(~D . ~C) . ~~C",
+    "justification": "Conj 61,58",
+    "depth": 4
+  },
+  {
+    "line_number": 63,
+    "formula": "~((~D . ~C) v ~C)",
+    "justification": "DeM 62",
+    "depth": 4
+  },
+  {
+    "line_number": 64,
+    "formula": "E > ((~D . ~C) v ~C)",
+    "justification": "Assumption (IP)",
+    "depth": 5
+  },
+  {
+    "line_number": 65,
+    "formula": "(~D . ~C) v ~C",
+    "justification": "MP 57,64",
+    "depth": 5
+  },
+  {
+    "line_number": 66,
+    "formula": "((~D . ~C) v ~C) . ~((~D . ~C) v ~C)",
+    "justification": "Conj 65,63",
+    "depth": 5
+  },
+  {
+    "line_number": 67,
+    "formula": "~(E > ((~D . ~C) v ~C))",
+    "justification": "IP 64-66",
+    "depth": 4
+  },
+  {
+    "line_number": 68,
+    "formula": "~(E > ((~D . ~C) v ~C)) v ~(B > ((D v C) . C))",
+    "justification": "Add 67",
+    "depth": 4
+  },
+  {
+    "line_number": 69,
+    "formula": "~(B > ((D v C) . C)) v ~(E > ((~D . ~C) v ~C))",
+    "justification": "Comm 68",
+    "depth": 4
+  },
+  {
+    "line_number": 70,
+    "formula": "~((B > ((D v C) . C)) . (E > ((~D . ~C) v ~C)))",
+    "justification": "DeM 69",
+    "depth": 4
+  },
+  {
+    "line_number": 71,
+    "formula": "~((B > ((D v C) . C)) . (E > ((~D . ~C) v ~C))) v ~B",
+    "justification": "Add 70",
+    "depth": 4
+  },
+  {
+    "line_number": 72,
+    "formula": "~B v ~((B > ((D v C) . C)) . (E > ((~D . ~C) v ~C)))",
+    "justification": "Comm 71",
+    "depth": 4
+  },
+  {
+    "line_number": 73,
+    "formula": "~(B . ((B > ((D v C) . C)) . (E > ((~D . ~C) v ~C))))",
+    "justification": "DeM 72",
+    "depth": 4
+  },
+  {
+    "line_number": 74,
+    "formula": "~(B . ((B > ((D v C) . C)) . (E > ((~D . ~C) v ~C)))) v ~E",
+    "justification": "Add 73",
+    "depth": 4
+  },
+  {
+    "line_number": 75,
+    "formula": "(B . ((B > ((D v C) . C)) . (E > ((~D . ~C) v ~C)))) > ~E",
+    "justification": "Impl 74",
+    "depth": 4
+  },
+  {
+    "line_number": 76,
+    "formula": "E > ((B . ((B > ((D v C) . C)) . (E > ((~D . ~C) v ~C)))) > ~E)",
+    "justification": "CP 57-75",
+    "depth": 3
+  },
+  {
+    "line_number": 77,
+    "formula": "~E",
+    "justification": "Assumption (CP)",
+    "depth": 4
+  },
+  {
+    "line_number": 78,
+    "formula": "~E v ~(B . ((B > ((D v C) . C)) . (E > ((~D . ~C) v ~C))))",
+    "justification": "Add 77",
+    "depth": 4
+  },
+  {
+    "line_number": 79,
+    "formula": "~(B . ((B > ((D v C) . C)) . (E > ((~D . ~C) v ~C)))) v ~E",
+    "justification": "Comm 78",
+    "depth": 4
+  },
+  {
+    "line_number": 80,
+    "formula": "(B . ((B > ((D v C) . C)) . (E > ((~D . ~C) v ~C)))) > ~E",
+    "justification": "Impl 79",
+    "depth": 4
+  },
+  {
+    "line_number": 81,
+    "formula": "~E > ((B . ((B > ((D v C) . C)) . (E > ((~D . ~C) v ~C)))) > ~E)",
+    "justification": "CP 77-80",
+    "depth": 3
+  },
+  {
+    "line_number": 82,
+    "formula": "((B . ((B > ((D v C) . C)) . (E > ((~D . ~C) v ~C)))) > ~E) v ((B . ((B > ((D v C) . C)) . (E > ((~D . ~C) v ~C)))) > ~E)",
+    "justification": "CD 24,76,81",
+    "depth": 3
+  },
+  {
+    "line_number": 83,
+    "formula": "(B . ((B > ((D v C) . C)) . (E > ((~D . ~C) v ~C)))) > ~E",
+    "justification": "Taut 82",
+    "depth": 3
+  },
+  {
+    "line_number": 84,
+    "formula": "~D > ((B . ((B > ((D v C) . C)) . (E > ((~D . ~C) v ~C)))) > ~E)",
+    "justification": "CP 56-83",
+    "depth": 2
+  },
+  {
+    "line_number": 85,
+    "formula": "((B . ((B > ((D v C) . C)) . (E > ((~D . ~C) v ~C)))) > ~E) v ((B . ((B > ((D v C) . C)) . (E > ((~D . ~C) v ~C)))) > ~E)",
+    "justification": "CD 18,55,84",
+    "depth": 2
+  },
+  {
+    "line_number": 86,
+    "formula": "(B . ((B > ((D v C) . C)) . (E > ((~D . ~C) v ~C)))) > ~E",
+    "justification": "Taut 85",
+    "depth": 2
+  },
+  {
+    "line_number": 87,
+    "formula": "C > ((B . ((B > ((D v C) . C)) . (E > ((~D . ~C) v ~C)))) > ~E)",
+    "justification": "CP 26-86",
+    "depth": 1
+  },
+  {
+    "line_number": 88,
+    "formula": "~C",
+    "justification": "Assumption (CP)",
+    "depth": 2
+  },
+  {
+    "line_number": 89,
+    "formula": "D",
+    "justification": "Assumption (CP)",
+    "depth": 3
+  },
+  {
+    "line_number": 90,
+    "formula": "E",
+    "justification": "Assumption (CP)",
+    "depth": 4
+  },
+  {
+    "line_number": 91,
+    "formula": "~C v ~(D v C)",
+    "justification": "Add 88",
+    "depth": 4
+  },
+  {
+    "line_number": 92,
+    "formula": "~(D v C) v ~C",
+    "justification": "Comm 91",
+    "depth": 4
+  },
+  {
+    "line_number": 93,
+    "formula": "~((D v C) . C)",
+    "justification": "DeM 92",
+    "depth": 4
+  },
+  {
+    "line_number": 94,
+    "formula": "B > ((D v C) . C)",
+    "justification": "Assumption (IP)",
+    "depth": 5
+  },
+  {
+    "line_number": 95,
+    "formula": "(D v C) . C",
+    "justification": "MP 25,94",
+    "depth": 5
+  },
+  {
+    "line_number": 96,
+    "formula": "((D v C) . C) . ~((D v C) . C)",
+    "justification": "Conj 95,93",
+    "depth": 5
+  },
+  {
+    "line_number": 97,
+    "formula": "~(B > ((D v C) . C))",
+    "justification": "IP 94-96",
+    "depth": 4
+  },
+  {
+    "line_number": 98,
+    "formula": "~(B > ((D v C) . C)) v ~(E > ((~D . ~C) v ~C))",
+    "justification": "Add 97",
+    "depth": 4
+  },
+  {
+    "line_number": 99,
+    "formula": "~((B > ((D v C) . C)) . (E > ((~D . ~C) v ~C)))",
+    "justification": "DeM 98",
+    "depth": 4
+  },
+  {
+    "line_number": 100,
+    "formula": "~((B > ((D v C) . C)) . (E > ((~D . ~C) v ~C))) v ~B",
+    "justification": "Add 99",
+    "depth": 4
+  },
+  {
+    "line_number": 101,
+    "formula": "~B v ~((B > ((D v C) . C)) . (E > ((~D . ~C) v ~C)))",
+    "justification": "Comm 100",
+    "depth": 4
+  },
+  {
+    "line_number": 102,
+    "formula": "~(B . ((B > ((D v C) . C)) . (E > ((~D . ~C) v ~C))))",
+    "justification": "DeM 101",
+    "depth": 4
+  },
+  {
+    "line_number": 103,
+    "formula": "~(B . ((B > ((D v C) . C)) . (E > ((~D . ~C) v ~C)))) v ~E",
+    "justification": "Add 102",
+    "depth": 4
+  },
+  {
+    "line_number": 104,
+    "formula": "(B . ((B > ((D v C) . C)) . (E > ((~D . ~C) v ~C)))) > ~E",
+    "justification": "Impl 103",
+    "depth": 4
+  },
+  {
+    "line_number": 105,
+    "formula": "E > ((B . ((B > ((D v C) . C)) . (E > ((~D . ~C) v ~C)))) > ~E)",
+    "justification": "CP 90-104",
+    "depth": 3
+  },
+  {
+    "line_number": 106,
+    "formula": "~E",
+    "justification": "Assumption (CP)",
+    "depth": 4
+  },
+  {
+    "line_number": 107,
+    "formula": "~C v ~(D v C)",
+    "justification": "Add 88",
+    "depth": 4
+  },
+  {
+    "line_number": 108,
+    "formula": "~(D v C) v ~C",
+    "justification": "Comm 107",
+    "depth": 4
+  },
+  {
+    "line_number": 109,
+    "formula": "~((D v C) . C)",
+    "justification": "DeM 108",
+    "depth": 4
+  },
+  {
+    "line_number": 110,
+    "formula": "B > ((D v C) . C)",
+    "justification": "Assumption (IP)",
+    "depth": 5
+  },
+  {
+    "line_number": 111,
+    "formula": "(D v C) . C",
+    "justification": "MP 25,110",
+    "depth": 5
+  },
+  {
+    "line_number": 112,
+    "formula": "((D v C) . C) . ~((D v C) . C)",
+    "justification": "Conj 111,109",
+    "depth": 5
+  },
+  {
+    "line_number": 113,
+    "formula": "~(B > ((D v C) . C))",
+    "justification": "IP 110-112",
+    "depth": 4
+  },
+  {
+    "line_number": 114,
+    "formula": "~(B > ((D v C) . C)) v ~(E > ((~D . ~C) v ~C))",
+    "justification": "Add 113",
+    "depth": 4
+  },
+  {
+    "line_number": 115,
+    "formula": "~((B > ((D v C) . C)) . (E > ((~D . ~C) v ~C)))",
+    "justification": "DeM 114",
+    "depth": 4
+  },
+  {
+    "line_number": 116,
+    "formula": "~((B > ((D v C) . C)) . (E > ((~D . ~C) v ~C))) v ~B",
+    "justification": "Add 115",
+    "depth": 4
+  },
+  {
+    "line_number": 117,
+    "formula": "~B v ~((B > ((D v C) . C)) . (E > ((~D . ~C) v ~C)))",
+    "justification": "Comm 116",
+    "depth": 4
+  },
+  {
+    "line_number": 118,
+    "formula": "~(B . ((B > ((D v C) . C)) . (E > ((~D . ~C) v ~C))))",
+    "justification": "DeM 117",
+    "depth": 4
+  },
+  {
+    "line_number": 119,
+    "formula": "~(B . ((B > ((D v C) . C)) . (E > ((~D . ~C) v ~C)))) v ~E",
+    "justification": "Add 118",
+    "depth": 4
+  },
+  {
+    "line_number": 120,
+    "formula": "(B . ((B > ((D v C) . C)) . (E > ((~D . ~C) v ~C)))) > ~E",
+    "justification": "Impl 119",
+    "depth": 4
+  },
+  {
+    "line_number": 121,
+    "formula": "~E > ((B . ((B > ((D v C) . C)) . (E > ((~D . ~C) v ~C)))) > ~E)",
+    "justification": "CP 106-120",
+    "depth": 3
+  },
+  {
+    "line_number": 122,
+    "formula": "((B . ((B > ((D v C) . C)) . (E > ((~D . ~C) v ~C)))) > ~E) v ((B . ((B > ((D v C) . C)) . (E > ((~D . ~C) v ~C)))) > ~E)",
+    "justification": "CD 24,105,121",
+    "depth": 3
+  },
+  {
+    "line_number": 123,
+    "formula": "(B . ((B > ((D v C) . C)) . (E > ((~D . ~C) v ~C)))) > ~E",
+    "justification": "Taut 122",
+    "depth": 3
+  },
+  {
+    "line_number": 124,
+    "formula": "D > ((B . ((B > ((D v C) . C)) . (E > ((~D . ~C) v ~C)))) > ~E)",
+    "justification": "CP 89-123",
+    "depth": 2
+  },
+  {
+    "line_number": 125,
+    "formula": "~D",
+    "justification": "Assumption (CP)",
+    "depth": 3
+  },
+  {
+    "line_number": 126,
+    "formula": "E",
+    "justification": "Assumption (CP)",
+    "depth": 4
+  },
+  {
+    "line_number": 127,
+    "formula": "~D . ~C",
+    "justification": "Conj 125,88",
+    "depth": 4
+  },
+  {
+    "line_number": 128,
+    "formula": "~(D v C)",
+    "justification": "DeM 127",
+    "depth": 4
+  },
+  {
+    "line_number": 129,
+    "formula": "~(D v C) v ~C",
+    "justification": "Add 128",
+    "depth": 4
+  },
+  {
+    "line_number": 130,
+    "formula": "~((D v C) . C)",
+    "justification": "DeM 129",
+    "depth": 4
+  },
+  {
+    "line_number": 131,
+    "formula": "B > ((D v C) . C)",
+    "justification": "Assumption (IP)",
+    "depth": 5
+  },
+  {
+    "line_number": 132,
+    "formula": "(D v C) . C",
+    "justification": "MP 25,131",
+    "depth": 5
+  },
+  {
+    "line_number": 133,
+    "formula": "((D v C) . C) . ~((D v C) . C)",
+    "justification": "Conj 132,130",
+    "depth": 5
+  },
+  {
+    "line_number": 134,
+    "formula": "~(B > ((D v C) . C))",
+    "justification": "IP 131-133",
+    "depth": 4
+  },
+  {
+    "line_number": 135,
+    "formula": "~(B > ((D v C) . C)) v ~(E > ((~D . ~C) v ~C))",
+    "justification": "Add 134",
+    "depth": 4
+  },
+  {
+    "line_number": 136,
+    "formula": "~((B > ((D v C) . C)) . (E > ((~D . ~C) v ~C)))",
+    "justification": "DeM 135",
+    "depth": 4
+  },
+  {
+    "line_number": 137,
+    "formula": "~((B > ((D v C) . C)) . (E > ((~D . ~C) v ~C))) v ~B",
+    "justification": "Add 136",
+    "depth": 4
+  },
+  {
+    "line_number": 138,
+    "formula": "~B v ~((B > ((D v C) . C)) . (E > ((~D . ~C) v ~C)))",
+    "justification": "Comm 137",
+    "depth": 4
+  },
+  {
+    "line_number": 139,
+    "formula": "~(B . ((B > ((D v C) . C)) . (E > ((~D . ~C) v ~C))))",
+    "justification": "DeM 138",
+    "depth": 4
+  },
+  {
+    "line_number": 140,
+    "formula": "~(B . ((B > ((D v C) . C)) . (E > ((~D . ~C) v ~C)))) v ~E",
+    "justification": "Add 139",
+    "depth": 4
+  },
+  {
+    "line_number": 141,
+    "formula": "(B . ((B > ((D v C) . C)) . (E > ((~D . ~C) v ~C)))) > ~E",
+    "justification": "Impl 140",
+    "depth": 4
+  },
+  {
+    "line_number": 142,
+    "formula": "E > ((B . ((B > ((D v C) . C)) . (E > ((~D . ~C) v ~C)))) > ~E)",
+    "justification": "CP 126-141",
+    "depth": 3
+  },
+  {
+    "line_number": 143,
+    "formula": "~E",
+    "justification": "Assumption (CP)",
+    "depth": 4
+  },
+  {
+    "line_number": 144,
+    "formula": "~D . ~C",
+    "justification": "Conj 125,88",
+    "depth": 4
+  },
+  {
+    "line_number": 145,
+    "formula": "~(D v C)",
+    "justification": "DeM 144",
+    "depth": 4
+  },
+  {
+    "line_number": 146,
+    "formula": "~(D v C) v ~C",
+    "justification": "Add 145",
+    "depth": 4
+  },
+  {
+    "line_number": 147,
+    "formula": "~((D v C) . C)",
+    "justification": "DeM 146",
+    "depth": 4
+  },
+  {
+    "line_number": 148,
+    "formula": "B > ((D v C) . C)",
+    "justification": "Assumption (IP)",
+    "depth": 5
+  },
+  {
+    "line_number": 149,
+    "formula": "(D v C) . C",
+    "justification": "MP 25,148",
+    "depth": 5
+  },
+  {
+    "line_number": 150,
+    "formula": "((D v C) . C) . ~((D v C) . C)",
+    "justification": "Conj 149,147",
+    "depth": 5
+  },
+  {
+    "line_number": 151,
+    "formula": "~(B > ((D v C) . C))",
+    "justification": "IP 148-150",
+    "depth": 4
+  },
+  {
+    "line_number": 152,
+    "formula": "~(B > ((D v C) . C)) v ~(E > ((~D . ~C) v ~C))",
+    "justification": "Add 151",
+    "depth": 4
+  },
+  {
+    "line_number": 153,
+    "formula": "~((B > ((D v C) . C)) . (E > ((~D . ~C) v ~C)))",
+    "justification": "DeM 152",
+    "depth": 4
+  },
+  {
+    "line_number": 154,
+    "formula": "~((B > ((D v C) . C)) . (E > ((~D . ~C) v ~C))) v ~B",
+    "justification": "Add 153",
+    "depth": 4
+  },
+  {
+    "line_number": 155,
+    "formula": "~B v ~((B > ((D v C) . C)) . (E > ((~D . ~C) v ~C)))",
+    "justification": "Comm 154",
+    "depth": 4
+  },
+  {
+    "line_number": 156,
+    "formula": "~(B . ((B > ((D v C) . C)) . (E > ((~D . ~C) v ~C))))",
+    "justification": "DeM 155",
+    "depth": 4
+  },
+  {
+    "line_number": 157,
+    "formula": "~(B . ((B > ((D v C) . C)) . (E > ((~D . ~C) v ~C)))) v ~E",
+    "justification": "Add 156",
+    "depth": 4
+  },
+  {
+    "line_number": 158,
+    "formula": "(B . ((B > ((D v C) . C)) . (E > ((~D . ~C) v ~C)))) > ~E",
+    "justification": "Impl 157",
+    "depth": 4
+  },
+  {
+    "line_number": 159,
+    "formula": "~E > ((B . ((B > ((D v C) . C)) . (E > ((~D . ~C) v ~C)))) > ~E)",
+    "justification": "CP 143-158",
+    "depth": 3
+  },
+  {
+    "line_number": 160,
+    "formula": "((B . ((B > ((D v C) . C)) . (E > ((~D . ~C) v ~C)))) > ~E) v ((B . ((B > ((D v C) . C)) . (E > ((~D . ~C) v ~C)))) > ~E)",
+    "justification": "CD 24,142,159",
+    "depth": 3
+  },
+  {
+    "line_number": 161,
+    "formula": "(B . ((B > ((D v C) . C)) . (E > ((~D . ~C) v ~C)))) > ~E",
+    "justification": "Taut 160",
+    "depth": 3
+  },
+  {
+    "line_number": 162,
+    "formula": "~D > ((B . ((B > ((D v C) . C)) . (E > ((~D . ~C) v ~C)))) > ~E)",
+    "justification": "CP 125-161",
+    "depth": 2
+  },
+  {
+    "line_number": 163,
+    "formula": "((B . ((B > ((D v C) . C)) . (E > ((~D . ~C) v ~C)))) > ~E) v ((B . ((B > ((D v C) . C)) . (E > ((~D . ~C) v ~C)))) > ~E)",
+    "justification": "CD 18,124,162",
+    "depth": 2
+  },
+  {
+    "line_number": 164,
+    "formula": "(B . ((B > ((D v C) . C)) . (E > ((~D . ~C) v ~C)))) > ~E",
+    "justification": "Taut 163",
+    "depth": 2
+  },
+  {
+    "line_number": 165,
+    "formula": "~C > ((B . ((B > ((D v C) . C)) . (E > ((~D . ~C) v ~C)))) > ~E)",
+    "justification": "CP 88-164",
+    "depth": 1
+  },
+  {
+    "line_number": 166,
+    "formula": "((B . ((B > ((D v C) . C)) . (E > ((~D . ~C) v ~C)))) > ~E) v ((B . ((B > ((D v C) . C)) . (E > ((~D . ~C) v ~C)))) > ~E)",
+    "justification": "CD 12,87,165",
+    "depth": 1
+  },
+  {
+    "line_number": 167,
+    "formula": "(B . ((B > ((D v C) . C)) . (E > ((~D . ~C) v ~C)))) > ~E",
+    "justification": "Taut 166",
+    "depth": 1
+  },
+  {
+    "line_number": 168,
+    "formula": "B > ((B . ((B > ((D v C) . C)) . (E > ((~D . ~C) v ~C)))) > ~E)",
+    "justification": "CP 25-167",
+    "depth": 0
+  },
+  {
+    "line_number": 169,
+    "formula": "~B",
+    "justification": "Assumption (CP)",
+    "depth": 1
+  },
+  {
+    "line_number": 170,
+    "formula": "C",
+    "justification": "Assumption (CP)",
+    "depth": 2
+  },
+  {
+    "line_number": 171,
+    "formula": "D",
+    "justification": "Assumption (CP)",
+    "depth": 3
+  },
+  {
+    "line_number": 172,
+    "formula": "E",
+    "justification": "Assumption (CP)",
+    "depth": 4
+  },
+  {
+    "line_number": 173,
+    "formula": "~B v ~((B > ((D v C) . C)) . (E > ((~D . ~C) v ~C)))",
+    "justification": "Add 169",
+    "depth": 4
+  },
+  {
+    "line_number": 174,
+    "formula": "~(B . ((B > ((D v C) . C)) . (E > ((~D . ~C) v ~C))))",
+    "justification": "DeM 173",
+    "depth": 4
+  },
+  {
+    "line_number": 175,
+    "formula": "~(B . ((B > ((D v C) . C)) . (E > ((~D . ~C) v ~C)))) v ~E",
+    "justification": "Add 174",
+    "depth": 4
+  },
+  {
+    "line_number": 176,
+    "formula": "(B . ((B > ((D v C) . C)) . (E > ((~D . ~C) v ~C)))) > ~E",
+    "justification": "Impl 175",
+    "depth": 4
+  },
+  {
+    "line_number": 177,
+    "formula": "E > ((B . ((B > ((D v C) . C)) . (E > ((~D . ~C) v ~C)))) > ~E)",
+    "justification": "CP 172-176",
+    "depth": 3
+  },
+  {
+    "line_number": 178,
+    "formula": "~E",
+    "justification": "Assumption (CP)",
+    "depth": 4
+  },
+  {
+    "line_number": 179,
+    "formula": "~B v ~((B > ((D v C) . C)) . (E > ((~D . ~C) v ~C)))",
+    "justification": "Add 169",
+    "depth": 4
+  },
+  {
+    "line_number": 180,
+    "formula": "~(B . ((B > ((D v C) . C)) . (E > ((~D . ~C) v ~C))))",
+    "justification": "DeM 179",
+    "depth": 4
+  },
+  {
+    "line_number": 181,
+    "formula": "~(B . ((B > ((D v C) . C)) . (E > ((~D . ~C) v ~C)))) v ~E",
+    "justification": "Add 180",
+    "depth": 4
+  },
+  {
+    "line_number": 182,
+    "formula": "(B . ((B > ((D v C) . C)) . (E > ((~D . ~C) v ~C)))) > ~E",
+    "justification": "Impl 181",
+    "depth": 4
+  },
+  {
+    "line_number": 183,
+    "formula": "~E > ((B . ((B > ((D v C) . C)) . (E > ((~D . ~C) v ~C)))) > ~E)",
+    "justification": "CP 178-182",
+    "depth": 3
+  },
+  {
+    "line_number": 184,
+    "formula": "((B . ((B > ((D v C) . C)) . (E > ((~D . ~C) v ~C)))) > ~E) v ((B . ((B > ((D v C) . C)) . (E > ((~D . ~C) v ~C)))) > ~E)",
+    "justification": "CD 24,177,183",
+    "depth": 3
+  },
+  {
+    "line_number": 185,
+    "formula": "(B . ((B > ((D v C) . C)) . (E > ((~D . ~C) v ~C)))) > ~E",
+    "justification": "Taut 184",
+    "depth": 3
+  },
+  {
+    "line_number": 186,
+    "formula": "D > ((B . ((B > ((D v C) . C)) . (E > ((~D . ~C) v ~C)))) > ~E)",
+    "justification": "CP 171-185",
+    "depth": 2
+  },
+  {
+    "line_number": 187,
+    "formula": "~D",
+    "justification": "Assumption (CP)",
+    "depth": 3
+  },
+  {
+    "line_number": 188,
+    "formula": "E",
+    "justification": "Assumption (CP)",
+    "depth": 4
+  },
+  {
+    "line_number": 189,
+    "formula": "~B v ~((B > ((D v C) . C)) . (E > ((~D . ~C) v ~C)))",
+    "justification": "Add 169",
+    "depth": 4
+  },
+  {
+    "line_number": 190,
+    "formula": "~(B . ((B > ((D v C) . C)) . (E > ((~D . ~C) v ~C))))",
+    "justification": "DeM 189",
+    "depth": 4
+  },
+  {
+    "line_number": 191,
+    "formula": "~(B . ((B > ((D v C) . C)) . (E > ((~D . ~C) v ~C)))) v ~E",
+    "justification": "Add 190",
+    "depth": 4
+  },
+  {
+    "line_number": 192,
+    "formula": "(B . ((B > ((D v C) . C)) . (E > ((~D . ~C) v ~C)))) > ~E",
+    "justification": "Impl 191",
+    "depth": 4
+  },
+  {
+    "line_number": 193,
+    "formula": "E > ((B . ((B > ((D v C) . C)) . (E > ((~D . ~C) v ~C)))) > ~E)",
+    "justification": "CP 188-192",
+    "depth": 3
+  },
+  {
+    "line_number": 194,
+    "formula": "~E",
+    "justification": "Assumption (CP)",
+    "depth": 4
+  },
+  {
+    "line_number": 195,
+    "formula": "~B v ~((B > ((D v C) . C)) . (E > ((~D . ~C) v ~C)))",
+    "justification": "Add 169",
+    "depth": 4
+  },
+  {
+    "line_number": 196,
+    "formula": "~(B . ((B > ((D v C) . C)) . (E > ((~D . ~C) v ~C))))",
+    "justification": "DeM 195",
+    "depth": 4
+  },
+  {
+    "line_number": 197,
+    "formula": "~(B . ((B > ((D v C) . C)) . (E > ((~D . ~C) v ~C)))) v ~E",
+    "justification": "Add 196",
+    "depth": 4
+  },
+  {
+    "line_number": 198,
+    "formula": "(B . ((B > ((D v C) . C)) . (E > ((~D . ~C) v ~C)))) > ~E",
+    "justification": "Impl 197",
+    "depth": 4
+  },
+  {
+    "line_number": 199,
+    "formula": "~E > ((B . ((B > ((D v C) . C)) . (E > ((~D . ~C) v ~C)))) > ~E)",
+    "justification": "CP 194-198",
+    "depth": 3
+  },
+  {
+    "line_number": 200,
+    "formula": "((B . ((B > ((D v C) . C)) . (E > ((~D . ~C) v ~C)))) > ~E) v ((B . ((B > ((D v C) . C)) . (E > ((~D . ~C) v ~C)))) > ~E)",
+    "justification": "CD 24,193,199",
+    "depth": 3
+  },
+  {
+    "line_number": 201,
+    "formula": "(B . ((B > ((D v C) . C)) . (E > ((~D . ~C) v ~C)))) > ~E",
+    "justification": "Taut 200",
+    "depth": 3
+  },
+  {
+    "line_number": 202,
+    "formula": "~D > ((B . ((B > ((D v C) . C)) . (E > ((~D . ~C) v ~C)))) > ~E)",
+    "justification": "CP 187-201",
+    "depth": 2
+  },
+  {
+    "line_number": 203,
+    "formula": "((B . ((B > ((D v C) . C)) . (E > ((~D . ~C) v ~C)))) > ~E) v ((B . ((B > ((D v C) . C)) . (E > ((~D . ~C) v ~C)))) > ~E)",
+    "justification": "CD 18,186,202",
+    "depth": 2
+  },
+  {
+    "line_number": 204,
+    "formula": "(B . ((B > ((D v C) . C)) . (E > ((~D . ~C) v ~C)))) > ~E",
+    "justification": "Taut 203",
+    "depth": 2
+  },
+  {
+    "line_number": 205,
+    "formula": "C > ((B . ((B > ((D v C) . C)) . (E > ((~D . ~C) v ~C)))) > ~E)",
+    "justification": "CP 170-204",
+    "depth": 1
+  },
+  {
+    "line_number": 206,
+    "formula": "~C",
+    "justification": "Assumption (CP)",
+    "depth": 2
+  },
+  {
+    "line_number": 207,
+    "formula": "D",
+    "justification": "Assumption (CP)",
+    "depth": 3
+  },
+  {
+    "line_number": 208,
+    "formula": "E",
+    "justification": "Assumption (CP)",
+    "depth": 4
+  },
+  {
+    "line_number": 209,
+    "formula": "~B v ~((B > ((D v C) . C)) . (E > ((~D . ~C) v ~C)))",
+    "justification": "Add 169",
+    "depth": 4
+  },
+  {
+    "line_number": 210,
+    "formula": "~(B . ((B > ((D v C) . C)) . (E > ((~D . ~C) v ~C))))",
+    "justification": "DeM 209",
+    "depth": 4
+  },
+  {
+    "line_number": 211,
+    "formula": "~(B . ((B > ((D v C) . C)) . (E > ((~D . ~C) v ~C)))) v ~E",
+    "justification": "Add 210",
+    "depth": 4
+  },
+  {
+    "line_number": 212,
+    "formula": "(B . ((B > ((D v C) . C)) . (E > ((~D . ~C) v ~C)))) > ~E",
+    "justification": "Impl 211",
+    "depth": 4
+  },
+  {
+    "line_number": 213,
+    "formula": "E > ((B . ((B > ((D v C) . C)) . (E > ((~D . ~C) v ~C)))) > ~E)",
+    "justification": "CP 208-212",
+    "depth": 3
+  },
+  {
+    "line_number": 214,
+    "formula": "~E",
+    "justification": "Assumption (CP)",
+    "depth": 4
+  },
+  {
+    "line_number": 215,
+    "formula": "~B v ~((B > ((D v C) . C)) . (E > ((~D . ~C) v ~C)))",
+    "justification": "Add 169",
+    "depth": 4
+  },
+  {
+    "line_number": 216,
+    "formula": "~(B . ((B > ((D v C) . C)) . (E > ((~D . ~C) v ~C))))",
+    "justification": "DeM 215",
+    "depth": 4
+  },
+  {
+    "line_number": 217,
+    "formula": "~(B . ((B > ((D v C) . C)) . (E > ((~D . ~C) v ~C)))) v ~E",
+    "justification": "Add 216",
+    "depth": 4
+  },
+  {
+    "line_number": 218,
+    "formula": "(B . ((B > ((D v C) . C)) . (E > ((~D . ~C) v ~C)))) > ~E",
+    "justification": "Impl 217",
+    "depth": 4
+  },
+  {
+    "line_number": 219,
+    "formula": "~E > ((B . ((B > ((D v C) . C)) . (E > ((~D . ~C) v ~C)))) > ~E)",
+    "justification": "CP 214-218",
+    "depth": 3
+  },
+  {
+    "line_number": 220,
+    "formula": "((B . ((B > ((D v C) . C)) . (E > ((~D . ~C) v ~C)))) > ~E) v ((B . ((B > ((D v C) . C)) . (E > ((~D . ~C) v ~C)))) > ~E)",
+    "justification": "CD 24,213,219",
+    "depth": 3
+  },
+  {
+    "line_number": 221,
+    "formula": "(B . ((B > ((D v C) . C)) . (E > ((~D . ~C) v ~C)))) > ~E",
+    "justification": "Taut 220",
+    "depth": 3
+  },
+  {
+    "line_number": 222,
+    "formula": "D > ((B . ((B > ((D v C) . C)) . (E > ((~D . ~C) v ~C)))) > ~E)",
+    "justification": "CP 207-221",
+    "depth": 2
+  },
+  {
+    "line_number": 223,
+    "formula": "~D",
+    "justification": "Assumption (CP)",
+    "depth": 3
+  },
+  {
+    "line_number": 224,
+    "formula": "E",
+    "justification": "Assumption (CP)",
+    "depth": 4
+  },
+  {
+    "line_number": 225,
+    "formula": "~B v ~((B > ((D v C) . C)) . (E > ((~D . ~C) v ~C)))",
+    "justification": "Add 169",
+    "depth": 4
+  },
+  {
+    "line_number": 226,
+    "formula": "~(B . ((B > ((D v C) . C)) . (E > ((~D . ~C) v ~C))))",
+    "justification": "DeM 225",
+    "depth": 4
+  },
+  {
+    "line_number": 227,
+    "formula": "~(B . ((B > ((D v C) . C)) . (E > ((~D . ~C) v ~C)))) v ~E",
+    "justification": "Add 226",
+    "depth": 4
+  },
+  {
+    "line_number": 228,
+    "formula": "(B . ((B > ((D v C) . C)) . (E > ((~D . ~C) v ~C)))) > ~E",
+    "justification": "Impl 227",
+    "depth": 4
+  },
+  {
+    "line_number": 229,
+    "formula": "E > ((B . ((B > ((D v C) . C)) . (E > ((~D . ~C) v ~C)))) > ~E)",
+    "justification": "CP 224-228",
+    "depth": 3
+  },
+  {
+    "line_number": 230,
+    "formula": "~E",
+    "justification": "Assumption (CP)",
+    "depth": 4
+  },
+  {
+    "line_number": 231,
+    "formula": "~B v ~((B > ((D v C) . C)) . (E > ((~D . ~C) v ~C)))",
+    "justification": "Add 169",
+    "depth": 4
+  },
+  {
+    "line_number": 232,
+    "formula": "~(B . ((B > ((D v C) . C)) . (E > ((~D . ~C) v ~C))))",
+    "justification": "DeM 231",
+    "depth": 4
+  },
+  {
+    "line_number": 233,
+    "formula": "~(B . ((B > ((D v C) . C)) . (E > ((~D . ~C) v ~C)))) v ~E",
+    "justification": "Add 232",
+    "depth": 4
+  },
+  {
+    "line_number": 234,
+    "formula": "(B . ((B > ((D v C) . C)) . (E > ((~D . ~C) v ~C)))) > ~E",
+    "justification": "Impl 233",
+    "depth": 4
+  },
+  {
+    "line_number": 235,
+    "formula": "~E > ((B . ((B > ((D v C) . C)) . (E > ((~D . ~C) v ~C)))) > ~E)",
+    "justification": "CP 230-234",
+    "depth": 3
+  },
+  {
+    "line_number": 236,
+    "formula": "((B . ((B > ((D v C) . C)) . (E > ((~D . ~C) v ~C)))) > ~E) v ((B . ((B > ((D v C) . C)) . (E > ((~D . ~C) v ~C)))) > ~E)",
+    "justification": "CD 24,229,235",
+    "depth": 3
+  },
+  {
+    "line_number": 237,
+    "formula": "(B . ((B > ((D v C) . C)) . (E > ((~D . ~C) v ~C)))) > ~E",
+    "justification": "Taut 236",
+    "depth": 3
+  },
+  {
+    "line_number": 238,
+    "formula": "~D > ((B . ((B > ((D v C) . C)) . (E > ((~D . ~C) v ~C)))) > ~E)",
+    "justification": "CP 223-237",
+    "depth": 2
+  },
+  {
+    "line_number": 239,
+    "formula": "((B . ((B > ((D v C) . C)) . (E > ((~D . ~C) v ~C)))) > ~E) v ((B . ((B > ((D v C) . C)) . (E > ((~D . ~C) v ~C)))) > ~E)",
+    "justification": "CD 18,222,238",
+    "depth": 2
+  },
+  {
+    "line_number": 240,
+    "formula": "(B . ((B > ((D v C) . C)) . (E > ((~D . ~C) v ~C)))) > ~E",
+    "justification": "Taut 239",
+    "depth": 2
+  },
+  {
+    "line_number": 241,
+    "formula": "~C > ((B . ((B > ((D v C) . C)) . (E > ((~D . ~C) v ~C)))) > ~E)",
+    "justification": "CP 206-240",
+    "depth": 1
+  },
+  {
+    "line_number": 242,
+    "formula": "((B . ((B > ((D v C) . C)) . (E > ((~D . ~C) v ~C)))) > ~E) v ((B . ((B > ((D v C) . C)) . (E > ((~D . ~C) v ~C)))) > ~E)",
+    "justification": "CD 12,205,241",
+    "depth": 1
+  },
+  {
+    "line_number": 243,
+    "formula": "(B . ((B > ((D v C) . C)) . (E > ((~D . ~C) v ~C)))) > ~E",
+    "justification": "Taut 242",
+    "depth": 1
+  },
+  {
+    "line_number": 244,
+    "formula": "~B > ((B . ((B > ((D v C) . C)) . (E > ((~D . ~C) v ~C)))) > ~E)",
+    "justification": "CP 169-243",
+    "depth": 0
+  },
+  {
+    "line_number": 245,
+    "formula": "((B . ((B > ((D v C) . C)) . (E > ((~D . ~C) v ~C)))) > ~E) v ((B . ((B > ((D v C) . C)) . (E > ((~D . ~C) v ~C)))) > ~E)",
+    "justification": "CD 6,168,244",
+    "depth": 0
+  },
+  {
+    "line_number": 246,
+    "formula": "(B . ((B > ((D v C) . C)) . (E > ((~D . ~C) v ~C)))) > ~E",
+    "justification": "Taut 245",
+    "depth": 0
+  }
+]

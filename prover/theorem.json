@@ -1,0 +1,7 @@
+{
+  "id": "custom-001",
+  "premises": [],
+  "conclusion": "{B . {{B > [(D v C) . C]} . {E > [(~D . ~C) v ~C]}}} > ~E",
+  "difficulty": "Custom",
+  "difficulty_value": 50
+}

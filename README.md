@@ -1,12 +1,17 @@
 # PropBench
 
-A saturation-proof reasoning benchmark that measures the ability of AI models to prove propositional logic theorems using Fitch-style natural deduction.
+A saturation-proof reasoning benchmark that measures the ability of AI models to *efficiently* prove propositional logic theorems using Fitch-style natural deduction.
 
 ## Why PropBench?
 
-This is the first reasoning benchmark that I am aware of which can be made arbitrarily difficult simply by tweaking a few variables. True, a benchmark simply testing multiplication of large numbers can be made arbitrarily difficult, but such a benchmark would become trivial with tool use. Automated theorem proving is an area of active research, and no set of tools currently exist that could turn this benchmark trivial, though I am sure agentic scaffolding would improve performance. 
+Propbench tests the model not only on its ability to prove incresingly difficult theorems in propositional logic, but also on its ability to do so using the fewest possible lines of proof. True, it is possible to construct an algorithm that would prove *any* propositional logic theorem using these rules--/prover/prover.js is exactly this--but there is no way (that I am aware of) to construct an algorithm that would prove any theorem in *the fewest lines possible*.
 
-I also suspect doing RLVR on this would be fruitful.
+The elo calculation is such that any valid proof wins over no proof, but if we are comparing two valid proofs, the shorter one wins. 
+
+PropBench is saturation proof because (1) it is trivial to generate significantly more difficult theorems by adjusting a few variables once a difficulty level is saturated; (2) even when a difficulty level is "saturated" in the sense that LLMs can reliably prove it, no one knows how many lines the most efficient proof of a difficult theorem would require. As an example, I was able to prove a theorem in 11 lines that took prover.js 246. 
+
+
+I also suspect doing RLVR on this would be fruitful!
 
 ## How It Works
 

@@ -5,6 +5,7 @@ node_modules/
 target/
 dist/
 *.js
+!**/prover.js
 *.js.map
 *.d.ts
 
@@ -24,3 +25,4 @@ todo.md
 .claude/.DS_Store
 .venv/
 .claude/
+
