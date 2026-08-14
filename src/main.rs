@@ -1,10 +1,10 @@
 use clap::{Parser, Subcommand};
-use logic_proof_trainer_lib::models::{
+use logic_core::models::{
     Formula, Proof, Justification,
     theorem::{BaseComplexity, Difficulty, DifficultySpec, DifficultyTier, Theorem},
     rules::{InferenceRule, EquivalenceRule, ProofTechnique},
 };
-use logic_proof_trainer_lib::services::{TheoremGenerator, ProofVerifier, ObfuscateGenerator};
+use logic_core::services::{TheoremGenerator, ProofVerifier, ObfuscateGenerator};
 use rand::Rng;
 use serde::{Deserialize, Serialize};
 use std::fs;

@@ -106,6 +106,13 @@ prop-bench/
 ├── gui/                 # React + Express web interface
 └── benchmarks/          # User-generated theorem sets
 ```
+
+The proof engine itself — formula parsing, the natural-deduction rule set,
+verification, and theorem generation — lives in
+[logic-core](https://github.com/dogaozden/logic-core), a separate crate shared
+with the [Logic Proof Trainer](https://github.com/dogaozden/logic-proof-trainer)
+app. Cargo fetches it automatically, so `git clone` followed by `cargo build`
+is all you need.
 ## Theorem Generation Algorithm Simplified
 
 (1) Pick a base argument form using one of the inference forms (1-8 in rules.md).
@@ -149,7 +156,7 @@ See *generation_algorithm.md* for more details.
 1. (P v Q)
 2. [(P v Q) . R]
 3. {[(P v Q) . R] ⊃ S}
-4. {{[(P v Q) . R] ⊃ S} . T} ⊃ Y 
+4. {{[(P v Q) . R] ⊃ S} . T} ⊃ A 
   
   And so on. Curly brackets are stacked on top of each other after we run out of parentheses and square brackets.
 
