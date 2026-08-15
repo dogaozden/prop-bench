@@ -4,9 +4,13 @@ use logic_core::models::{
     theorem::{BaseComplexity, Difficulty, DifficultySpec, DifficultyTier, Theorem},
     rules::{InferenceRule, EquivalenceRule, ProofTechnique},
 };
-use logic_core::services::{TheoremGenerator, ProofVerifier, ObfuscateGenerator};
-use rand::Rng;
+use logic_core::services::{
+    TheoremGenerator, ProofVerifier, ObfuscateGenerator,
+    analyze_for_serving, ServeConfig, ServeAnalysis, ServeRejection, OptimalConfig,
+};
+use rand::{Rng, RngCore, SeedableRng, rngs::StdRng, thread_rng};
 use serde::{Deserialize, Serialize};
+use std::collections::HashMap;
 use std::fs;
 use std::path::PathBuf;
 
@@ -80,6 +84,26 @@ enum Commands {
         /// Output file path
         #[arg(short, long, default_value = "theorems.json")]
         output: PathBuf,
+
+        /// Seed the RNG for deterministic, reproducible generation
+        #[arg(long)]
+        seed: Option<u64>,
+
+        /// Tournament mode: rejection-sample candidates through the serve filter
+        /// (analyze_for_serving) and only keep theorems that pass it. Slow — the
+        /// bounded-optimal search stage can take seconds per rejected candidate.
+        #[arg(long)]
+        tournament: bool,
+
+        /// Max generation attempts per accepted theorem in tournament mode
+        #[arg(long, default_value_t = 1000)]
+        attempts: usize,
+
+        /// Equivalence-rewrite candidate cap per search state, plumbed into
+        /// ServeConfig.optimal.equiv_moves_per_state (higher = more optimal
+        /// searches certify minimal, at the cost of more time)
+        #[arg(long, default_value_t = 64)]
+        equiv_cap: usize,
     },
 
     /// Validate a proof against a theorem
@@ -91,6 +115,23 @@ enum Commands {
         /// Path to proof JSON file (array of proof lines)
         #[arg(long)]
         proof: PathBuf,
+    },
+
+    /// Run the serve filter (analyze_for_serving) over an existing theorems JSON file
+    Analyze {
+        /// Path to theorems JSON file (same array shape `generate` writes)
+        #[arg(long)]
+        theorems: PathBuf,
+
+        /// Only analyze the first N theorems — large historical sets can take a
+        /// long time since the optimal search stage is seconds per theorem
+        #[arg(long)]
+        limit: Option<usize>,
+
+        /// Equivalence-rewrite candidate cap per search state, plumbed into
+        /// ServeConfig.optimal.equiv_moves_per_state
+        #[arg(long, default_value_t = 64)]
+        equiv_cap: usize,
     },
 }
 
@@ -105,6 +146,12 @@ struct BenchTheorem {
     difficulty_value: u8,
     #[serde(skip_serializing_if = "Option::is_none")]
     difficulty_spec: Option<DifficultySpec>,
+    /// Populated only in `--tournament` mode: the serve-filter analysis that
+    /// certified this theorem as servable. Never round-tripped back in on read —
+    /// `analyze` always recomputes fresh from premises/conclusion, so it's exempt
+    /// from deserialization (`ServeAnalysis` only derives `Serialize`).
+    #[serde(skip_serializing_if = "Option::is_none", skip_deserializing)]
+    serve_analysis: Option<ServeAnalysis>,
 }
 
 impl From<&Theorem> for BenchTheorem {
@@ -116,6 +163,7 @@ impl From<&Theorem> for BenchTheorem {
             difficulty: difficulty_label(t.difficulty_value),
             difficulty_value: t.difficulty_value,
             difficulty_spec: None,
+            serve_analysis: None,
         }
     }
 }
@@ -283,6 +331,61 @@ fn resolve_generate_mode(
     Ok(GenerateMode::Distribution(dist_str, *max_nodes, *max_depth))
 }
 
+/// Rejection-reason category for histogram purposes — the variant name, ignoring
+/// any embedded fields (so e.g. `DisguisedIdentity { distance }` doesn't fragment
+/// the histogram by distance value).
+fn rejection_category(r: &ServeRejection) -> &'static str {
+    match r {
+        ServeRejection::TautologousDisjunct => "TautologousDisjunct",
+        ServeRejection::SubformulaDecoy => "SubformulaDecoy",
+        ServeRejection::DisguisedIdentity { .. } => "DisguisedIdentity",
+        ServeRejection::NotGreedyProvable => "NotGreedyProvable",
+        ServeRejection::OptimalUnknown => "OptimalUnknown",
+        ServeRejection::Hallway => "Hallway",
+        ServeRejection::TooShort { .. } => "TooShort",
+        ServeRejection::InsufficientDivergence { .. } => "InsufficientDivergence",
+        ServeRejection::NoUnlock => "NoUnlock",
+    }
+}
+
+/// How often (in total attempts across the whole run) tournament mode prints a
+/// progress line, so a long run stays observable instead of silent for minutes.
+const TOURNAMENT_PROGRESS_INTERVAL: usize = 25;
+
+/// Rejection-sampling loop for `--tournament`: keep generating candidates via
+/// `generate_one` (same tier/spec path as non-tournament mode) and running them
+/// through `analyze_for_serving` until one passes (`rejection: None`), or
+/// `max_attempts` attempts are burned on this one theorem. `histogram` and
+/// `total_attempts` accumulate across the WHOLE run (every theorem generated so
+/// far), not just this call — no silent statistics.
+fn tournament_pick(
+    mut generate_one: impl FnMut() -> Theorem,
+    serve_cfg: &ServeConfig,
+    max_attempts: usize,
+    tier_label: &str,
+    histogram: &mut HashMap<String, usize>,
+    total_attempts: &mut usize,
+) -> Result<(Theorem, ServeAnalysis), String> {
+    for _ in 0..max_attempts {
+        let theorem = generate_one();
+        let analysis = analyze_for_serving(&theorem, serve_cfg);
+        *total_attempts += 1;
+        if *total_attempts % TOURNAMENT_PROGRESS_INTERVAL == 0 {
+            eprintln!("  tournament: {} attempts so far; histogram: {:?}", total_attempts, histogram);
+        }
+        match &analysis.rejection {
+            None => return Ok((theorem, analysis)),
+            Some(r) => {
+                *histogram.entry(rejection_category(r).to_string()).or_insert(0) += 1;
+            }
+        }
+    }
+    Err(format!(
+        "tournament mode: {} attempts exhausted at tier {}; histogram: {:?}",
+        max_attempts, tier_label, histogram
+    ))
+}
+
 fn cmd_generate(
     count: usize,
     distribution: &Option<String>,
@@ -297,19 +400,42 @@ fn cmd_generate(
     max_depth: &Option<u32>,
     gnarly_override: Option<bool>,
     output: &PathBuf,
+    seed: Option<u64>,
+    tournament: bool,
+    attempts: usize,
+    equiv_cap: usize,
 ) -> Result<(), String> {
     let mode = resolve_generate_mode(tier, variables, passes, transforms, base, substitution, bridge_atoms, max_nodes, max_depth, distribution, gnarly_override)?;
 
-    let mut rng = rand::thread_rng();
+    let mut rng: Box<dyn RngCore> = match seed {
+        Some(s) => Box::new(StdRng::seed_from_u64(s)),
+        None => Box::new(thread_rng()),
+    };
     let mut theorems: Vec<BenchTheorem> = Vec::with_capacity(count);
     let mut theorem_id = 1usize;
+
+    let serve_cfg = ServeConfig {
+        optimal: OptimalConfig { equiv_moves_per_state: equiv_cap, ..OptimalConfig::default() },
+        ..ServeConfig::default()
+    };
+    let mut histogram: HashMap<String, usize> = HashMap::new();
+    let mut total_attempts: usize = 0;
 
     match mode {
         GenerateMode::Tier(dt, spec, tier_name) => {
             eprintln!("Generating {} {} theorems via tier spec...", count, tier_name);
             for _ in 0..count {
-                let theorem = ObfuscateGenerator::generate_with_tier_spec(dt, &spec, &mut rng);
-                let mut bench = BenchTheorem::from(&theorem);
+                let mut bench = if tournament {
+                    let (theorem, analysis) = tournament_pick(
+                        || ObfuscateGenerator::generate_with_tier_spec(dt, &spec, &mut rng),
+                        &serve_cfg, attempts, &tier_name, &mut histogram, &mut total_attempts,
+                    )?;
+                    let mut b = BenchTheorem::from(&theorem);
+                    b.serve_analysis = Some(analysis);
+                    b
+                } else {
+                    BenchTheorem::from(&ObfuscateGenerator::generate_with_tier_spec(dt, &spec, &mut rng))
+                };
                 bench.id = format!("v1-{:03}", theorem_id);
                 bench.difficulty = tier_name.clone();
                 bench.difficulty_spec = Some(spec.clone());
@@ -324,8 +450,17 @@ fn cmd_generate(
                 count, spec.variables, spec.passes, spec.transforms_per_pass, spec.base_complexity, spec.substitution_depth
             );
             for _ in 0..count {
-                let theorem = ObfuscateGenerator::generate_with_spec(&spec, &mut rng);
-                let mut bench = BenchTheorem::from(&theorem);
+                let mut bench = if tournament {
+                    let (theorem, analysis) = tournament_pick(
+                        || ObfuscateGenerator::generate_with_spec(&spec, &mut rng),
+                        &serve_cfg, attempts, "Custom", &mut histogram, &mut total_attempts,
+                    )?;
+                    let mut b = BenchTheorem::from(&theorem);
+                    b.serve_analysis = Some(analysis);
+                    b
+                } else {
+                    BenchTheorem::from(&ObfuscateGenerator::generate_with_spec(&spec, &mut rng))
+                };
                 bench.id = format!("v1-{:03}", theorem_id);
                 bench.difficulty = "Custom".to_string();
                 bench.difficulty_spec = Some(spec.clone());
@@ -374,8 +509,17 @@ fn cmd_generate(
                         }
                         eprintln!("Generating {} {} theorems via spec...", tier_count, tier_name);
                         for _ in 0..*tier_count {
-                            let theorem = ObfuscateGenerator::generate_with_tier_spec(*tier, &spec, &mut rng);
-                            let mut bench = BenchTheorem::from(&theorem);
+                            let mut bench = if tournament {
+                                let (theorem, analysis) = tournament_pick(
+                                    || ObfuscateGenerator::generate_with_tier_spec(*tier, &spec, &mut rng),
+                                    &serve_cfg, attempts, tier_name, &mut histogram, &mut total_attempts,
+                                )?;
+                                let mut b = BenchTheorem::from(&theorem);
+                                b.serve_analysis = Some(analysis);
+                                b
+                            } else {
+                                BenchTheorem::from(&ObfuscateGenerator::generate_with_tier_spec(*tier, &spec, &mut rng))
+                            };
                             bench.id = format!("v1-{:03}", theorem_id);
                             bench.difficulty = tier_name.clone();
                             bench.difficulty_spec = Some(spec.clone());
@@ -386,6 +530,18 @@ fn cmd_generate(
                 }
             }
         }
+    }
+
+    if tournament {
+        let rate = if total_attempts > 0 {
+            100.0 * theorems.len() as f64 / total_attempts as f64
+        } else {
+            0.0
+        };
+        eprintln!(
+            "Tournament complete: {}/{} attempts accepted ({:.3}%). Histogram: {:?}",
+            theorems.len(), total_attempts, rate, histogram
+        );
     }
 
     // Create parent directories if needed
@@ -402,6 +558,76 @@ fn cmd_generate(
         .map_err(|e| format!("Failed to write output file: {}", e))?;
 
     eprintln!("Wrote {} theorems to {}", theorems.len(), output.display());
+    Ok(())
+}
+
+// ─── Analyze command ────────────────────────────────────────────────────────
+
+/// Reconstruct a `Theorem` from a parsed `BenchTheorem` for re-analysis. Mirrors
+/// `cmd_validate`'s formula parsing, but only needs premises/conclusion —
+/// `analyze_for_serving` never looks at `difficulty`.
+fn parse_bench_theorem(bench: &BenchTheorem) -> Result<Theorem, String> {
+    let premises: Vec<Formula> = bench.premises.iter()
+        .map(|p| Formula::parse(p).map_err(|e| format!("Theorem {}: invalid premise '{}': {}", bench.id, p, e)))
+        .collect::<Result<Vec<_>, _>>()?;
+    let conclusion = Formula::parse(&bench.conclusion)
+        .map_err(|e| format!("Theorem {}: invalid conclusion '{}': {}", bench.id, bench.conclusion, e))?;
+    let difficulty = match bench.difficulty_value {
+        1..=25 => Difficulty::Easy,
+        26..=45 => Difficulty::Medium,
+        46..=70 => Difficulty::Hard,
+        _ => Difficulty::Expert,
+    };
+    Ok(Theorem::with_difficulty_value(premises, conclusion, difficulty, bench.difficulty_value, None, None))
+}
+
+#[derive(Debug, Serialize)]
+struct AnalyzeEntry {
+    id: String,
+    serve_analysis: ServeAnalysis,
+}
+
+fn cmd_analyze(theorems_path: &PathBuf, limit: Option<usize>, equiv_cap: usize) -> Result<(), String> {
+    let json_str = fs::read_to_string(theorems_path)
+        .map_err(|e| format!("Failed to read theorems file: {}", e))?;
+    let benches: Vec<BenchTheorem> = serde_json::from_str(&json_str)
+        .map_err(|e| format!("Failed to parse theorems JSON: {}", e))?;
+
+    let total = benches.len();
+    let take_n = limit.map(|l| l.min(total)).unwrap_or(total);
+    eprintln!("Analyzing {} of {} theorems from {}...", take_n, total, theorems_path.display());
+
+    let serve_cfg = ServeConfig {
+        optimal: OptimalConfig { equiv_moves_per_state: equiv_cap, ..OptimalConfig::default() },
+        ..ServeConfig::default()
+    };
+
+    let mut histogram: HashMap<String, usize> = HashMap::new();
+    let mut accepted = 0usize;
+    let mut results: Vec<AnalyzeEntry> = Vec::with_capacity(take_n);
+
+    for (i, bench) in benches.iter().take(take_n).enumerate() {
+        let theorem = parse_bench_theorem(bench)?;
+        let analysis = analyze_for_serving(&theorem, &serve_cfg);
+        match &analysis.rejection {
+            None => accepted += 1,
+            Some(r) => {
+                *histogram.entry(rejection_category(r).to_string()).or_insert(0) += 1;
+            }
+        }
+        eprintln!("  [{}/{}] {} -> {:?}", i + 1, take_n, bench.id, analysis.rejection);
+        results.push(AnalyzeEntry { id: bench.id.clone(), serve_analysis: analysis });
+    }
+
+    let json = serde_json::to_string_pretty(&results)
+        .map_err(|e| format!("JSON serialization error: {}", e))?;
+    println!("{}", json);
+
+    let rate = if take_n > 0 { 100.0 * accepted as f64 / take_n as f64 } else { 0.0 };
+    eprintln!("--- Analyze summary ---");
+    eprintln!("Analyzed: {}  Accepted: {} ({:.3}%)", take_n, accepted, rate);
+    eprintln!("Rejection histogram: {:?}", histogram);
+
     Ok(())
 }
 
@@ -702,6 +928,10 @@ fn main() {
             no_gnarly_combos,
             gnarly_combos,
             output,
+            seed,
+            tournament,
+            attempts,
+            equiv_cap,
         } => {
             let gnarly_override = if gnarly_combos {
                 Some(true)
@@ -724,10 +954,17 @@ fn main() {
                 &max_depth,
                 gnarly_override,
                 &output,
+                seed,
+                tournament,
+                attempts,
+                equiv_cap,
             )
         }
         Commands::Validate { theorem, proof } => {
             cmd_validate(&theorem, &proof)
+        }
+        Commands::Analyze { theorems, limit, equiv_cap } => {
+            cmd_analyze(&theorems, limit, equiv_cap)
         }
     };
 
