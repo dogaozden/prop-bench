@@ -23,6 +23,7 @@ p ⊃ q
 q ⊃ r  /∴  p ⊃ r
 	7.	Addition (Add):
 p  /∴  p ∨ q
+p  /∴  q ∨ p   (house form: the premise may take either side)
 	8.	Constructive Dilemma (CD):
 p ∨ q
 p ⊃ r

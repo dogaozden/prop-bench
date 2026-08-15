@@ -15,11 +15,11 @@ These rules derive a NEW formula from cited lines.
  #  Name                     Abbrev  Pattern
  1  Modus Ponens             MP      p > q, p           => q
  2  Modus Tollens            MT      p > q, ~q          => ~p
- 3  Disjunctive Syllogism    DS      p v q, ~p          => q
+ 3  Disjunctive Syllogism    DS      p v q, ~p          => q   (or: p v q, ~q => p)
  4  Simplification           Simp    p . q              => p  (or q)
  5  Conjunction              Conj    p, q               => p . q
  6  Hypothetical Syllogism   HS      p > q, q > r       => p > r
- 7  Addition                 Add     p                  => p v q
+ 7  Addition                 Add     p                  => p v q  or  q v p
  8  Constructive Dilemma     CD      p v q, p > r, q > s  => r v s
  9  Negation Elimination     NegE    p, ~p              => #`;
 
@@ -43,7 +43,8 @@ equivalent form. They work bidirectionally and on subformulas.
  17  Exportation       Exp      (p . q) > r  ::  p > (q > r)
  18  Tautology         Taut     p  ::  p . p
                                 p  ::  p v p
- 19  Equivalence       Equiv    p <> q  ::  (p > q) . (q > p)`;
+ 19  Equivalence       Equiv    p <> q  ::  (p > q) . (q > p)
+                                p <> q  ::  (p . q) v (~p . ~q)`;
 
 const TECHNIQUES = `\
 PROOF TECHNIQUES (Subproofs)
