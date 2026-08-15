@@ -1,0 +1,6 @@
+[
+  {"line_number": 1, "formula": "~P", "justification": "Assumption (CP)", "depth": 1},
+  {"line_number": 2, "formula": "~P > ~P", "justification": "CP 1-1", "depth": 0},
+  {"line_number": 3, "formula": "~~P v ~P", "justification": "Impl 2", "depth": 0},
+  {"line_number": 4, "formula": "P v ~P", "justification": "DN 3", "depth": 0}
+]

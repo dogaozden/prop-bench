@@ -1,0 +1,7 @@
+[
+  {"line_number": 1, "formula": "[(R > ~P) v (P > P)] . {S > [(Q v ~S) > ~S]}", "justification": "Assumption (CP)", "depth": 1},
+  {"line_number": 2, "formula": "~P", "justification": "Assumption (CP)", "depth": 2},
+  {"line_number": 3, "formula": "~P > ~P", "justification": "CP 2-2", "depth": 1},
+  {"line_number": 4, "formula": "(P > ~R) v (~P > ~P)", "justification": "Add 3", "depth": 1},
+  {"line_number": 5, "formula": "{[(R > ~P) v (P > P)] . {S > [(Q v ~S) > ~S]}} > [(P > ~R) v (~P > ~P)]", "justification": "CP 1-4", "depth": 0}
+]

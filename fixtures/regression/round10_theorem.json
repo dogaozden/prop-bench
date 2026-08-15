@@ -1,0 +1,7 @@
+{
+  "id": "round10_vacuous_disjunct",
+  "premises": [],
+  "conclusion": "{[(R > ~P) v (P > P)] . {S > [(Q v ~S) > ~S]}} > [(P > ~R) v (~P > ~P)]",
+  "difficulty": "hard",
+  "difficulty_value": 70
+}
