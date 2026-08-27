@@ -278,7 +278,14 @@ fn parse_line_range(s: &str) -> Option<(usize, usize)> {
 // ─── Serialization (Proof → replay JSON) ────────────────────────────────────
 
 /// Serialize a `Justification` to the string format `parse_justification` accepts.
-/// This is the exact inverse of `parse_justification`.
+/// This is the exact inverse of `parse_justification` — NOT the same thing as
+/// `logic_core::Justification::display_string()`, which looks similar but isn't:
+/// it returns `"Premise"` instead of panicking, and it joins `Inference` line
+/// lists with `", "` instead of `","`. Don't collapse this into a call to
+/// `display_string()`; `parse_line_numbers` in this file happens to tolerate
+/// either separator, but the required format — locked down by
+/// `justification_to_replay_string_matches_exact_format` in
+/// `tests/replay_roundtrip.rs` — is `","`.
 ///
 /// # Panics
 /// Panics on `Justification::Premise` — premises are auto-seeded by `Proof::new`

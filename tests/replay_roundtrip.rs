@@ -53,6 +53,35 @@ fn native_cp_proof_roundtrips_through_replay() {
     }
 }
 
+/// Fix round 1: `every_justification_string_reparses` below only checks that the
+/// emitted string re-parses, not what it literally is — and `parse_line_numbers`
+/// tolerates both a comma and a comma-space separator, so a regression from
+/// `justification_to_replay_string`'s required comma-only separator to
+/// `logic_core::Justification::display_string()`'s comma-space separator
+/// (proof.rs:40-46 is otherwise byte-identical for 3 of 5 variants) would pass
+/// silently. This test locks the exact emitted string for one representative case
+/// of every `Justification` shape, including the two that had zero coverage
+/// before (`Assumption (IP)` and the `IP start-end` subproof-conclusion form).
+#[test]
+fn justification_to_replay_string_matches_exact_format() {
+    let cases: Vec<(Justification, &str)> = vec![
+        (Justification::Assumption { technique: ProofTechnique::ConditionalProof }, "Assumption (CP)"),
+        (Justification::Assumption { technique: ProofTechnique::IndirectProof }, "Assumption (IP)"),
+        (Justification::Inference { rule: InferenceRule::ModusPonens, lines: vec![1, 2] }, "MP 1,2"),
+        (Justification::Equivalence { rule: EquivalenceRule::Implication, line: 3 }, "Impl 3"),
+        (Justification::SubproofConclusion {
+            technique: ProofTechnique::ConditionalProof, subproof_start: 1, subproof_end: 4,
+        }, "CP 1-4"),
+        (Justification::SubproofConclusion {
+            technique: ProofTechnique::IndirectProof, subproof_start: 2, subproof_end: 5,
+        }, "IP 2-5"),
+    ];
+
+    for (j, expected) in cases {
+        assert_eq!(justification_to_replay_string(&j), expected, "for {:?}", j);
+    }
+}
+
 #[test]
 fn every_justification_string_reparses() {
     for rule in InferenceRule::all() {
