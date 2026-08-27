@@ -56,3 +56,18 @@ fn premise_lines_in_proof_input_are_rejected() {
     let out = run_validate("fixtures/regression/premises_theorem.json", "fixtures/regression/premises_proof_bad.json");
     assert!(!out.status.success());
 }
+
+#[test]
+fn invalid_mp_citation_reports_valid_false_with_exit_0() {
+    // Legacy CLI contract: a wrong-but-well-formed proof (here, an MP citation
+    // referencing lines that don't support the derivation) is a semantic
+    // verdict, not a protocol violation — it must exit 0 with a `valid: false`
+    // JSON body, not a hard CLI failure. The GUI's validate() has no
+    // try/catch around the CLI call, so a non-zero exit here would 500 on
+    // every ordinary "the proof is wrong" case.
+    let out = run_validate("fixtures/regression/round3_theorem.json", "fixtures/regression/invalid_line_proof.json");
+    assert!(out.status.success(), "stdout: {} stderr: {}", out_str(&out), err_str(&out));
+    let v: serde_json::Value = serde_json::from_str(&out_str(&out))
+        .unwrap_or_else(|e| panic!("stdout should parse as JSON: {} (stdout: {:?})", e, out_str(&out)));
+    assert_eq!(v["valid"], false, "expected valid:false for a wrong MP citation, full output: {}", v);
+}

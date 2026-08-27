@@ -14,7 +14,7 @@ use std::fs;
 use std::path::PathBuf;
 
 mod replay;
-use replay::{ValidateInput, replay_proof};
+use replay::{ValidateInput, ReplayError, replay_proof};
 
 // ─── CLI argument parsing ───────────────────────────────────────────────────
 
@@ -665,7 +665,32 @@ fn cmd_validate(theorem_path: &PathBuf, proof_path: &PathBuf) -> Result<(), Stri
         .map_err(|e| format!("Failed to parse proof JSON: {}", e))?;
 
     // Replay the proof — replay_proof is the single validity + line-count authority.
-    let replayed = replay_proof(&theorem, &input_lines).map_err(|e| e.to_string())?;
+    let replayed = match replay_proof(&theorem, &input_lines) {
+        Ok(r) => r,
+        Err(e) => {
+            let is_protocol_violation = matches!(
+                e,
+                ReplayError::PremiseInInput { .. } | ReplayError::BadNumbering { .. }
+            );
+            if is_protocol_violation {
+                // Malformed proof input, not a semantic verdict — hard CLI failure.
+                return Err(e.to_string());
+            }
+            // Parse / InvalidLine / Incomplete: a wrong-but-well-formed proof.
+            // Legacy CLI contract — exit 0, JSON body with valid:false — since
+            // the GUI's validate() has no try/catch around the CLI call and
+            // would 500 on the common "the proof is just wrong" case otherwise.
+            let output = ValidateOutput {
+                valid: false,
+                line_count: 0,
+                errors: vec![e.to_string()],
+            };
+            let json = serde_json::to_string_pretty(&output)
+                .map_err(|e| format!("JSON serialization error: {}", e))?;
+            println!("{}", json);
+            return Ok(());
+        }
+    };
 
     let output = ValidateOutput {
         valid: true,
