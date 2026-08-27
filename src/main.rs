@@ -1,11 +1,10 @@
 use clap::{Parser, Subcommand};
 use logic_core::models::{
-    Formula, Proof, Justification,
+    Formula,
     theorem::{BaseComplexity, Difficulty, DifficultySpec, DifficultyTier, Theorem},
-    rules::{InferenceRule, EquivalenceRule, ProofTechnique},
 };
 use logic_core::services::{
-    TheoremGenerator, ProofVerifier, ObfuscateGenerator,
+    TheoremGenerator, ObfuscateGenerator,
     analyze_for_serving, ServeConfig, ServeAnalysis, ServeRejection, OptimalConfig,
 };
 use rand::{Rng, RngCore, SeedableRng, rngs::StdRng, thread_rng};
@@ -13,6 +12,9 @@ use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::fs;
 use std::path::PathBuf;
+
+mod replay;
+use replay::{ValidateInput, replay_proof};
 
 // ─── CLI argument parsing ───────────────────────────────────────────────────
 
@@ -166,14 +168,6 @@ impl From<&Theorem> for BenchTheorem {
             serve_analysis: None,
         }
     }
-}
-
-#[derive(Debug, Serialize, Deserialize)]
-struct ValidateInput {
-    line_number: usize,
-    formula: String,
-    justification: String,
-    depth: usize,
 }
 
 #[derive(Debug, Serialize)]
@@ -670,241 +664,19 @@ fn cmd_validate(theorem_path: &PathBuf, proof_path: &PathBuf) -> Result<(), Stri
     let input_lines: Vec<ValidateInput> = serde_json::from_str(&proof_json)
         .map_err(|e| format!("Failed to parse proof JSON: {}", e))?;
 
-    // Build the proof by replaying each line
-    let mut proof = Proof::new(theorem);
-    let mut errors: Vec<String> = Vec::new();
+    // Replay the proof — replay_proof is the single validity + line-count authority.
+    let replayed = replay_proof(&theorem, &input_lines).map_err(|e| e.to_string())?;
 
-    for input_line in &input_lines {
-        let formula = match Formula::parse(&input_line.formula) {
-            Ok(f) => f,
-            Err(e) => {
-                errors.push(format!("Line {}: Invalid formula '{}': {}", input_line.line_number, input_line.formula, e));
-                continue;
-            }
-        };
-
-        let justification = match parse_justification(&input_line.justification) {
-            Ok(j) => j,
-            Err(e) => {
-                errors.push(format!("Line {}: Invalid justification '{}': {}", input_line.line_number, input_line.justification, e));
-                continue;
-            }
-        };
-
-        // Handle different justification types
-        match &justification {
-            Justification::Assumption { technique } => {
-                proof.open_subproof(formula, *technique);
-            }
-            Justification::SubproofConclusion { technique, .. } => {
-                let closed = proof.close_subproof(formula.clone(), *technique).is_some();
-                if closed {
-                    let last_idx = proof.lines.len() - 1;
-                    let line = &proof.lines[last_idx];
-                    let result = ProofVerifier::verify_line(line, &proof);
-                    proof.lines[last_idx].is_valid = result.is_valid;
-                    proof.lines[last_idx].validation_message = result.message.clone();
-                    if !result.is_valid {
-                        errors.push(format!("Line {}: {}", input_line.line_number,
-                            result.message.unwrap_or_else(|| "Invalid".to_string())));
-                    }
-                } else {
-                    errors.push(format!("Line {}: No open subproof to close", input_line.line_number));
-                }
-            }
-            _ => {
-                proof.add_line(formula, justification);
-                let last_idx = proof.lines.len() - 1;
-                let line = &proof.lines[last_idx];
-                let result = ProofVerifier::verify_line(line, &proof);
-                proof.lines[last_idx].is_valid = result.is_valid;
-                proof.lines[last_idx].validation_message = result.message.clone();
-                if !result.is_valid {
-                    errors.push(format!("Line {}: {}", input_line.line_number,
-                        result.message.unwrap_or_else(|| "Invalid".to_string())));
-                }
-            }
-        }
-    }
-
-    // Check completeness
-    proof.check_complete();
-
-    // If proof is incomplete, add diagnostic error messages explaining why
-    if !proof.is_complete {
-        // Condition 1: open scopes remain
-        if proof.scope_manager.has_open_scopes() {
-            let open_count = proof.scope_manager.current_depth();
-            errors.push(format!(
-                "Proof incomplete: {} subproof scope(s) still open (unclosed)",
-                open_count
-            ));
-        }
-
-        // Condition 2: conclusion not derived at depth 0
-        let conclusion = &proof.theorem.conclusion;
-        let has_conclusion_at_depth_0 = proof.lines.iter().any(|l| {
-            l.depth == 0 && l.formula == *conclusion && l.is_valid
-        });
-        if !has_conclusion_at_depth_0 {
-            errors.push(
-                "Proof incomplete: conclusion not established at depth 0".to_string()
-            );
-        }
-
-        // Condition 3: invalid lines present
-        let invalid_lines: Vec<usize> = proof.lines.iter()
-            .filter(|l| !l.is_valid)
-            .map(|l| l.line_number)
-            .collect();
-        if !invalid_lines.is_empty() {
-            let line_list: Vec<String> = invalid_lines.iter().map(|n| n.to_string()).collect();
-            errors.push(format!(
-                "Proof incomplete: invalid lines: [{}]",
-                line_list.join(", ")
-            ));
-        }
-    }
-
-    let non_premise_lines = proof.lines.len().saturating_sub(proof.theorem.premises.len());
     let output = ValidateOutput {
-        valid: proof.is_complete && errors.is_empty(),
-        line_count: non_premise_lines,
-        errors,
+        valid: true,
+        line_count: replayed.line_count,
+        errors: Vec::new(),
     };
 
     let json = serde_json::to_string_pretty(&output)
         .map_err(|e| format!("JSON serialization error: {}", e))?;
     println!("{}", json);
     Ok(())
-}
-
-// ─── Justification parsing ──────────────────────────────────────────────────
-
-fn parse_justification(s: &str) -> Result<Justification, String> {
-    let s = s.trim();
-
-    // Premise
-    if s.eq_ignore_ascii_case("premise") || s.eq_ignore_ascii_case("pr") {
-        return Ok(Justification::Premise);
-    }
-
-    // Assumption (CP) or Assumption (IP)
-    if s.to_lowercase().starts_with("assumption") || s.to_lowercase().starts_with("assume") {
-        let technique = if s.to_uppercase().contains("IP") {
-            ProofTechnique::IndirectProof
-        } else {
-            ProofTechnique::ConditionalProof
-        };
-        return Ok(Justification::Assumption { technique });
-    }
-
-    // Subproof conclusion: "CP 3-7" or "IP 3-7"
-    if let Some(rest) = strip_prefix_ci(s, "CP") {
-        if let Some((start, end)) = parse_line_range(rest.trim()) {
-            return Ok(Justification::SubproofConclusion {
-                technique: ProofTechnique::ConditionalProof,
-                subproof_start: start,
-                subproof_end: end,
-            });
-        }
-    }
-    if let Some(rest) = strip_prefix_ci(s, "IP") {
-        if let Some((start, end)) = parse_line_range(rest.trim()) {
-            return Ok(Justification::SubproofConclusion {
-                technique: ProofTechnique::IndirectProof,
-                subproof_start: start,
-                subproof_end: end,
-            });
-        }
-    }
-
-    // Inference rules: "MP 1,2" or "Simp 3"
-    let inference_rules: &[(&str, InferenceRule)] = &[
-        ("MP", InferenceRule::ModusPonens),
-        ("MT", InferenceRule::ModusTollens),
-        ("DS", InferenceRule::DisjunctiveSyllogism),
-        ("HS", InferenceRule::HypotheticalSyllogism),
-        ("Simp", InferenceRule::Simplification),
-        ("Conj", InferenceRule::Conjunction),
-        ("Add", InferenceRule::Addition),
-        ("CD", InferenceRule::ConstructiveDilemma),
-        ("NegE", InferenceRule::Contradiction),
-    ];
-
-    for (abbrev, rule) in inference_rules {
-        if let Some(rest) = strip_prefix_ci(s, abbrev) {
-            let rest = rest.trim();
-            if rest.is_empty() {
-                return Err(format!("Missing line numbers for {}", abbrev));
-            }
-            let lines = parse_line_numbers(rest)?;
-            return Ok(Justification::Inference { rule: *rule, lines });
-        }
-    }
-
-    // Equivalence rules: "DN 3" or "DeM 5"
-    let equiv_rules: &[(&str, EquivalenceRule)] = &[
-        ("DN", EquivalenceRule::DoubleNegation),
-        ("DeM", EquivalenceRule::DeMorgan),
-        ("Comm", EquivalenceRule::Commutation),
-        ("Assoc", EquivalenceRule::Association),
-        ("Dist", EquivalenceRule::Distribution),
-        ("Contra", EquivalenceRule::Contraposition),
-        ("Impl", EquivalenceRule::Implication),
-        ("Exp", EquivalenceRule::Exportation),
-        ("Taut", EquivalenceRule::Tautology),
-        ("Equiv", EquivalenceRule::Equivalence),
-    ];
-
-    for (abbrev, rule) in equiv_rules {
-        if let Some(rest) = strip_prefix_ci(s, abbrev) {
-            let rest = rest.trim();
-            if rest.is_empty() {
-                return Err(format!("Missing line number for {}", abbrev));
-            }
-            let line: usize = rest.parse()
-                .map_err(|_| format!("Invalid line number for {}: '{}'", abbrev, rest))?;
-            return Ok(Justification::Equivalence { rule: *rule, line });
-        }
-    }
-
-    Err(format!("Unrecognized justification: '{}'", s))
-}
-
-fn strip_prefix_ci<'a>(s: &'a str, prefix: &str) -> Option<&'a str> {
-    let s_lower = s.to_lowercase();
-    let prefix_lower = prefix.to_lowercase();
-    if s_lower.starts_with(&prefix_lower) {
-        let rest = &s[prefix.len()..];
-        // Must be followed by whitespace, digit, or end of string
-        if rest.is_empty() || rest.starts_with(char::is_whitespace) || rest.starts_with(char::is_numeric) {
-            Some(rest)
-        } else {
-            None
-        }
-    } else {
-        None
-    }
-}
-
-fn parse_line_numbers(s: &str) -> Result<Vec<usize>, String> {
-    let s = s.trim();
-    s.split(|c: char| c == ',' || c.is_whitespace())
-        .filter(|p| !p.is_empty())
-        .map(|p| p.trim().parse::<usize>().map_err(|_| format!("Invalid line number: '{}'", p)))
-        .collect()
-}
-
-fn parse_line_range(s: &str) -> Option<(usize, usize)> {
-    let parts: Vec<&str> = s.split('-').collect();
-    if parts.len() == 2 {
-        let start = parts[0].trim().parse::<usize>().ok()?;
-        let end = parts[1].trim().parse::<usize>().ok()?;
-        Some((start, end))
-    } else {
-        None
-    }
 }
 
 // ─── Main ───────────────────────────────────────────────────────────────────
