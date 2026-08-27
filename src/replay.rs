@@ -274,3 +274,56 @@ fn parse_line_range(s: &str) -> Option<(usize, usize)> {
         None
     }
 }
+
+// ─── Serialization (Proof → replay JSON) ────────────────────────────────────
+
+/// Serialize a `Justification` to the string format `parse_justification` accepts.
+/// This is the exact inverse of `parse_justification`.
+///
+/// # Panics
+/// Panics on `Justification::Premise` — premises are auto-seeded by `Proof::new`
+/// and never appear as replay JSON input lines, so there is no string form to
+/// produce. Callers must filter premise lines out first (see `proof_to_replay`,
+/// which does exactly that).
+pub fn justification_to_replay_string(j: &Justification) -> String {
+    match j {
+        Justification::Premise => panic!(
+            "justification_to_replay_string: Justification::Premise has no replay-JSON form; \
+             the caller must filter premise lines before serializing"
+        ),
+        Justification::Assumption { technique } => {
+            format!("Assumption ({})", technique.abbreviation())
+        }
+        Justification::Inference { rule, lines } => {
+            let lines_str = lines
+                .iter()
+                .map(|l| l.to_string())
+                .collect::<Vec<_>>()
+                .join(",");
+            format!("{} {}", rule.abbreviation(), lines_str)
+        }
+        Justification::Equivalence { rule, line } => {
+            format!("{} {}", rule.abbreviation(), line)
+        }
+        Justification::SubproofConclusion { technique, subproof_start, subproof_end } => {
+            format!("{} {}-{}", technique.abbreviation(), subproof_start, subproof_end)
+        }
+    }
+}
+
+/// Serialize a native `Proof` to the `ValidateInput` lines `replay_proof` expects:
+/// premise lines are skipped (they're auto-seeded from the theorem on replay), and
+/// `line_number`/`depth` are carried over verbatim from each `ProofLine`.
+pub fn proof_to_replay(proof: &Proof) -> Vec<ValidateInput> {
+    proof
+        .lines
+        .iter()
+        .filter(|line| !matches!(line.justification, Justification::Premise))
+        .map(|line| ValidateInput {
+            line_number: line.line_number,
+            formula: line.formula.ascii_string_bracketed(),
+            justification: justification_to_replay_string(&line.justification),
+            depth: line.depth,
+        })
+        .collect()
+}

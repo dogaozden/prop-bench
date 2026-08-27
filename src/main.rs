@@ -13,8 +13,7 @@ use std::collections::HashMap;
 use std::fs;
 use std::path::PathBuf;
 
-mod replay;
-use replay::{ValidateInput, ReplayError, replay_proof};
+use propbench::replay::{ValidateInput, ReplayError, replay_proof};
 
 // ─── CLI argument parsing ───────────────────────────────────────────────────
 
