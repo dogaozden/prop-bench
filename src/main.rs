@@ -8,12 +8,13 @@ use logic_core::services::{
     analyze_for_serving, ServeConfig, ServeAnalysis, ServeRejection, OptimalConfig,
 };
 use rand::{Rng, RngCore, SeedableRng, rngs::StdRng, thread_rng};
-use serde::{Deserialize, Serialize};
+use serde::Serialize;
 use std::collections::HashMap;
 use std::fs;
 use std::path::PathBuf;
 
 use propbench::replay::{ValidateInput, ReplayError, replay_proof};
+use propbench::{golf, BenchTheorem};
 
 // ─── CLI argument parsing ───────────────────────────────────────────────────
 
@@ -134,40 +135,56 @@ enum Commands {
         #[arg(long, default_value_t = 64)]
         equiv_cap: usize,
     },
+
+    /// Golf benchmark generation commands
+    Golf {
+        #[command(subcommand)]
+        command: GolfCommands,
+    },
+}
+
+#[derive(Subcommand)]
+enum GolfCommands {
+    /// Plant golf candidates through the gate pipeline and write a
+    /// theorem-set / answer-key split
+    Plant {
+        /// Number of candidates to accept
+        #[arg(long)]
+        count: usize,
+
+        /// Starting seed — seeds increase from here until `count` candidates
+        /// are accepted or the 200*count seed budget is exhausted
+        #[arg(long)]
+        seed: u64,
+
+        /// Difficulty band: 1 (par 12-16), 2 (par 17-22), or 3 (par 23-30)
+        #[arg(long, value_parser = clap::value_parser!(u8).range(1..=3))]
+        band: u8,
+
+        /// Directory to write theorem-only files (the public set — never a proof)
+        #[arg(long)]
+        out_set: PathBuf,
+
+        /// Directory to write proof + metadata files (the private answer key)
+        #[arg(long)]
+        out_key: PathBuf,
+
+        /// Require finalists to also survive a per-candidate lawyer freeze
+        /// budget (max_lines: par, max_nodes: 5_000_000, equiv_moves_per_state: 256)
+        #[arg(long)]
+        freeze: bool,
+
+        /// Max subproof nesting depth to plant (0-2)
+        #[arg(long, default_value_t = 0, value_parser = clap::value_parser!(u8).range(0..=2))]
+        subproofs: u8,
+
+        /// Obfuscation costume passes
+        #[arg(long, default_value_t = 0)]
+        passes: u8,
+    },
 }
 
 // ─── Output types ───────────────────────────────────────────────────────────
-
-#[derive(Debug, Serialize, Deserialize)]
-struct BenchTheorem {
-    id: String,
-    premises: Vec<String>,
-    conclusion: String,
-    difficulty: String,
-    difficulty_value: u8,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    difficulty_spec: Option<DifficultySpec>,
-    /// Populated only in `--tournament` mode: the serve-filter analysis that
-    /// certified this theorem as servable. Never round-tripped back in on read —
-    /// `analyze` always recomputes fresh from premises/conclusion, so it's exempt
-    /// from deserialization (`ServeAnalysis` only derives `Serialize`).
-    #[serde(skip_serializing_if = "Option::is_none", skip_deserializing)]
-    serve_analysis: Option<ServeAnalysis>,
-}
-
-impl From<&Theorem> for BenchTheorem {
-    fn from(t: &Theorem) -> Self {
-        BenchTheorem {
-            id: t.id.clone(),
-            premises: t.premises.iter().map(|f| f.ascii_string_bracketed()).collect(),
-            conclusion: t.conclusion.ascii_string_bracketed(),
-            difficulty: difficulty_label(t.difficulty_value),
-            difficulty_value: t.difficulty_value,
-            difficulty_spec: None,
-            serve_analysis: None,
-        }
-    }
-}
 
 #[derive(Debug, Serialize)]
 struct ValidateOutput {
@@ -177,17 +194,6 @@ struct ValidateOutput {
 }
 
 // ─── Difficulty helpers ─────────────────────────────────────────────────────
-
-fn difficulty_label(value: u8) -> String {
-    match value {
-        1..=25 => "Easy".to_string(),
-        26..=45 => "Medium".to_string(),
-        46..=70 => "Hard".to_string(),
-        71..=85 => "Expert".to_string(),
-        86..=95 => "Nightmare".to_string(),
-        _ => "Marathon".to_string(),
-    }
-}
 
 /// Extended tier range that supports all 9 tiers.
 /// For tiers beyond Marathon (absurd/cosmic/mind), maps to difficulty value 100
@@ -762,6 +768,11 @@ fn main() {
         Commands::Analyze { theorems, limit, equiv_cap } => {
             cmd_analyze(&theorems, limit, equiv_cap)
         }
+        Commands::Golf { command } => match command {
+            GolfCommands::Plant { count, seed, band, out_set, out_key, freeze, subproofs, passes } => {
+                golf::cmd_plant(count, seed, band, &out_set, &out_key, freeze, subproofs, passes)
+            }
+        },
     };
 
     if let Err(e) = result {
