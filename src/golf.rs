@@ -200,6 +200,7 @@ pub fn cmd_plant(
     freeze: bool,
     subproofs: u8,
     passes: u8,
+    max_seeds: Option<u64>,
 ) -> Result<(), String> {
     let spec = spec_for_band(band, subproofs, passes);
     let gate_label: &'static str = if freeze { "freeze" } else { "probe" };
@@ -209,13 +210,23 @@ pub fn cmd_plant(
     fs::create_dir_all(out_key)
         .map_err(|e| format!("Failed to create --out-key dir {}: {}", out_key.display(), e))?;
 
+    // `--max-seeds` is a pure scan-termination cap: it only shortens how many
+    // seeds this invocation walks before stopping, never how any individual
+    // seed is evaluated (`plant`/`golf_gate` below are called identically
+    // either way). It composes with the existing generator-exhaustion budget
+    // (200*count) by taking whichever cap is tighter; when `--max-seeds`
+    // isn't given, or is looser than that budget, behavior is unchanged.
     let seed_budget = SEED_BUDGET_PER_CANDIDATE.saturating_mul(count as u64);
+    let effective_budget = match max_seeds {
+        Some(m) => seed_budget.min(m),
+        None => seed_budget,
+    };
     let mut histogram = RejectionHistogram::default();
     let mut accepted_ids: Vec<String> = Vec::with_capacity(count);
     let mut seeds_tried: u64 = 0;
     let mut this_seed = seed;
 
-    while accepted_ids.len() < count && seeds_tried < seed_budget {
+    while accepted_ids.len() < count && seeds_tried < effective_budget {
         seeds_tried += 1;
         let current_seed = this_seed;
         this_seed += 1;
@@ -271,6 +282,19 @@ pub fn cmd_plant(
     histogram.print(accepted_ids.len());
 
     if accepted_ids.len() < count {
+        // Running out of the *generator-exhaustion* budget is a real
+        // problem (the band's par range may be too tight). Hitting an
+        // explicit `--max-seeds` cap is the caller asking for exactly this
+        // — a clean, expected stop, not an error — so the caller's own exit
+        // code can distinguish "capped scan, 0-or-more accepted" from an
+        // actual failure.
+        if max_seeds.is_some_and(|m| seeds_tried >= m) {
+            eprintln!(
+                "golf plant: stopped at --max-seeds cap ({seeds_tried} seeds evaluated), accepted {}/{count}",
+                accepted_ids.len()
+            );
+            return Ok(());
+        }
         return Err(format!(
             "golf plant: only {}/{count} candidates accepted after trying {seeds_tried} seeds (budget {seed_budget}); \
              band {band} par range may be too tight for the current gate — see histogram above",

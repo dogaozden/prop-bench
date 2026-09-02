@@ -116,3 +116,77 @@ fn plant_two_band1_candidates_notarize_and_split_across_set_and_key() {
         );
     }
 }
+
+/// `--max-seeds` is a pure scan-termination cap (Task 11 Ruling C): it must
+/// stop the seed loop after evaluating the cap, regardless of accept count,
+/// and exit 0 even with 0 accepted — never treat a capped scan as an error.
+/// Seed 1000000 at band 1 (no `--subproofs`/`--passes` needed to reproduce —
+/// same params as the other tests here) is a known reject: empirically
+/// confirmed to fail the gate on the very first seed tried.
+#[test]
+fn max_seeds_stops_cleanly_without_erroring_on_a_known_reject_seed() {
+    let out_set = fresh_dir("max_seeds_reject_set");
+    let out_key = fresh_dir("max_seeds_reject_key");
+
+    let out = run_plant(&[
+        "golf", "plant",
+        "--count", "1",
+        "--seed", "1000000",
+        "--band", "1",
+        "--out-set", out_set.to_str().unwrap(),
+        "--out-key", out_key.to_str().unwrap(),
+        "--subproofs", "1",
+        "--passes", "2",
+        "--max-seeds", "1",
+    ]);
+    assert!(
+        out.status.success(),
+        "expected exit 0 even with 0 accepted (hitting --max-seeds is a clean stop, not an error), stdout: {}\nstderr: {}",
+        String::from_utf8_lossy(&out.stdout),
+        String::from_utf8_lossy(&out.stderr)
+    );
+
+    let set_json = json_files(&out_set, ".json");
+    assert!(
+        set_json.is_empty(),
+        "expected 0 theorem files written when --max-seeds 1 caps the scan at seed 1000000 (a known reject), found {:?}",
+        set_json
+    );
+}
+
+/// A `--max-seeds` cap looser than the natural `200*count` exhaustion budget
+/// must not change outcomes: same seed/band/count as
+/// `plant_two_band1_candidates_notarize_and_split_across_set_and_key`
+/// (proven to accept 2/2 within budget 400), plus a 500 cap that's never the
+/// binding constraint — proves `--max-seeds` doesn't alter per-seed
+/// evaluation when it isn't actually hit.
+#[test]
+fn max_seeds_generous_cap_does_not_change_normal_accept_behavior() {
+    let out_set = fresh_dir("max_seeds_generous_set");
+    let out_key = fresh_dir("max_seeds_generous_key");
+
+    let out = run_plant(&[
+        "golf", "plant",
+        "--count", "2",
+        "--seed", "1000",
+        "--band", "1",
+        "--out-set", out_set.to_str().unwrap(),
+        "--out-key", out_key.to_str().unwrap(),
+        "--subproofs", "1",
+        "--passes", "2",
+        "--max-seeds", "500",
+    ]);
+    assert!(
+        out.status.success(),
+        "expected exit 0, stdout: {}\nstderr: {}",
+        String::from_utf8_lossy(&out.stdout),
+        String::from_utf8_lossy(&out.stderr)
+    );
+
+    let set_json = json_files(&out_set, ".json");
+    assert_eq!(
+        set_json.len(), 2,
+        "a generous --max-seeds (never the binding constraint) must not change normal accept behavior, found {:?}",
+        set_json
+    );
+}

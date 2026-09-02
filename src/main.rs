@@ -181,6 +181,13 @@ enum GolfCommands {
         /// Obfuscation costume passes
         #[arg(long, default_value_t = 0)]
         passes: u8,
+
+        /// Stop after evaluating this many seeds, regardless of accept
+        /// count — a scan-termination cap only (never alters how any
+        /// individual seed is evaluated). Exits 0 even with 0 accepted, so
+        /// callers can distinguish a capped scan from a real failure.
+        #[arg(long)]
+        max_seeds: Option<u64>,
     },
 
     /// Score a submitted proof set against a golf manifest
@@ -784,8 +791,8 @@ fn main() {
             cmd_analyze(&theorems, limit, equiv_cap)
         }
         Commands::Golf { command } => match command {
-            GolfCommands::Plant { count, seed, band, out_set, out_key, freeze, subproofs, passes } => {
-                golf::cmd_plant(count, seed, band, &out_set, &out_key, freeze, subproofs, passes)
+            GolfCommands::Plant { count, seed, band, out_set, out_key, freeze, subproofs, passes, max_seeds } => {
+                golf::cmd_plant(count, seed, band, &out_set, &out_key, freeze, subproofs, passes, max_seeds)
             }
             GolfCommands::Score { set, proofs, json } => {
                 golf::cmd_score(&set, &proofs, json)
