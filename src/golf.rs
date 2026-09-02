@@ -370,11 +370,13 @@ fn theorem_from_bench(bench: &BenchTheorem) -> Result<Theorem, String> {
     Ok(Theorem::with_difficulty_value(premises, conclusion, difficulty, bench.difficulty_value, None, None))
 }
 
-/// Run `golf score`: read the manifest at `<set>/manifest.json`, verify every
-/// item's theorem file bytes still hash to the manifest's recorded
-/// `theorem_sha256` (every mismatch is collected; if any exist, all are
-/// printed and the process exits 2 — "set tampered" — before any scoring
-/// happens). Then for each item, look for `<proofs>/<id>.json`: absent
+/// Run `golf score`: read the manifest at `<set>/manifest.json` (an empty
+/// `items` list is refused as a broken set), verify every item's theorem
+/// file exists and its bytes still hash to the manifest's recorded
+/// `theorem_sha256` — a missing file is tampering exactly like a mismatch —
+/// (every problem is collected; if any exist, all are printed and the
+/// process exits 2 — "set tampered" — before any scoring happens). Then for
+/// each item, look for `<proofs>/<id>.json`: absent
 /// imputes `manifest.imputed_ratio`; present is replayed via propbench's own
 /// `replay_proof` (the single validity/line-count authority) and scored as
 /// `line_count / par`. Any present-but-invalid proof is collected as an
@@ -389,16 +391,34 @@ pub fn cmd_score(set_dir: &Path, proofs_dir: &Path, json: bool) -> Result<(), St
     let manifest: Manifest = serde_json::from_str(&manifest_json)
         .map_err(|e| format!("Failed to parse manifest {}: {e}", manifest_path.display()))?;
 
-    // Integrity gate: every theorem file's bytes must still hash to the
-    // manifest's recorded sha256. Checked (and parsed) up front, before any
+    if manifest.items.is_empty() {
+        return Err(format!(
+            "manifest {} has no items — refusing to score an empty set",
+            manifest_path.display()
+        ));
+    }
+
+    // Integrity gate: every theorem file declared by the manifest must exist
+    // and its bytes must still hash to the manifest's recorded sha256 — the
+    // integrity contract is manifest <-> files, so a file the manifest
+    // declares but that's missing (or unreadable) is tampering too, exactly
+    // like a hash mismatch. Checked (and parsed) up front, before any
     // scoring, so a tampered set never produces a partial/misleading score.
     let mut tamper_errors: Vec<String> = Vec::new();
     let mut theorems: Vec<(String, usize, BenchTheorem)> = Vec::with_capacity(manifest.items.len());
 
     for item in &manifest.items {
         let theorem_path = set_dir.join(format!("{}.json", item.id));
-        let bytes = fs::read(&theorem_path)
-            .map_err(|e| format!("Failed to read theorem file {}: {e}", theorem_path.display()))?;
+        let bytes = match fs::read(&theorem_path) {
+            Ok(b) => b,
+            Err(e) => {
+                tamper_errors.push(format!(
+                    "{}: missing theorem file {} ({e})",
+                    item.id, theorem_path.display()
+                ));
+                continue;
+            }
+        };
 
         let actual_sha256 = sha256_hex(&bytes);
         if actual_sha256 != item.theorem_sha256 {
@@ -477,12 +497,19 @@ pub fn cmd_score(set_dir: &Path, proofs_dir: &Path, json: bool) -> Result<(), St
             .map_err(|e| format!("JSON serialization error: {e}"))?;
         println!("{out_json}");
     } else {
+        // Route every displayed number through round4() first, then format
+        // the already-rounded value — the same two-step the JSON path uses.
+        // Rust's `{:.4}` formats the raw float with ties-to-even, while
+        // round4() rounds ties away from zero; formatting a raw ratio
+        // directly could then disagree with --json's rounded value on an
+        // exact .xxxx5 tie (e.g. 1/32 = 0.03125 -> table "0.0312" vs JSON
+        // "0.0313"). Pre-rounding here keeps both output modes identical.
         println!("{:<12} {:>4} {:>6} {:>8}", "id", "par", "lines", "ratio");
         for r in &results {
             let lines_str = r.lines.map(|l| l.to_string()).unwrap_or_else(|| "—".to_string());
-            println!("{:<12} {:>4} {:>6} {:>8.4}", r.id, r.par, lines_str, r.ratio);
+            println!("{:<12} {:>4} {:>6} {:>8.4}", r.id, r.par, lines_str, round4(r.ratio));
         }
-        println!("SCORE: {score:.4}");
+        println!("SCORE: {:.4}", round4(score));
     }
 
     Ok(())

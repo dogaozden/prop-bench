@@ -127,3 +127,79 @@ fn json_output_parses_and_matches_expected_score() {
     assert_eq!(items[1]["lines"], serde_json::Value::Null);
     assert_eq!(items[1]["ratio"], 1.5);
 }
+
+/// Regression: par=32 with a 1-line replay gives ratio exactly 1/32 =
+/// 0.03125 — an exact tie at the 4th decimal place. Rust's `{:.4}` formats
+/// ties-to-even (-> "0.0312"), while `round4()` (used for --json) rounds
+/// ties away from zero (-> "0.0313"). The table must route through the same
+/// `round4()` as --json so the two output modes never disagree on a real
+/// input. Fixture: `fixtures/golf-test/rounding` (reuses the already-proven
+/// `premises_theorem.json`/`premises_proof.json` shape — 2 premises, 1
+/// derived MP line — under par 32).
+#[test]
+fn table_and_json_agree_on_an_exact_rounding_tie() {
+    let human = run_score(&[
+        "golf", "score",
+        "--set", "fixtures/golf-test/rounding",
+        "--proofs", "fixtures/golf-test/rounding/proofs",
+    ]);
+    assert!(human.status.success(), "stdout: {}\nstderr: {}", out_str(&human), err_str(&human));
+    let human_stdout = out_str(&human);
+    assert!(human_stdout.contains("0.0313"), "table must round the 0.03125 tie to 0.0313, got: {human_stdout}");
+    assert!(!human_stdout.contains("0.0312"), "table must not use ties-to-even rounding, got: {human_stdout}");
+    assert!(human_stdout.contains("SCORE: 0.0313"), "got: {human_stdout}");
+
+    let json_out = run_score(&[
+        "golf", "score",
+        "--set", "fixtures/golf-test/rounding",
+        "--proofs", "fixtures/golf-test/rounding/proofs",
+        "--json",
+    ]);
+    assert!(json_out.status.success(), "stdout: {}\nstderr: {}", out_str(&json_out), err_str(&json_out));
+    let v: serde_json::Value = serde_json::from_slice(&json_out.stdout).expect("valid JSON");
+    assert_eq!(v["score"], 0.0313, "full output: {v}");
+    assert_eq!(v["items"][0]["ratio"], 0.0313, "full output: {v}");
+}
+
+/// A theorem file the manifest declares but that doesn't exist in `--set`
+/// is tampering, exactly like a hash mismatch — the integrity contract is
+/// manifest <-> files, not just manifest <-> file-contents. Exit 2, and the
+/// missing item's id/filename must be named in the output.
+#[test]
+fn missing_declared_theorem_file_is_tampering_exits_2() {
+    let dir = fresh_dir("missing_theorem");
+    fs::create_dir_all(&dir).expect("create dir");
+    fs::copy("fixtures/golf-test/manifest.json", dir.join("manifest.json")).expect("copy manifest");
+    fs::copy("fixtures/golf-test/t1.json", dir.join("t1.json")).expect("copy t1");
+    // t2.json is deliberately NOT copied — the manifest declares it, but the
+    // file is missing from the set dir.
+
+    let out = run_score(&[
+        "golf", "score",
+        "--set", dir.to_str().unwrap(),
+        "--proofs", "fixtures/golf-test/proofs-valid",
+    ]);
+    assert_eq!(out.status.code(), Some(2), "stdout: {}\nstderr: {}", out_str(&out), err_str(&out));
+    let combined = format!("{}{}", out_str(&out), err_str(&out));
+    assert!(!combined.contains("SCORE:"), "a set with a missing theorem file must never print a SCORE line");
+    assert!(combined.contains("t2"), "error should name the missing item: {combined}");
+}
+
+/// A manifest with zero items is a broken set, not a vacuous 0-item success
+/// — geometric mean over zero ratios is 0.0/0.0 = NaN, which must never
+/// reach stdout as `SCORE: NaN` under exit 0.
+#[test]
+fn empty_manifest_errors_instead_of_nan_score() {
+    let out = run_score(&[
+        "golf", "score",
+        "--set", "fixtures/golf-test/empty",
+        "--proofs", "fixtures/golf-test/proofs-valid",
+    ]);
+    assert!(!out.status.success(), "an empty manifest must not exit 0, stdout: {}\nstderr: {}", out_str(&out), err_str(&out));
+    let combined = format!("{}{}", out_str(&out), err_str(&out));
+    assert!(!combined.to_uppercase().contains("NAN"), "must never print a NaN score: {combined}");
+    assert!(
+        combined.to_lowercase().contains("empty") || combined.to_lowercase().contains("no items"),
+        "error message should explain the empty set: {combined}"
+    );
+}
