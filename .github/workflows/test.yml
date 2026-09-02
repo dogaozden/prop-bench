@@ -7,3 +7,6 @@ jobs:
       - uses: actions/checkout@v4
       - uses: dtolnay/rust-toolchain@stable
       - run: cargo test
+      - run: bash golf/tests/referee-e2e.sh
+        env:
+          GOLF_ALLOW_NET: "1"
