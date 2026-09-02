@@ -20,11 +20,31 @@ const SEED_BUDGET_PER_CANDIDATE: u64 = 200;
 /// shared across all three bands (Task 7 brief); only the par range differs.
 /// `band` is pre-validated by clap's `1..=3` range parser, so the match is
 /// exhaustive without a fallback arm.
+///
+/// `(par_min, par_max)` here are **pre-costume** targets, not the band's
+/// advertised final-par contract (Ruling C, Task 8b). `plant()` checks
+/// `par_min`/`par_max` against the cone's par *before* the costume pass
+/// (`obfuscation_passes > 0`) adds prologue/epilogue lines on top, so the
+/// *final* `PlantedCandidate::par` written to `<id>.meta.json` lands above
+/// this window by however much costume adds — and that overhead isn't a
+/// clean band-independent constant (measured ~4.6 par lines on average via
+/// a direct `passes:0` vs `passes:2` comparison at band 1's old window, but
+/// bands 2-3 needed a smaller downward shift than that single number would
+/// predict to actually land in-band, most likely because `plant()`'s
+/// internal growth target scales with `par_max` itself, so each band is a
+/// somewhat different growth regime). These constants are therefore an
+/// *empirically verified* fit, not a formula: derive-then-measure, repeated
+/// per band until a fresh `--subproofs 1 --passes 2` sample of ≥8 accepts
+/// landed ≥80% inside the advertised final-par contract (12-16 / 17-22 /
+/// 23-30), with band 3 additionally checked to never exceed 30. See
+/// `docs/superpowers/plans/2026-08-24-proof-golf-MEASUREMENTS.md`'s Task 8b
+/// addendum for the full measurement trail (all three bands landed at
+/// 87.5% in-band on the verification sample).
 fn spec_for_band(band: u8, subproofs: u8, obfuscation_passes: u8) -> PlantSpec {
     let (par_min, par_max) = match band {
-        1 => (12, 16),
-        2 => (17, 22),
-        3 => (23, 30),
+        1 => (7, 11),
+        2 => (14, 19),
+        3 => (19, 26),
         other => unreachable!("clap's value_parser restricts --band to 1..=3, got {other}"),
     };
     PlantSpec {
