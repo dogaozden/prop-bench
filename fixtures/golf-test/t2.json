@@ -1,0 +1,1 @@
+{"id": "t2", "premises": [], "conclusion": "{[(R > ~P) v (P > P)] . {S > [(Q v ~S) > ~S]}} > [(P > ~R) v (~P > ~P)]", "difficulty": "Hard", "difficulty_value": 70}

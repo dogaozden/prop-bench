@@ -2,10 +2,11 @@
 //! the golf gate pipeline, notarized via propbench's own replay path, with
 //! output split into a public theorem set and a private answer key.
 
+use logic_core::models::{theorem::{Difficulty, Theorem}, Formula};
 use logic_core::services::{
     golf_gate, plant, GateConfig, GateReject, OptimalConfig, PlantError, PlantSpec, PlantedCandidate,
 };
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 use std::fs;
 use std::path::Path;
 
@@ -283,5 +284,206 @@ pub fn cmd_plant(
         out_set.display(),
         out_key.display()
     );
+    Ok(())
+}
+
+// ─── `golf score` subcommand ────────────────────────────────────────────────
+//
+// Scores a submitted proof set against a golf manifest at `<set>/manifest.json`.
+// Each item's theorem file lives at `<set>/<id>.json`; its bytes must still hash
+// to the manifest's recorded `theorem_sha256`, or the set has been tampered with
+// since packaging — a hard failure distinct from an ordinary invalid proof
+// (exit 2, checked before any scoring happens). A submission lives at
+// `<proofs>/<id>.json` per item: a missing file is a legitimate "no attempt"
+// (imputed at `manifest.imputed_ratio`), while a present-but-invalid proof means
+// the whole run fails closed — every collected error is printed and the process
+// exits 1 with no SCORE, since a single bad proof means the benchmark's one
+// number can't be trusted.
+
+#[derive(Debug, Deserialize)]
+#[allow(dead_code)] // set_version/core_tag are set metadata, not read by scoring
+struct Manifest {
+    set_version: String,
+    core_tag: String,
+    imputed_ratio: f64,
+    items: Vec<ManifestItem>,
+}
+
+#[derive(Debug, Deserialize)]
+struct ManifestItem {
+    id: String,
+    par: usize,
+    theorem_sha256: String,
+}
+
+/// One item's scoring outcome. `ratio` stays full-precision — SCORE is the
+/// geometric mean over these exact values; only display/JSON output rounds
+/// (via `round4`).
+struct ScoredItem {
+    id: String,
+    par: usize,
+    lines: Option<usize>,
+    ratio: f64,
+}
+
+#[derive(Debug, Serialize)]
+struct ScoreItemJson {
+    id: String,
+    par: usize,
+    lines: Option<usize>,
+    ratio: f64,
+}
+
+#[derive(Debug, Serialize)]
+struct ScoreJson {
+    score: f64,
+    items: Vec<ScoreItemJson>,
+}
+
+fn sha256_hex(bytes: &[u8]) -> String {
+    use sha2::{Digest, Sha256};
+    Sha256::digest(bytes).iter().map(|b| format!("{b:02x}")).collect()
+}
+
+fn round4(x: f64) -> f64 {
+    (x * 10_000.0).round() / 10_000.0
+}
+
+/// Rebuild a `Theorem` from a `BenchTheorem` for replay purposes — mirrors
+/// `main.rs`'s own `parse_bench_theorem`/`cmd_validate` reconstruction.
+/// Difficulty is cosmetic here; `replay_proof` only cares about premises and
+/// conclusion.
+fn theorem_from_bench(bench: &BenchTheorem) -> Result<Theorem, String> {
+    let premises: Vec<Formula> = bench
+        .premises
+        .iter()
+        .map(|p| Formula::parse(p).map_err(|e| format!("invalid premise '{p}': {e}")))
+        .collect::<Result<Vec<_>, _>>()?;
+    let conclusion = Formula::parse(&bench.conclusion)
+        .map_err(|e| format!("invalid conclusion '{}': {e}", bench.conclusion))?;
+    let difficulty = match bench.difficulty_value {
+        1..=25 => Difficulty::Easy,
+        26..=45 => Difficulty::Medium,
+        46..=70 => Difficulty::Hard,
+        _ => Difficulty::Expert,
+    };
+    Ok(Theorem::with_difficulty_value(premises, conclusion, difficulty, bench.difficulty_value, None, None))
+}
+
+/// Run `golf score`: read the manifest at `<set>/manifest.json`, verify every
+/// item's theorem file bytes still hash to the manifest's recorded
+/// `theorem_sha256` (every mismatch is collected; if any exist, all are
+/// printed and the process exits 2 — "set tampered" — before any scoring
+/// happens). Then for each item, look for `<proofs>/<id>.json`: absent
+/// imputes `manifest.imputed_ratio`; present is replayed via propbench's own
+/// `replay_proof` (the single validity/line-count authority) and scored as
+/// `line_count / par`. Any present-but-invalid proof is collected as an
+/// error; if any errors were collected, every one is printed and the process
+/// exits 1 — no SCORE line, no per-item table. Otherwise the per-item table
+/// and `SCORE: <geomean>` (or `--json`'s `{score, items}`) are printed and
+/// the function returns `Ok(())` (exit 0).
+pub fn cmd_score(set_dir: &Path, proofs_dir: &Path, json: bool) -> Result<(), String> {
+    let manifest_path = set_dir.join("manifest.json");
+    let manifest_json = fs::read_to_string(&manifest_path)
+        .map_err(|e| format!("Failed to read manifest {}: {e}", manifest_path.display()))?;
+    let manifest: Manifest = serde_json::from_str(&manifest_json)
+        .map_err(|e| format!("Failed to parse manifest {}: {e}", manifest_path.display()))?;
+
+    // Integrity gate: every theorem file's bytes must still hash to the
+    // manifest's recorded sha256. Checked (and parsed) up front, before any
+    // scoring, so a tampered set never produces a partial/misleading score.
+    let mut tamper_errors: Vec<String> = Vec::new();
+    let mut theorems: Vec<(String, usize, BenchTheorem)> = Vec::with_capacity(manifest.items.len());
+
+    for item in &manifest.items {
+        let theorem_path = set_dir.join(format!("{}.json", item.id));
+        let bytes = fs::read(&theorem_path)
+            .map_err(|e| format!("Failed to read theorem file {}: {e}", theorem_path.display()))?;
+
+        let actual_sha256 = sha256_hex(&bytes);
+        if actual_sha256 != item.theorem_sha256 {
+            tamper_errors.push(format!(
+                "{}: theorem_sha256 mismatch (manifest: {}, actual: {})",
+                item.id, item.theorem_sha256, actual_sha256
+            ));
+            continue;
+        }
+
+        let bench: BenchTheorem = serde_json::from_slice(&bytes)
+            .map_err(|e| format!("Failed to parse theorem file {}: {e}", theorem_path.display()))?;
+        theorems.push((item.id.clone(), item.par, bench));
+    }
+
+    if !tamper_errors.is_empty() {
+        eprintln!("set tampered:");
+        for e in &tamper_errors {
+            eprintln!("  {e}");
+        }
+        std::process::exit(2);
+    }
+
+    // Score each item: absent proof imputes; present proof replays.
+    let mut errors: Vec<String> = Vec::new();
+    let mut results: Vec<ScoredItem> = Vec::with_capacity(theorems.len());
+
+    for (id, par, bench) in &theorems {
+        let proof_path = proofs_dir.join(format!("{id}.json"));
+        if !proof_path.exists() {
+            results.push(ScoredItem { id: id.clone(), par: *par, lines: None, ratio: manifest.imputed_ratio });
+            continue;
+        }
+
+        let attempt = (|| -> Result<usize, String> {
+            let theorem = theorem_from_bench(bench)?;
+            let proof_json = fs::read_to_string(&proof_path)
+                .map_err(|e| format!("failed to read proof file: {e}"))?;
+            let lines: Vec<ValidateInput> = serde_json::from_str(&proof_json)
+                .map_err(|e| format!("failed to parse proof JSON: {e}"))?;
+            replay_proof(&theorem, &lines)
+                .map(|ok| ok.line_count)
+                .map_err(|e| e.to_string())
+        })();
+
+        match attempt {
+            Ok(line_count) => {
+                let ratio = line_count as f64 / *par as f64;
+                results.push(ScoredItem { id: id.clone(), par: *par, lines: Some(line_count), ratio });
+            }
+            Err(msg) => errors.push(format!("{id}: {msg}")),
+        }
+    }
+
+    if !errors.is_empty() {
+        for e in &errors {
+            eprintln!("{e}");
+        }
+        std::process::exit(1);
+    }
+
+    // SCORE = geometric mean of ratios, via mean-of-ln (numerically steadier
+    // than a running product for larger sets).
+    let mean_ln = results.iter().map(|r| r.ratio.ln()).sum::<f64>() / results.len() as f64;
+    let score = mean_ln.exp();
+
+    if json {
+        let out = ScoreJson {
+            score: round4(score),
+            items: results
+                .iter()
+                .map(|r| ScoreItemJson { id: r.id.clone(), par: r.par, lines: r.lines, ratio: round4(r.ratio) })
+                .collect(),
+        };
+        let out_json = serde_json::to_string_pretty(&out)
+            .map_err(|e| format!("JSON serialization error: {e}"))?;
+        println!("{out_json}");
+    } else {
+        println!("{:<12} {:>4} {:>6} {:>8}", "id", "par", "lines", "ratio");
+        for r in &results {
+            let lines_str = r.lines.map(|l| l.to_string()).unwrap_or_else(|| "—".to_string());
+            println!("{:<12} {:>4} {:>6} {:>8.4}", r.id, r.par, lines_str, r.ratio);
+        }
+        println!("SCORE: {score:.4}");
+    }
+
     Ok(())
 }

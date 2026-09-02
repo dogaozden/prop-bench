@@ -1,0 +1,9 @@
+{
+  "set_version": "v1",
+  "core_tag": "v0.3.2",
+  "imputed_ratio": 1.5,
+  "items": [
+    { "id": "t1", "par": 4, "theorem_sha256": "a26ff405ea991464bf603569cad02515f33565a67d8e66910f770ed06eb55b82" },
+    { "id": "t2", "par": 8, "theorem_sha256": "cef7dea5049038f5ab134015446566de1c8b48742aab277fc847a38dc6166e6c" }
+  ]
+}

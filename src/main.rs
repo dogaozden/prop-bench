@@ -182,6 +182,21 @@ enum GolfCommands {
         #[arg(long, default_value_t = 0)]
         passes: u8,
     },
+
+    /// Score a submitted proof set against a golf manifest
+    Score {
+        /// Directory containing manifest.json and the theorem-only set files
+        #[arg(long)]
+        set: PathBuf,
+
+        /// Directory containing submitted proof files (<id>.json per item)
+        #[arg(long)]
+        proofs: PathBuf,
+
+        /// Emit {score, items:[...]} JSON instead of the human-readable table
+        #[arg(long)]
+        json: bool,
+    },
 }
 
 // ─── Output types ───────────────────────────────────────────────────────────
@@ -771,6 +786,9 @@ fn main() {
         Commands::Golf { command } => match command {
             GolfCommands::Plant { count, seed, band, out_set, out_key, freeze, subproofs, passes } => {
                 golf::cmd_plant(count, seed, band, &out_set, &out_key, freeze, subproofs, passes)
+            }
+            GolfCommands::Score { set, proofs, json } => {
+                golf::cmd_score(&set, &proofs, json)
             }
         },
     };
