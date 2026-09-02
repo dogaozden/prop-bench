@@ -232,8 +232,8 @@ pub fn cmd_plant(
             freeze: if freeze {
                 Some(OptimalConfig {
                     max_lines: candidate.par,
-                    max_nodes: 5_000_000,
-                    equiv_moves_per_state: 256,
+                    max_nodes: 1_000_000,
+                    equiv_moves_per_state: 128,
                 })
             } else {
                 None

@@ -170,7 +170,7 @@ enum GolfCommands {
         out_key: PathBuf,
 
         /// Require finalists to also survive a per-candidate lawyer freeze
-        /// budget (max_lines: par, max_nodes: 5_000_000, equiv_moves_per_state: 256)
+        /// budget (max_lines: par, max_nodes: 1_000_000, equiv_moves_per_state: 128)
         #[arg(long)]
         freeze: bool,
 
