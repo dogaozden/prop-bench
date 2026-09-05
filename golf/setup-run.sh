@@ -32,5 +32,5 @@ echo
 echo "Launch checklist:"
 echo "  cd $WORKTREE"
 echo "  Read golf/GOAL.md first — it is the whole briefing."
-echo "  Measure yourself any time:  propbench golf score --set golf/set/v1 --proofs golf/proofs"
+echo "  Measure yourself any time:  cargo run --release -- golf score --set golf/set/v1 --proofs golf/proofs"
 echo "  The score that counts:     golf/referee.sh \$(git rev-parse HEAD)"

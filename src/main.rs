@@ -157,7 +157,10 @@ enum GolfCommands {
         #[arg(long)]
         seed: u64,
 
-        /// Difficulty band: 1 (par 12-16), 2 (par 17-22), or 3 (par 23-30)
+        /// Difficulty band: approximate par targets, not guarantees —
+        /// 1 (~12-16), 2 (~17-22), or 3 (~23-30). Shipped v1 landed band 1
+        /// at only 5/8 in-band; see the spec_for_band doc comment in
+        /// src/golf.rs for the full per-band breakdown.
         #[arg(long, value_parser = clap::value_parser!(u8).range(1..=3))]
         band: u8,
 

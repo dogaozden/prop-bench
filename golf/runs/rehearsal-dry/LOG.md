@@ -1,6 +1,6 @@
 # LOG
 
-## 2026-09-05 — r1 (rehearsal set)
+## 2026-09-04 — r1 (rehearsal set)
 
 - **Attacked:** `r1` — premises `P > Q`, `P`; conclusion `Q`. par = 1.
 - **How:** read the premises directly; `Q` follows from `P > Q` and `P` by a

@@ -3,6 +3,30 @@
 Manual owner setup, done once per contestant sandbox, before a run starts.
 Nothing in this repo automates it.
 
+## Host isolation
+
+The sandbox is a different machine from the referee host — or, at an
+absolute minimum, a different OS user on the same machine. The two must
+never share a `.git` (see `PROTOCOL.md` step 1: the official referee runs
+from a separate clone the contestant can't write to) or a build cache.
+Concretely:
+
+- The answer key (`/Users/dogaozden/AI_Projects/logic/golf-answer-key/`)
+  must not exist on, or be readable from, the sandbox.
+- The sandbox has no write access to the referee host's repository (no
+  shared `.git`, no shared worktree) or its build cache (no shared
+  `CARGO_TARGET_DIR`/`target/`).
+
+Verify before every run, not just the first:
+
+- [ ] From the sandbox: `ls /Users/dogaozden/AI_Projects/logic/golf-answer-key` must fail (no such file/directory, or permission denied).
+- [ ] From the sandbox: confirm there is no writable path back into the
+      referee host's checkout or `target/` — a different machine settles
+      this automatically; a same-machine different-user setup needs the
+      filesystem permissions actually checked, not assumed.
+- [ ] `github.com` is unreachable from the sandbox (see Firewall allowlist
+      below).
+
 ## Firewall allowlist
 
 The sandbox should reach the model API and nothing else — no GitHub, no
@@ -21,17 +45,23 @@ they aren't fixed here. Verify the block before starting a run: try reaching
 ## Cargo cache pre-warm
 
 `golf/referee.sh` builds `--offline` by default, and a sandbox with the
-firewall above has no cargo network access either. Before a run starts:
+firewall above has no cargo network access either — but the referee build
+never runs on the sandbox; it runs on the referee host, from the pinned
+`golf/PIN` commit. What has to resolve offline is **that PIN's own**
+`Cargo.lock`, not whatever the mainline tree currently has. Before a run
+starts, on the referee host:
 
 ```
 cargo build --release
 ```
 
-...once, on the mainline checkout, with network still open. That populates
-the local registry and git caches cargo needs, so every later `--offline`
-referee build resolves from cache instead of failing closed. Re-run this
-after any `Cargo.lock` change (a core version bump, a new dependency) — a
-stale cache means a stale `--offline` build.
+...once, with network still open, on a checkout at (or including) the
+current `golf/PIN` commit. That populates the local registry and git caches
+cargo needs, so every later `--offline` referee build resolves from cache
+instead of failing closed. A later **mainline** dependency bump (past the
+PIN) does **not** invalidate this — the PIN's `Cargo.lock` doesn't change
+just because mainline's does. A `cargo cache clean` (or equivalent) **does**
+invalidate it and needs a re-warm.
 
 ## Worktree layout
 

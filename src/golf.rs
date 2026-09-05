@@ -39,8 +39,15 @@ const SEED_BUDGET_PER_CANDIDATE: u64 = 200;
 /// landed ≥80% inside the advertised final-par contract (12-16 / 17-22 /
 /// 23-30), with band 3 additionally checked to never exceed 30. See
 /// `docs/superpowers/plans/2026-08-24-proof-golf-MEASUREMENTS.md`'s Task 8b
-/// addendum for the full measurement trail (all three bands landed at
-/// 87.5% in-band on the verification sample).
+/// addendum for the full measurement trail (the *verification* sample — a
+/// fresh 8-accept run per band used to derive these constants — landed all
+/// three bands at 87.5% in-band). Ranges are approximate targets, not a
+/// guarantee: the *shipped* v1 set (a separate freeze run, same constants)
+/// landed less evenly — band 1 only 5/8 in-band (62.5%; shipped pars
+/// 10,10,10,12,13,14,14,15, so three seeds landed under the 12-16 window),
+/// while bands 2 and 3 each landed 7/8 (87.5%). n=8/band is the
+/// verification floor, not a per-band contract — see
+/// `golf/set/v1/manifest.json` for the pars actually shipped.
 fn spec_for_band(band: u8, subproofs: u8, obfuscation_passes: u8) -> PlantSpec {
     let (par_min, par_max) = match band {
         1 => (7, 11),

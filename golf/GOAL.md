@@ -34,8 +34,9 @@ places. Lower is better. Three landmarks:
 
 ## 2. The commands
 
-`propbench golf score --set golf/set/v1 --proofs golf/proofs` — score your
-own tree, for your own convenience while you work. Prints a per-item table
+`cargo run --release -- golf score --set golf/set/v1 --proofs golf/proofs`
+— score your own tree, for your own convenience while you work (no
+installed binary assumed). Prints a per-item table
 and `SCORE: X.XXXX` on success (exit 0). Exits 1 with errors and no SCORE
 line if any submitted proof is invalid. Exits 2 if the set itself looks
 tampered — that should never happen from anything you do; if it does, see
