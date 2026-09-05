@@ -17,8 +17,11 @@ fn err_str(out: &Output) -> String {
     String::from_utf8_lossy(&out.stderr).to_string()
 }
 
+/// Per-process unique suffix (this binary's pid) so two concurrent suite
+/// runs on one machine (e.g. two CI jobs sharing a runner's temp dir) don't
+/// collide on the same fixed path.
 fn fresh_dir(name: &str) -> PathBuf {
-    let dir = std::env::temp_dir().join(format!("propbench_golf_score_test_{name}"));
+    let dir = std::env::temp_dir().join(format!("propbench_golf_score_test_{name}_{}", std::process::id()));
     let _ = fs::remove_dir_all(&dir);
     dir
 }
