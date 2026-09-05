@@ -202,6 +202,18 @@ pub fn cmd_plant(
     passes: u8,
     max_seeds: Option<u64>,
 ) -> Result<(), String> {
+    // Same-dir guard: --out-set is the public set, --out-key is the private
+    // answer key (proofs + generation metadata). The same directory for
+    // both would put *.proof.json next to public theorem files — checked
+    // before anything is written.
+    if out_set == out_key {
+        return Err(format!(
+            "--out-set and --out-key must be different directories (both were {}) — \
+             the same dir would put proof files next to the public theorem set",
+            out_set.display()
+        ));
+    }
+
     let spec = spec_for_band(band, subproofs, passes);
     let gate_label: &'static str = if freeze { "freeze" } else { "probe" };
 
@@ -324,7 +336,7 @@ pub fn cmd_plant(
 // exits 1 with no SCORE, since a single bad proof means the benchmark's one
 // number can't be trusted.
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Serialize)]
 #[allow(dead_code)] // set_version/core_tag are set metadata, not read by scoring
 struct Manifest {
     set_version: String,
@@ -333,7 +345,7 @@ struct Manifest {
     items: Vec<ManifestItem>,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Serialize)]
 struct ManifestItem {
     id: String,
     par: usize,
@@ -554,5 +566,99 @@ pub fn cmd_score(set_dir: &Path, proofs_dir: &Path, json: bool) -> Result<(), St
         println!("SCORE: {:.4}", round4(score));
     }
 
+    Ok(())
+}
+
+// ─── `golf manifest` subcommand ─────────────────────────────────────────────
+//
+// Rebuilds `<set>/manifest.json` from files already on disk: the theorem
+// files in `<set>` give the id list, `<key>/<id>.meta.json` gives each id's
+// par, and `<set>/<id>.json`'s exact bytes give theorem_sha256. Deterministic
+// (ids sorted) and in exactly the shape `cmd_score` reads above, so the
+// output is byte-for-byte reproducible from an unchanged set + key.
+
+/// Just the one field `golf manifest` needs out of `<id>.meta.json` — extra
+/// fields (seed, band, spec, gate) are ignored by serde without complaint.
+#[derive(Debug, Deserialize)]
+struct ManifestKeyMeta {
+    par: usize,
+}
+
+/// Scan `<set>` for theorem files (`*.json`, excluding `manifest.json`
+/// itself) and return their ids in sorted order, each paired with the par
+/// recorded in `<key>/<id>.meta.json`.
+fn discover_manifest_ids(set_dir: &Path, key_dir: &Path) -> Result<Vec<(String, usize)>, String> {
+    let entries = fs::read_dir(set_dir)
+        .map_err(|e| format!("Failed to read --set dir {}: {e}", set_dir.display()))?;
+
+    let mut ids: Vec<String> = Vec::new();
+    for entry in entries {
+        let entry = entry.map_err(|e| format!("Failed to read --set dir {}: {e}", set_dir.display()))?;
+        let path = entry.path();
+        if !path.is_file() || path.extension().and_then(|e| e.to_str()) != Some("json") {
+            continue;
+        }
+        let stem = path.file_stem().and_then(|s| s.to_str()).unwrap_or_default().to_string();
+        if stem == "manifest" {
+            continue;
+        }
+        ids.push(stem);
+    }
+    ids.sort();
+
+    if ids.is_empty() {
+        return Err(format!("no theorem files (*.json) found in --set dir {}", set_dir.display()));
+    }
+
+    let mut id_pars = Vec::with_capacity(ids.len());
+    for id in ids {
+        let meta_path = key_dir.join(format!("{id}.meta.json"));
+        let meta_json = fs::read_to_string(&meta_path)
+            .map_err(|e| format!("Failed to read {}: {e}", meta_path.display()))?;
+        let meta: ManifestKeyMeta = serde_json::from_str(&meta_json)
+            .map_err(|e| format!("Failed to parse {}: {e}", meta_path.display()))?;
+        id_pars.push((id, meta.par));
+    }
+    Ok(id_pars)
+}
+
+/// Run `golf manifest`: write `<set>/manifest.json` from `<set>`'s theorem
+/// files and `<key>`'s per-id metadata. Refuses an empty `<set>` rather than
+/// writing a manifest with zero items (which `cmd_score` would then refuse
+/// to score anyway).
+pub fn cmd_manifest(
+    set_dir: &Path,
+    key_dir: &Path,
+    core_tag: &str,
+    set_version: &str,
+    imputed_ratio: f64,
+) -> Result<(), String> {
+    let id_pars = discover_manifest_ids(set_dir, key_dir)?;
+
+    let mut items = Vec::with_capacity(id_pars.len());
+    for (id, par) in id_pars {
+        let theorem_path = set_dir.join(format!("{id}.json"));
+        let bytes = fs::read(&theorem_path)
+            .map_err(|e| format!("Failed to read {}: {e}", theorem_path.display()))?;
+        items.push(ManifestItem { id, par, theorem_sha256: sha256_hex(&bytes) });
+    }
+
+    let manifest = Manifest {
+        set_version: set_version.to_string(),
+        core_tag: core_tag.to_string(),
+        imputed_ratio,
+        items,
+    };
+    let manifest_json = serde_json::to_string_pretty(&manifest)
+        .map_err(|e| format!("JSON serialization error for manifest: {e}"))?;
+    let manifest_path = set_dir.join("manifest.json");
+    fs::write(&manifest_path, format!("{manifest_json}\n"))
+        .map_err(|e| format!("Failed to write {}: {e}", manifest_path.display()))?;
+
+    eprintln!(
+        "golf manifest: wrote {} ({} items)",
+        manifest_path.display(),
+        manifest.items.len()
+    );
     Ok(())
 }

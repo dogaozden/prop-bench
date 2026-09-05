@@ -204,6 +204,31 @@ enum GolfCommands {
         #[arg(long)]
         json: bool,
     },
+
+    /// Rebuild <set>/manifest.json from the theorem files in --set and the
+    /// per-id pars recorded in --key's *.meta.json (deterministic: ids
+    /// sorted, theorem_sha256 hashed from the exact set-file bytes)
+    Manifest {
+        /// Directory containing the public theorem-only set files
+        #[arg(long)]
+        set: PathBuf,
+
+        /// Directory containing the private answer key (<id>.meta.json per item)
+        #[arg(long)]
+        key: PathBuf,
+
+        /// logic-core tag the set was generated against (recorded, not verified)
+        #[arg(long)]
+        core_tag: String,
+
+        /// Set version label (e.g. "v1")
+        #[arg(long)]
+        set_version: String,
+
+        /// Ratio imputed for an item with no submitted proof
+        #[arg(long, default_value_t = 1.5)]
+        imputed_ratio: f64,
+    },
 }
 
 // ─── Output types ───────────────────────────────────────────────────────────
@@ -796,6 +821,9 @@ fn main() {
             }
             GolfCommands::Score { set, proofs, json } => {
                 golf::cmd_score(&set, &proofs, json)
+            }
+            GolfCommands::Manifest { set, key, core_tag, set_version, imputed_ratio } => {
+                golf::cmd_manifest(&set, &key, &core_tag, &set_version, imputed_ratio)
             }
         },
     };
