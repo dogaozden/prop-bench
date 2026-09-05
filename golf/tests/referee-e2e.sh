@@ -31,10 +31,18 @@ if [ ! -x golf/referee.sh ]; then
 fi
 
 # --- setup: pin the harness at the clone's own baseline commit ---
+# BASE_SHA itself still carries whatever golf/PIN really points to on
+# master (a real, historical set-freeze commit) — on a shallow clone (this
+# script's own local clone inherits whatever depth its source had, and CI's
+# outer checkout is depth 1) that real PIN's commit object doesn't exist.
+# Everything below must be built on PIN_SHA (this commit, which overwrites
+# golf/PIN with a self-referential value), never on raw BASE_SHA, or
+# `git worktree add` fails with "invalid reference" off-CI.
 BASE_SHA="$(git rev-parse HEAD)"
 echo "$BASE_SHA" > golf/PIN
 git add golf/PIN
 git commit --quiet -m "test: pin harness at $BASE_SHA for referee-e2e"
+PIN_SHA="$(git rev-parse HEAD)"
 
 # Pre-warm the release build as its own foreground step: a fresh clone has
 # an empty target/, so the first build needs the network and takes minutes.
@@ -110,7 +118,7 @@ echo "PASS"
 # recreates the symlink; referee.sh must catch it after extraction and exit
 # 2 before ever invoking the scorer.
 echo "== building the symlinked-proof-file branch =="
-git checkout --quiet "$BASE_SHA" -b symlink-file-attack
+git checkout --quiet "$PIN_SHA" -b symlink-file-attack
 rm -f golf/proofs/t1.json
 ln -s "$REPO_ROOT/fixtures/golf-test/proofs-valid/t1.json" golf/proofs/t1.json
 git add golf/proofs/t1.json
