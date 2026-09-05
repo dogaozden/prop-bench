@@ -1,0 +1,9 @@
+{
+  "id": "g3-1200381",
+  "premises": [
+    "R v R"
+  ],
+  "conclusion": "Q > {R > {{{(P . ~Q) > {{~{Q . [~~(~P . ~R)]}} . {R . {~{Q . [~~(~P . ~R)]}}}}} v S} . Q}}",
+  "difficulty": "Medium",
+  "difficulty_value": 35
+}

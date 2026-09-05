@@ -1,0 +1,10 @@
+{
+  "id": "g2-1100185",
+  "premises": [
+    "[(P v P) . (P v P)] <> ~Q",
+    "~~~(P v P)"
+  ],
+  "conclusion": "(P <> ~Q) . {{[~P v (P v ~P)] . {~{Q . {~{[~P v (P v ~P)] . {P <> [~(Q v Q)]}}}}}} v ~Q}",
+  "difficulty": "Medium",
+  "difficulty_value": 35
+}

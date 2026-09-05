@@ -1,0 +1,8 @@
+{
+  "set_version": "rehearsal",
+  "core_tag": "v0.3.2",
+  "imputed_ratio": 1.5,
+  "items": [
+    { "id": "r1", "par": 1, "theorem_sha256": "d84331c7772cf95c0bb812c46221bc623da78663a54f9d6afbf94fd70e813ba1" }
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "id": "r1",
+  "premises": [
+    "P > Q",
+    "P"
+  ],
+  "conclusion": "Q",
+  "difficulty": "Easy",
+  "difficulty_value": 1
+}

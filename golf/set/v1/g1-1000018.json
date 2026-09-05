@@ -1,0 +1,10 @@
+{
+  "id": "g1-1000018",
+  "premises": [
+    "R v ~Q",
+    "(Q . P) v (Q . P)"
+  ],
+  "conclusion": "{[~(~Q . ~Q)] > R} . {[(~S <> ~P) > P] v [~(~Q . ~Q)]}",
+  "difficulty": "Medium",
+  "difficulty_value": 35
+}

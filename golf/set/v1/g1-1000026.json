@@ -1,0 +1,9 @@
+{
+  "id": "g1-1000026",
+  "premises": [
+    "~Q v ~Q"
+  ],
+  "conclusion": "~{~R . {~{[~(Q . Q)] . {[~(Q . Q)] . {[~(Q . Q)] v ~R}}}}}",
+  "difficulty": "Medium",
+  "difficulty_value": 35
+}

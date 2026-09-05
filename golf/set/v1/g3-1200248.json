@@ -1,0 +1,9 @@
+{
+  "id": "g3-1200248",
+  "premises": [
+    "[(~~~R) v (~~~R)] . [(~~~R) v (~~~R)]"
+  ],
+  "conclusion": "~{(P . P) . {~{{~{R . {~[(~R v S) v ~Q]}}} v [~(P . P)]}}}",
+  "difficulty": "Medium",
+  "difficulty_value": 35
+}

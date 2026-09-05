@@ -1,0 +1,10 @@
+{
+  "id": "g1-1000007",
+  "premises": [
+    "~~~P",
+    "~~~~~R"
+  ],
+  "conclusion": "(~S . ~S) > {[(~P . ~R) . (~R v ~R)] . {(~S . ~S) . [(~P . ~R) . (~R v ~R)]}}",
+  "difficulty": "Medium",
+  "difficulty_value": 35
+}

@@ -1,0 +1,9 @@
+{
+  "id": "g2-1100008",
+  "premises": [
+    "~~~~R"
+  ],
+  "conclusion": "~{Q . {~{{[~Q > (~R v ~R)] > (R v P)} v ~S}}}",
+  "difficulty": "Medium",
+  "difficulty_value": 35
+}
