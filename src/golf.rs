@@ -93,6 +93,26 @@ impl From<&PlantSpec> for SpecMeta {
     }
 }
 
+/// The freeze budget actually used for an accepted candidate (Ruling B: 1M
+/// nodes / 128 equiv), recorded verbatim rather than left implicit in code —
+/// only present when `gate == "freeze"`.
+#[derive(Debug, Serialize)]
+struct FreezeBudgetMeta {
+    max_lines: usize,
+    max_nodes: usize,
+    equiv_moves_per_state: usize,
+}
+
+impl From<&OptimalConfig> for FreezeBudgetMeta {
+    fn from(c: &OptimalConfig) -> Self {
+        FreezeBudgetMeta {
+            max_lines: c.max_lines,
+            max_nodes: c.max_nodes,
+            equiv_moves_per_state: c.equiv_moves_per_state,
+        }
+    }
+}
+
 #[derive(Debug, Serialize)]
 struct PlantMeta {
     seed: u64,
@@ -100,6 +120,8 @@ struct PlantMeta {
     spec: SpecMeta,
     par: usize,
     gate: &'static str,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    freeze_budget: Option<FreezeBudgetMeta>,
 }
 
 /// Rejection tally across the whole seed loop: one bucket per `GateReject`
@@ -111,10 +133,13 @@ struct RejectionHistogram {
     stuck: usize,
     out_of_band: usize,
     too_big: usize,
+    inconsistent_premises: usize,
+    tautologous_conclusion: usize,
     cheese: usize,
     greedy_provable: usize,
     lawyer_probe_cracked: usize,
     lawyer_freeze_cracked: usize,
+    duplicate_line: usize,
 }
 
 impl RejectionHistogram {
@@ -128,10 +153,13 @@ impl RejectionHistogram {
     fn record_gate_reject(&mut self, r: &GateReject) {
         match r {
             GateReject::TooBig => self.too_big += 1,
+            GateReject::InconsistentPremises => self.inconsistent_premises += 1,
+            GateReject::TautologousConclusion => self.tautologous_conclusion += 1,
             GateReject::Cheese(_) => self.cheese += 1,
             GateReject::GreedyProvable { .. } => self.greedy_provable += 1,
             GateReject::LawyerProbeCracked { .. } => self.lawyer_probe_cracked += 1,
             GateReject::LawyerFreezeCracked { .. } => self.lawyer_freeze_cracked += 1,
+            GateReject::DuplicateLine { .. } => self.duplicate_line += 1,
         }
     }
 
@@ -140,10 +168,13 @@ impl RejectionHistogram {
         eprintln!("Stuck: {}", self.stuck);
         eprintln!("OutOfBand: {}", self.out_of_band);
         eprintln!("TooBig: {}", self.too_big);
+        eprintln!("InconsistentPremises: {}", self.inconsistent_premises);
+        eprintln!("TautologousConclusion: {}", self.tautologous_conclusion);
         eprintln!("Cheese: {}", self.cheese);
         eprintln!("GreedyProvable: {}", self.greedy_provable);
         eprintln!("LawyerProbeCracked: {}", self.lawyer_probe_cracked);
         eprintln!("LawyerFreezeCracked: {}", self.lawyer_freeze_cracked);
+        eprintln!("DuplicateLine: {}", self.duplicate_line);
         eprintln!("Accepted: {}", accepted);
     }
 }
@@ -161,6 +192,7 @@ fn write_candidate(
     seed: u64,
     replay_lines: &[ValidateInput],
     gate_label: &'static str,
+    freeze_cfg: Option<&OptimalConfig>,
 ) -> Result<(), String> {
     let mut bench = BenchTheorem::from(&candidate.theorem);
     bench.id = id.to_string();
@@ -180,6 +212,7 @@ fn write_candidate(
         spec: SpecMeta::from(spec),
         par: candidate.par,
         gate: gate_label,
+        freeze_budget: freeze_cfg.map(FreezeBudgetMeta::from),
     };
     let meta_json = serde_json::to_string_pretty(&meta)
         .map_err(|e| format!("JSON serialization error for {id} meta: {e}"))?;
@@ -294,7 +327,18 @@ pub fn cmd_plant(
         }
 
         let id = format!("g{band}-{current_seed}");
-        write_candidate(out_set, out_key, &id, &candidate, &spec, band, current_seed, &replay_lines, gate_label)?;
+        write_candidate(
+            out_set,
+            out_key,
+            &id,
+            &candidate,
+            &spec,
+            band,
+            current_seed,
+            &replay_lines,
+            gate_label,
+            gate_cfg.freeze.as_ref(),
+        )?;
         accepted_ids.push(id);
     }
 

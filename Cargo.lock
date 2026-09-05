@@ -362,8 +362,8 @@ checksum = "5e5032e24019045c762d3c0f28f5b6b8bbf38563a65908389bf7978758920897"
 
 [[package]]
 name = "logic-core"
-version = "0.3.2"
-source = "git+https://github.com/dogaozden/logic-core?tag=v0.3.2#b098f6547c58f68127deb2e310df6f2af453cf88"
+version = "0.3.4"
+source = "git+https://github.com/dogaozden/logic-core?tag=v0.3.4#1f751542095232eefaa3f8fc3d80e81c3ea1c3a0"
 dependencies = [
  "chrono",
  "rand",
