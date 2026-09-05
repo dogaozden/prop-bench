@@ -65,6 +65,49 @@ fn invalid_proof_exits_1_with_no_score_and_no_score_line() {
     assert!(combined.contains("t1"), "expected the invalid item's error to mention t1: {combined}");
 }
 
+/// A declared proof path that's a symlink to a genuinely valid proof file
+/// elsewhere on disk must never be scored (or imputed as "absent" — that
+/// would silently score it via the imputed_ratio while pretending nothing
+/// was submitted): exit 1, no SCORE line, the offending id named. Mirrors
+/// the demonstrated referee escape (a committed symlink to the answer key)
+/// one layer down, at the scorer itself.
+#[test]
+fn symlinked_proof_path_exits_1_with_no_score() {
+    let dir = fresh_dir("symlink_proof");
+    fs::create_dir_all(&dir).expect("create proofs dir");
+    let target = fs::canonicalize("fixtures/golf-test/proofs-valid/t1.json")
+        .expect("canonicalize real proof file");
+    std::os::unix::fs::symlink(&target, dir.join("t1.json")).expect("create symlink");
+
+    let out = run_score(&[
+        "golf", "score",
+        "--set", "fixtures/golf-test",
+        "--proofs", dir.to_str().unwrap(),
+    ]);
+    assert_eq!(out.status.code(), Some(1), "stdout: {}\nstderr: {}", out_str(&out), err_str(&out));
+    let combined = format!("{}{}", out_str(&out), err_str(&out));
+    assert!(!combined.contains("SCORE:"), "a symlinked proof path must never produce a SCORE line: {combined}");
+    assert!(combined.contains("t1"), "error should name the offending item: {combined}");
+}
+
+/// A directory at the declared proof path (instead of a file) must also
+/// fail closed: exit 1, no SCORE line, id named.
+#[test]
+fn directory_at_proof_path_exits_1_with_no_score() {
+    let dir = fresh_dir("dir_proof");
+    fs::create_dir_all(dir.join("t1.json")).expect("create directory at proof path");
+
+    let out = run_score(&[
+        "golf", "score",
+        "--set", "fixtures/golf-test",
+        "--proofs", dir.to_str().unwrap(),
+    ]);
+    assert_eq!(out.status.code(), Some(1), "stdout: {}\nstderr: {}", out_str(&out), err_str(&out));
+    let combined = format!("{}{}", out_str(&out), err_str(&out));
+    assert!(!combined.contains("SCORE:"), "a directory at the proof path must never produce a SCORE line: {combined}");
+    assert!(combined.contains("t1"), "error should name the offending item: {combined}");
+}
+
 /// (c) A theorem file whose bytes no longer match the manifest's recorded
 /// theorem_sha256 (tampered after packaging) must hard-fail with exit 2,
 /// distinct from an ordinary invalid-proof exit 1 — checked before any

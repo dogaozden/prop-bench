@@ -103,5 +103,74 @@ fi
 git worktree remove --force "$INSPECT"
 echo "PASS"
 
+# --- new: a symlinked proof file must be refused, never scored ---
+# Same shape as the sabotage above but a single-file attack: golf/proofs/t1.json
+# committed as a symlink (mode 120000, blob content an absolute path) to a
+# genuinely valid proof elsewhere on this host. `git archive | tar -x`
+# recreates the symlink; referee.sh must catch it after extraction and exit
+# 2 before ever invoking the scorer.
+echo "== building the symlinked-proof-file branch =="
+git checkout --quiet "$BASE_SHA" -b symlink-file-attack
+rm -f golf/proofs/t1.json
+ln -s "$REPO_ROOT/fixtures/golf-test/proofs-valid/t1.json" golf/proofs/t1.json
+git add golf/proofs/t1.json
+git commit --quiet -m "evil: golf/proofs/t1.json as a symlink to a valid proof elsewhere (test fixture, never pushed anywhere)"
+SYMLINK_SHA="$(git rev-parse HEAD)"
+echo "symlink-file sha: $SYMLINK_SHA"
+
+echo "== running golf/referee.sh against the symlinked-proof-file sha (must exit 2, no SCORE) =="
+set +e
+SYMLINK_OUT="$(GOLF_ALLOW_NET=1 golf/referee.sh "$SYMLINK_SHA" fixtures/golf-test 2>&1)"
+SYMLINK_STATUS=$?
+set -e
+echo "$SYMLINK_OUT"
+if [ "$SYMLINK_STATUS" -ne 2 ]; then
+  echo "FAIL: expected exit 2 for a symlinked proof file, got $SYMLINK_STATUS" >&2
+  exit 1
+fi
+if echo "$SYMLINK_OUT" | grep -q "SCORE:"; then
+  echo "FAIL: a symlinked proof file must never produce a SCORE line" >&2
+  exit 1
+fi
+echo "PASS"
+
+# --- new: a hostile post-checkout hook in the shared .git must not reach
+# the worktree golf/referee.sh builds in ---
+echo "== installing a post-checkout hook that marks any worktree it touches =="
+git checkout --quiet evil
+HOOK_MARKER="$TMP/post-checkout-fired"
+rm -f "$HOOK_MARKER"
+cat > .git/hooks/post-checkout <<HOOKEOF
+#!/usr/bin/env bash
+echo "fired for \$(pwd)" >> "$HOOK_MARKER"
+HOOKEOF
+chmod +x .git/hooks/post-checkout
+
+# Sanity check first: prove the hook actually fires for an unguarded
+# worktree add, so its later silence actually proves something.
+SANITY="$TMP/sanity-worktree"
+git worktree add --detach "$SANITY" "$BASE_SHA" >/dev/null
+if [ ! -f "$HOOK_MARKER" ]; then
+  echo "FAIL: sanity check failed — the post-checkout hook never fired for an unguarded worktree add, so its later silence would prove nothing" >&2
+  exit 1
+fi
+git worktree remove --force "$SANITY"
+rm -f "$HOOK_MARKER"
+
+echo "== running golf/referee.sh with the hostile hook installed =="
+HOOK_OUT="$(GOLF_ALLOW_NET=1 golf/referee.sh "$BASE_SHA" fixtures/golf-test)"
+echo "$HOOK_OUT"
+if ! echo "$HOOK_OUT" | grep -q "SCORE:"; then
+  echo "FAIL: referee did not produce a SCORE line with the hook installed:" >&2
+  echo "$HOOK_OUT" >&2
+  exit 1
+fi
+if [ -f "$HOOK_MARKER" ]; then
+  echo "FAIL: the post-checkout hook fired during golf/referee.sh's own worktree add — hooks were not disabled" >&2
+  cat "$HOOK_MARKER" >&2
+  exit 1
+fi
+echo "PASS"
+
 echo
 echo "referee-e2e: ALL PASS"

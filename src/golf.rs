@@ -472,9 +472,27 @@ pub fn cmd_score(set_dir: &Path, proofs_dir: &Path, json: bool) -> Result<(), St
 
     for (id, par, bench) in &theorems {
         let proof_path = proofs_dir.join(format!("{id}.json"));
-        if !proof_path.exists() {
-            results.push(ScoredItem { id: id.clone(), par: *par, lines: None, ratio: manifest.imputed_ratio });
-            continue;
+        // symlink_metadata (never follows a symlink) before any read, so a
+        // symlinked or directory proof path is never silently treated as
+        // "absent" (which would impute 1.5 instead of failing the run
+        // closed). Only a genuinely missing path imputes.
+        match fs::symlink_metadata(&proof_path) {
+            Err(e) if e.kind() == std::io::ErrorKind::NotFound => {
+                results.push(ScoredItem { id: id.clone(), par: *par, lines: None, ratio: manifest.imputed_ratio });
+                continue;
+            }
+            Err(e) => {
+                errors.push(format!("{id}: failed to stat proof path {}: {e}", proof_path.display()));
+                continue;
+            }
+            Ok(meta) if !meta.is_file() => {
+                errors.push(format!(
+                    "{id}: proof path {} exists but is not a regular file (symlink or directory) — refusing to read it",
+                    proof_path.display()
+                ));
+                continue;
+            }
+            Ok(_) => {}
         }
 
         let attempt = (|| -> Result<usize, String> {
