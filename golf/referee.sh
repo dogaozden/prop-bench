@@ -26,11 +26,44 @@ if [ ! -f "$ROOT/golf/PIN" ]; then
 fi
 PIN="$(cat "$ROOT/golf/PIN")"
 git -C "$ROOT" cat-file -e "$SHA^{commit}"
-TMP="$(mktemp -d)"
-trap 'git -C "$ROOT" -c core.hooksPath=/dev/null worktree remove --force "$TMP" 2>/dev/null || true; rm -rf "$TMP"' EXIT
 # Printed before anything below can fail, so a quoted failure is still
 # self-describing: which sha, which pin, which set, when.
 echo "REFEREE sha=$SHA pin=$PIN set=$SET_DIR $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+# Inspect the contestant sha's tree via git plumbing BEFORE extracting
+# anything. This must happen before `git archive | tar -x`: the pinned
+# worktree's golf/proofs is never empty (it always has .gitkeep), so if a
+# contestant sha replaces the *whole* golf/proofs entry with a symlink, tar
+# refuses to overwrite a non-empty directory with a non-directory and
+# `set -e` aborts the whole script on tar's own raw message and exit code —
+# never reaching the post-extraction checks below at all, and dependent on
+# which tar flavor is running. Checking git's own tree metadata first
+# sidesteps that (and any tar-flavor quirk) entirely, for both the
+# whole-directory and individual-file attack shapes.
+PROOFS_ENTRY="$(git -C "$ROOT" ls-tree "$SHA" golf/proofs)"
+if [ -n "$PROOFS_ENTRY" ]; then
+  PROOFS_MODE="${PROOFS_ENTRY%% *}"
+  if [ "$PROOFS_MODE" != "040000" ]; then
+    echo "golf/referee.sh: golf/proofs in $SHA is not a directory (mode $PROOFS_MODE) — refusing to score" >&2
+    exit 2
+  fi
+fi
+# golf/proofs absent entirely is fine — an empty submission; every item
+# imputes once scored.
+PROOFS_TREE_R="$(git -C "$ROOT" ls-tree -r "$SHA" golf/proofs)"
+if [ -n "$PROOFS_TREE_R" ]; then
+  while IFS=$'\t' read -r entry_meta entry_path; do
+    entry_mode="${entry_meta%% *}"
+    case "$entry_mode" in
+      100644|100755) ;;
+      *)
+        echo "golf/referee.sh: $entry_path in $SHA is not a regular file (mode $entry_mode) — refusing to score" >&2
+        exit 2
+        ;;
+    esac
+  done <<< "$PROOFS_TREE_R"
+fi
+TMP="$(mktemp -d)"
+trap 'git -C "$ROOT" -c core.hooksPath=/dev/null worktree remove --force "$TMP" 2>/dev/null || true; rm -rf "$TMP"' EXIT
 # core.hooksPath=/dev/null: a hook installed in the shared .git (e.g.
 # post-checkout) must not run against this worktree. core.fsmonitor=false:
 # don't trust a contestant-configured fsmonitor for this checkout either.

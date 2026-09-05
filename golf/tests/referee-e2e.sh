@@ -142,6 +142,48 @@ if echo "$SYMLINK_OUT" | grep -q "SCORE:"; then
 fi
 echo "PASS"
 
+# --- new: the whole golf/proofs entry replaced by a symlink must be
+# refused via git plumbing, before extraction even runs ---
+# Distinct from the single-file case above: here golf/proofs *itself* is
+# committed as a symlink (mode 120000), not a directory containing a
+# symlinked file. The pinned worktree's golf/proofs is never empty (it
+# always has .gitkeep), so `git archive | tar -x` would otherwise refuse to
+# overwrite that non-empty directory with a non-directory and abort the
+# whole script under `set -e` on tar's own raw message and exit code —
+# never reaching either symlink check at all. referee.sh must instead catch
+# this via `git ls-tree` before ever attempting the extraction.
+echo "== building the whole-directory-symlink branch =="
+git checkout --quiet "$PIN_SHA" -b symlink-dir-attack
+rm -rf golf/proofs
+ln -s "$REPO_ROOT/fixtures/golf-test/proofs-valid" golf/proofs
+git add -A golf/proofs
+git commit --quiet -m "evil: golf/proofs itself as a symlink (test fixture, never pushed anywhere)"
+SYMLINK_DIR_SHA="$(git rev-parse HEAD)"
+echo "symlink-dir sha: $SYMLINK_DIR_SHA"
+echo "-- confirms the committed tree really replaces golf/proofs with a symlink, not a directory --"
+git ls-tree HEAD golf/proofs
+
+echo "== running golf/referee.sh against the symlink-dir sha (must exit 2, no SCORE, via the pre-extraction check) =="
+set +e
+SYMLINK_DIR_OUT="$(GOLF_ALLOW_NET=1 golf/referee.sh "$SYMLINK_DIR_SHA" fixtures/golf-test 2>&1)"
+SYMLINK_DIR_STATUS=$?
+set -e
+echo "$SYMLINK_DIR_OUT"
+if [ "$SYMLINK_DIR_STATUS" -ne 2 ]; then
+  echo "FAIL: expected exit 2 for golf/proofs itself as a symlink, got $SYMLINK_DIR_STATUS" >&2
+  exit 1
+fi
+if echo "$SYMLINK_DIR_OUT" | grep -q "SCORE:"; then
+  echo "FAIL: golf/proofs itself as a symlink must never produce a SCORE line" >&2
+  exit 1
+fi
+if ! echo "$SYMLINK_DIR_OUT" | grep -q "is not a directory (mode 120000)"; then
+  echo "FAIL: expected the pre-extraction git-ls-tree message (mode 120000), got:" >&2
+  echo "$SYMLINK_DIR_OUT" >&2
+  exit 1
+fi
+echo "PASS"
+
 # --- new: a hostile post-checkout hook in the shared .git must not reach
 # the worktree golf/referee.sh builds in ---
 echo "== installing a post-checkout hook that marks any worktree it touches =="
