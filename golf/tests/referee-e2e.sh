@@ -184,6 +184,44 @@ if ! echo "$SYMLINK_DIR_OUT" | grep -q "is not a directory (mode 120000)"; then
 fi
 echo "PASS"
 
+# --- new: golf/proofs deleted entirely (not the whole-directory-as-symlink
+# shape above, an actual absence — the tracked .gitkeep gone too) must score
+# as an empty submission, not die on git archive's own pathspec-not-matched
+# error. Before the fix this ran unconditionally and `git archive "$SHA" --
+# golf/proofs` exits nonzero when the pathspec matches nothing in that sha,
+# aborting the whole script under set -e before any SCORE line prints. ---
+echo "== building the proofs-directory-deleted branch =="
+git checkout --quiet "$PIN_SHA" -b proofs-deleted-attack
+git rm -r --quiet golf/proofs
+git commit --quiet -m "evil: golf/proofs removed entirely from this sha (test fixture, never pushed anywhere)"
+DELETED_SHA="$(git rev-parse HEAD)"
+echo "proofs-deleted sha: $DELETED_SHA"
+DELETED_ENTRY="$(git ls-tree "$DELETED_SHA" golf/proofs)"
+if [ -n "$DELETED_ENTRY" ]; then
+  echo "FAIL: golf/proofs still present in $DELETED_SHA's tree: $DELETED_ENTRY" >&2
+  exit 1
+fi
+echo "-- confirmed golf/proofs is genuinely absent from this sha's tree --"
+
+WORKTREES_BEFORE="$(git worktree list --porcelain | grep -c '^worktree ')"
+
+echo "== running golf/referee.sh against the proofs-deleted sha (must score an empty submission: SCORE: 1.5000, exit 0) =="
+DELETED_OUT="$(GOLF_ALLOW_NET=1 golf/referee.sh "$DELETED_SHA" fixtures/golf-test)"
+echo "$DELETED_OUT"
+if ! echo "$DELETED_OUT" | grep -q "SCORE: 1.5000"; then
+  echo "FAIL: expected SCORE: 1.5000 (empty submission, every item imputed) — got:" >&2
+  echo "$DELETED_OUT" >&2
+  exit 1
+fi
+
+WORKTREES_AFTER="$(git worktree list --porcelain | grep -c '^worktree ')"
+if [ "$WORKTREES_AFTER" -ne "$WORKTREES_BEFORE" ]; then
+  echo "FAIL: referee.sh left a worktree behind (before=$WORKTREES_BEFORE after=$WORKTREES_AFTER)" >&2
+  git worktree list >&2
+  exit 1
+fi
+echo "PASS"
+
 # --- new: a hostile post-checkout hook in the shared .git must not reach
 # the worktree golf/referee.sh builds in ---
 echo "== installing a post-checkout hook that marks any worktree it touches =="

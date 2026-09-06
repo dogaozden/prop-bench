@@ -68,7 +68,15 @@ trap 'git -C "$ROOT" -c core.hooksPath=/dev/null worktree remove --force "$TMP" 
 # post-checkout) must not run against this worktree. core.fsmonitor=false:
 # don't trust a contestant-configured fsmonitor for this checkout either.
 git -C "$ROOT" -c core.hooksPath=/dev/null -c core.fsmonitor=false worktree add --detach "$TMP" "$PIN" >/dev/null
-git -C "$ROOT" archive "$SHA" -- golf/proofs | tar -x -C "$TMP"
+# golf/proofs absent entirely from $SHA (PROOFS_ENTRY empty, checked above)
+# means an empty submission: skip the archive+extract rather than running
+# `git archive` with a pathspec that matches nothing (which would die with
+# "pathspec did not match", exit 1, no SCORE, under set -e). The pinned
+# worktree's own golf/proofs/.gitkeep is left in place, so scoring proceeds
+# against an empty proofs dir below.
+if [ -n "$PROOFS_ENTRY" ]; then
+  git -C "$ROOT" archive "$SHA" -- golf/proofs | tar -x -C "$TMP"
+fi
 # A contestant sha can commit golf/proofs/ itself as a symlink (mode 120000,
 # blob content an absolute path) or one of its entries as a symlink to a
 # file elsewhere on this host — `git archive | tar -x` recreates either.
