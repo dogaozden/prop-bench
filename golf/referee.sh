@@ -1,18 +1,17 @@
 #!/usr/bin/env bash
 # The official measurement. Contestant-runnable, but the number it prints is
-# never the contestant's own build: it checks out the pinned harness commit
-# (golf/PIN) into a fresh worktree and pulls in only golf/proofs/ from the
+# never the contestant's own build: it extracts the pinned harness commit
+# (golf/PIN) into a fresh tmp dir and pulls in only golf/proofs/ from the
 # sha being scored. Edits anywhere else in the contestant's tree — the
 # scorer, the set, the manifest, this script's own copy — physically cannot
 # reach the measurement.
 #
 # That guarantee is about sha content, not topology: this script still
 # shares a .git with the contestant's own checkout when run from the owner's
-# main clone, so a contestant-installed hook or config there could still
-# reach the worktree built below. See PROTOCOL.md step 1 — the official
-# referee run must happen from a separate clone the contestant cannot write
-# to. The -c flags and private build dir here are defense in depth for that
-# gap, not a substitute for the separate clone.
+# main clone. See PROTOCOL.md step 1 — the official referee run must happen
+# from a separate clone the contestant cannot write to. The private build
+# dir here is defense in depth for that gap, not a substitute for the
+# separate clone.
 set -euo pipefail
 usage() { echo "usage: golf/referee.sh <contestant-sha> [set-dir]" >&2; exit 1; }
 case "${1:-}" in ""|-*) usage ;; esac
@@ -63,11 +62,25 @@ if [ -n "$PROOFS_TREE_R" ]; then
   done <<< "$PROOFS_TREE_R"
 fi
 TMP="$(mktemp -d)"
-trap 'git -C "$ROOT" -c core.hooksPath=/dev/null worktree remove --force "$TMP" 2>/dev/null || true; rm -rf "$TMP"' EXIT
-# core.hooksPath=/dev/null: a hook installed in the shared .git (e.g.
-# post-checkout) must not run against this worktree. core.fsmonitor=false:
-# don't trust a contestant-configured fsmonitor for this checkout either.
-git -C "$ROOT" -c core.hooksPath=/dev/null -c core.fsmonitor=false worktree add --detach "$TMP" "$PIN" >/dev/null
+MIRROR="$(mktemp -d)"
+trap 'rm -rf "$TMP" "$MIRROR"' EXIT
+# A checkout (git worktree add) runs hooks and clean/smudge filters and
+# honours include.path/core.attributesFile from the shared .git. Switching
+# the extraction below to plain `git archive "$ROOT" ...` is NOT enough on
+# its own: measured directly against git 2.50.1, `git archive` still runs a
+# configured smudge filter over blob content (a `filter=` attribute set
+# only in $GIT_DIR/info/attributes, never committed anywhere, is enough to
+# rewrite src/golf.rs's own SCORE-printing line during archival) — the
+# same gap this fix is meant to close, just moved from checkout to
+# archive. So both archive calls below run against a throwaway --shared
+# bare mirror instead of "$ROOT" directly: `git clone --shared` copies no
+# hooks, no filter/include config, and no info/attributes from the source
+# — only a link to its object database (objects/info/alternates), so a sha
+# reachable only via FETCH_HEAD and not yet on any branch still archives
+# fine. A hostile referee-host .git can therefore at worst break this
+# build (e.g. an object genuinely missing), never inflate a score.
+git -c core.hooksPath=/dev/null -c core.fsmonitor=false clone --quiet --bare --shared -- "$ROOT" "$MIRROR"
+git -C "$MIRROR" archive "$PIN" | tar -x -C "$TMP"
 # golf/proofs absent entirely from $SHA (PROOFS_ENTRY empty, checked above)
 # means an empty submission: skip the archive+extract rather than running
 # `git archive` with a pathspec that matches nothing (which would die with
@@ -75,7 +88,7 @@ git -C "$ROOT" -c core.hooksPath=/dev/null -c core.fsmonitor=false worktree add 
 # worktree's own golf/proofs/.gitkeep is left in place, so scoring proceeds
 # against an empty proofs dir below.
 if [ -n "$PROOFS_ENTRY" ]; then
-  git -C "$ROOT" archive "$SHA" -- golf/proofs | tar -x -C "$TMP"
+  git -C "$MIRROR" archive "$SHA" -- golf/proofs | tar -x -C "$TMP"
 fi
 # A contestant sha can commit golf/proofs/ itself as a symlink (mode 120000,
 # blob content an absolute path) or one of its entries as a symlink to a

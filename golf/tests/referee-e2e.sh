@@ -260,5 +260,42 @@ if [ -f "$HOOK_MARKER" ]; then
 fi
 echo "PASS"
 
+# --- new: a git smudge filter + attributes configured in the shared .git
+# must not reach the tree golf/referee.sh builds for scoring (final-review.md
+# "Re-review after Tasks 13-15", Residual risk 1) ---
+# Distinct from the hostile-hook case above: this attacks the *content* of
+# a checked-out file via a filter, not by running an arbitrary command. A
+# checkout (git worktree add) would apply this smudge filter to src/golf.rs
+# while building the referee's pinned tree, corrupting the compiled
+# scorer's own SCORE-printing line -- and so, measured directly, would a
+# plain `git archive` against this same .git (archive still runs a
+# configured smudge filter over blob content). referee.sh instead builds
+# from a throwaway --shared bare mirror that copies no filter/hook/
+# attributes config from the source, so it must print the honest score
+# regardless of what a hostile referee-host .git has configured.
+echo "== installing a smudge filter + attributes that would corrupt src/golf.rs on checkout =="
+git config filter.evil.smudge "sed 's/SCORE: /SCORE: 0.0002 /'"
+echo "src/golf.rs filter=evil" >> .git/info/attributes
+
+echo "== running golf/referee.sh with the smudge filter configured (must print the honest score, filter output absent) =="
+SMUDGE_OUT="$(GOLF_ALLOW_NET=1 golf/referee.sh "$BASE_SHA" fixtures/golf-test)"
+echo "$SMUDGE_OUT"
+if ! echo "$SMUDGE_OUT" | grep -q "SCORE: 1.5000"; then
+  echo "FAIL: expected SCORE: 1.5000 (honest, empty submission) with the smudge filter configured — got:" >&2
+  echo "$SMUDGE_OUT" >&2
+  exit 1
+fi
+if echo "$SMUDGE_OUT" | grep -q "0.0002"; then
+  echo "FAIL: the smudge filter's sabotaged output leaked into referee output — a filter from the shared .git reached the pinned tree" >&2
+  exit 1
+fi
+echo "PASS"
+
+# Unset the filter config and drop the attributes entry so later cases (and
+# a re-run of this script in the same clone) start clean.
+git config --unset filter.evil.smudge
+git config --remove-section filter.evil 2>/dev/null || true
+rm -f .git/info/attributes
+
 echo
 echo "referee-e2e: ALL PASS"
