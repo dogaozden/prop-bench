@@ -10,7 +10,7 @@ code is right and this document is stale — log the discrepancy in
 
 ## 1. The game
 
-`golf/set/v1/` holds a frozen set of propositional-logic theorems. Each item
+`golf/set/v2/` holds a frozen set of propositional-logic theorems. Each item
 `i` has a public par `b_i` — the line count of a proof that already exists
 (a planted answer key you never see). Your job: write a proof for each item,
 as short as the validator will accept, and drop it at `golf/proofs/<id>.json`
@@ -34,7 +34,7 @@ places. Lower is better. Three landmarks:
 
 ## 2. The commands
 
-`cargo run --release -- golf score --set golf/set/v1 --proofs golf/proofs`
+`cargo run --release -- golf score --set golf/set/v2 --proofs golf/proofs`
 — score your own tree, for your own convenience while you work (no
 installed binary assumed). Prints a per-item table
 and `SCORE: X.XXXX` on success (exit 0). Exits 1 with errors and no SCORE

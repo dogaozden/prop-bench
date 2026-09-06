@@ -18,7 +18,7 @@ usage() { echo "usage: golf/referee.sh <contestant-sha> [set-dir]" >&2; exit 1; 
 case "${1:-}" in ""|-*) usage ;; esac
 case "${2:-}" in -*) usage ;; esac
 SHA="$1"
-SET_DIR="${2:-golf/set/v1}"
+SET_DIR="${2:-golf/set/v2}"
 ROOT="$(git rev-parse --show-toplevel)"
 if [ ! -f "$ROOT/golf/PIN" ]; then
   echo "golf/referee.sh: $ROOT/golf/PIN not found — the contest harness isn't pinned yet" >&2

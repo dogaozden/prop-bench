@@ -1,0 +1,10 @@
+{
+  "id": "g1-2000034",
+  "premises": [
+    "~~R",
+    "~[(S . S) . (S . S)]"
+  ],
+  "conclusion": "{{[~~(R . R)] . ~S} v ~S} . {{{P v {[~~(R . R)] . ~S}} v ~Q} . {{[~~(R . R)] . ~S} v ~S}}",
+  "difficulty": "Medium",
+  "difficulty_value": 35
+}
