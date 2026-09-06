@@ -9,7 +9,7 @@
 # the real set lands (Task 11), so this test creates one in its clone as
 # setup, pointing at the clone's own baseline commit. It scores against the
 # golf-test fixture set via referee.sh's set-dir override, standing in for
-# golf/set/v1 until Task 11/12 land the real thing.
+# the shipped set (golf/set/v2).
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
