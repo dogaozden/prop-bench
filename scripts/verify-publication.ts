@@ -1,7 +1,7 @@
 /** Offline, independent replay of the public bundle. No owner run or provider imports. */
 import * as fs from "node:fs";
 import * as path from "node:path";
-import { createHash } from "node:crypto";
+import { createHash, randomUUID } from "node:crypto";
 import { execFile } from "node:child_process";
 import { promisify } from "node:util";
 
@@ -345,13 +345,30 @@ export async function verifyPublication(options: PublicationVerificationOptions 
 
 export async function main(argv = process.argv.slice(2)): Promise<void> {
   const options: PublicationVerificationOptions = {};
+  let reportFile: string | undefined;
   for (let index = 0; index < argv.length; index++) {
     const arg = argv[index];
     if (arg === "--require-exact-binary") { options.requireExactBinary = true; continue; }
+    if (arg === "--report") {
+      check(reportFile === undefined && argv[index + 1] && !argv[index + 1].startsWith("--"), "Usage: --report PATH (once)");
+      reportFile = path.resolve(argv[++index]); continue;
+    }
     const key = ({ "--data": "dataFile", "--validator": "validator", "--expected-results-sha256": "expectedResultsSha256" } as const)[arg as "--data"];
-    check(key && argv[index + 1] && !argv[index + 1].startsWith("--"), "Usage: publication:verify [--data RESULTS_JSON] [--validator EXECUTABLE] [--expected-results-sha256 HEX] [--require-exact-binary]");
+    check(key && argv[index + 1] && !argv[index + 1].startsWith("--"), "Usage: publication:verify [--data RESULTS_JSON] [--validator EXECUTABLE] [--expected-results-sha256 HEX] [--require-exact-binary] [--report PATH]");
     check(options[key] === undefined, `Repeated option: ${arg}`); options[key] = argv[++index];
   }
-  console.log(JSON.stringify(await verifyPublication(options), null, 2));
+  check(reportFile !== path.resolve(options.dataFile ?? path.join(ROOT, "publication/data/results.json")), "Report path must differ from input results");
+  const output = JSON.stringify(await verifyPublication(options), null, 2) + "\n";
+  if (reportFile !== undefined) {
+    // The prior receipt survives failed verification or an incomplete write.
+    // A sibling temporary file keeps the successful rename on one filesystem.
+    fs.mkdirSync(path.dirname(reportFile), { recursive: true });
+    const temporary = path.join(path.dirname(reportFile), `.verification-${randomUUID()}.tmp`);
+    try {
+      fs.writeFileSync(temporary, output, { flag: "wx", mode: 0o644 });
+      fs.renameSync(temporary, reportFile);
+    } finally { if (fs.existsSync(temporary)) fs.unlinkSync(temporary); }
+  }
+  process.stdout.write(output);
 }
 if (require.main === module) main().catch(error => { console.error(error instanceof Error ? error.message : String(error)); process.exitCode = 1; });

@@ -79,3 +79,15 @@ The initial campaign has two Unaided trials/item and one fresh plus one dependen
 cumulative Frontier trial/item. It supports descriptive comparisons and useful
 proof/tool artifacts. It does not establish reliable model rankings, broad
 generalization, or a causal benefit of tools without additional matched designs.
+
+## Recorded capture defect in the initial replacement campaign
+
+The campaign frozen at `64b2026` rejected an entire proof directory when it
+contained an unrelated draft JSON file. This excluded a valid canonical proof
+on `g2-2100030`; the dependent cumulative run encountered the same defect.
+The original missing/loss-1 verdicts remain in the data. The
+[forensic note](SUBMISSION-FAILURE.md) distinguishes timed local validation,
+independent replay of recoverable bytes, and official checkpoint acceptance.
+These outcomes confound any interpretation of condition means as pure
+proof-solving performance. A subsequent capture repair is a different
+evaluator identity; it cannot retroactively improve this campaign.

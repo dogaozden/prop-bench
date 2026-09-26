@@ -1,0 +1,98 @@
+[
+  {
+    "line_number": 4,
+    "formula": "~~~R",
+    "justification": "DN 1",
+    "depth": 0
+  },
+  {
+    "line_number": 5,
+    "formula": "~R",
+    "justification": "DN 4",
+    "depth": 0
+  },
+  {
+    "line_number": 6,
+    "formula": "S",
+    "justification": "DN 2",
+    "depth": 0
+  },
+  {
+    "line_number": 7,
+    "formula": "P",
+    "justification": "DN 3",
+    "depth": 0
+  },
+  {
+    "line_number": 8,
+    "formula": "(~R . S)",
+    "justification": "Conj 5, 6",
+    "depth": 0
+  },
+  {
+    "line_number": 9,
+    "formula": "(P . (~R . S))",
+    "justification": "Conj 7, 8",
+    "depth": 0
+  },
+  {
+    "line_number": 10,
+    "formula": "(P . ~~(~R . S))",
+    "justification": "DN 9",
+    "depth": 0
+  },
+  {
+    "line_number": 11,
+    "formula": "(~(R <> S) v (P . ~~(~R . S)))",
+    "justification": "Add 10",
+    "depth": 0
+  },
+  {
+    "line_number": 12,
+    "formula": "((R <> S) > (P . ~~(~R . S)))",
+    "justification": "Impl 11",
+    "depth": 0
+  },
+  {
+    "line_number": 13,
+    "formula": "(P . ((R <> S) > (P . ~~(~R . S))))",
+    "justification": "Conj 7, 12",
+    "depth": 0
+  },
+  {
+    "line_number": 14,
+    "formula": "(S . (P . ((R <> S) > (P . ~~(~R . S)))))",
+    "justification": "Conj 6, 13",
+    "depth": 0
+  },
+  {
+    "line_number": 15,
+    "formula": "((S . (P . ((R <> S) > (P . ~~(~R . S))))) v ~P)",
+    "justification": "Add 14",
+    "depth": 0
+  },
+  {
+    "line_number": 16,
+    "formula": "(~Q v ((S . (P . ((R <> S) > (P . ~~(~R . S))))) v ~P))",
+    "justification": "Add 15",
+    "depth": 0
+  },
+  {
+    "line_number": 17,
+    "formula": "(~S v (P . (~R . S)))",
+    "justification": "Add 9",
+    "depth": 0
+  },
+  {
+    "line_number": 18,
+    "formula": "((~S v (P . (~R . S))) v ~S)",
+    "justification": "Add 17",
+    "depth": 0
+  },
+  {
+    "line_number": 19,
+    "formula": "((~Q v ((S . (P . ((R <> S) > (P . ~~(~R . S))))) v ~P)) . ((~S v (P . (~R . S))) v ~S))",
+    "justification": "Conj 16, 18",
+    "depth": 0
+  }
+]

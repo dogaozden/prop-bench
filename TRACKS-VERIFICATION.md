@@ -249,3 +249,26 @@ The full Rust release suite passed all 33 integration tests. Root typecheck and
 GUI production build passed. Linux Cargo hardlink handling and the Node 22
 legacy test fixture were separately repaired after the initial CI failure.
 The new full campaign remains pending at this acceptance point.
+
+The clean Ubuntu/Node 22 CI run for the frozen repair commit
+[`64b2026`](https://github.com/dogaozden/prop-bench/commit/64b2026857d0dc9da54497eca50cf7a63534e95f)
+completed successfully, including the full Rust suite, actual Docker runtime,
+TypeScript/server/public-site checks, offline public proof replay, static ZIP
+packaging, GUI build and legacy referee end-to-end tests:
+[CI run 36221608551](https://github.com/dogaozden/prop-bench/actions/runs/36221608551).
+That CI replay covered the retained pilot bundled at the freeze; the replacement
+campaign receives a separate final export and replay after it terminates.
+
+## Publication and capture repair, September 26
+
+After the campaign closed, selected-proof checkpoint capture was repaired to
+ignore harmless regular JSON drafts while retaining link, topology, size and
+deadline checks. The default bench command now opens the subscription Tracks
+CLI; historical API entrypoints and docs are explicitly labeled.
+
+Local acceptance: TypeScript passes; 115 track tests pass with zero skips using
+the actual runtime-3 Docker image; 95 campaign/export/replay/package tests pass;
+19 publication tests pass. The original campaign export independently replays
+40 final proofs and 11 checkpoint artifacts. Its frozen source and scores are
+unchanged by the subsequent repair. A targeted native regression and clean
+release checkout replay are recorded separately after execution.

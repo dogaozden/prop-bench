@@ -1,0 +1,104 @@
+[
+  {
+    "line_number": 4,
+    "formula": "R",
+    "justification": "Simp 1",
+    "depth": 0
+  },
+  {
+    "line_number": 5,
+    "formula": "~R v P",
+    "justification": "DN 2",
+    "depth": 0
+  },
+  {
+    "line_number": 6,
+    "formula": "(~R v P) v ~R",
+    "justification": "Add 5",
+    "depth": 0
+  },
+  {
+    "line_number": 7,
+    "formula": "~R v (P v ~R)",
+    "justification": "Assoc 6",
+    "depth": 0
+  },
+  {
+    "line_number": 8,
+    "formula": "R > (P v ~R)",
+    "justification": "Impl 7",
+    "depth": 0
+  },
+  {
+    "line_number": 9,
+    "formula": "~~~R v P",
+    "justification": "DN 5",
+    "depth": 0
+  },
+  {
+    "line_number": 10,
+    "formula": "R . (~~~R v P)",
+    "justification": "Conj 4,9",
+    "depth": 0
+  },
+  {
+    "line_number": 11,
+    "formula": "(R > (P v ~R)) . (R . (~~~R v P))",
+    "justification": "Conj 8,10",
+    "depth": 0
+  },
+  {
+    "line_number": 12,
+    "formula": "~~((R > (P v ~R)) . (R . (~~~R v P)))",
+    "justification": "DN 11",
+    "depth": 0
+  },
+  {
+    "line_number": 13,
+    "formula": "~(R > ~S) v ~~((R > (P v ~R)) . (R . (~~~R v P)))",
+    "justification": "Add 12",
+    "depth": 0
+  },
+  {
+    "line_number": 14,
+    "formula": "(R > ~S) > ~~((R > (P v ~R)) . (R . (~~~R v P)))",
+    "justification": "Impl 13",
+    "depth": 0
+  },
+  {
+    "line_number": 15,
+    "formula": "~~S",
+    "justification": "Assumption (CP)",
+    "depth": 1
+  },
+  {
+    "line_number": 16,
+    "formula": "~~S > ~~S",
+    "justification": "CP 15-15",
+    "depth": 0
+  },
+  {
+    "line_number": 17,
+    "formula": "(~~S > ~~S) v ~P",
+    "justification": "Add 16",
+    "depth": 0
+  },
+  {
+    "line_number": 18,
+    "formula": "~~((~~S > ~~S) v ~P)",
+    "justification": "DN 17",
+    "depth": 0
+  },
+  {
+    "line_number": 19,
+    "formula": "((R > ~S) > ~~((R > (P v ~R)) . (R . (~~~R v P)))) . ~~((~~S > ~~S) v ~P)",
+    "justification": "Conj 14,18",
+    "depth": 0
+  },
+  {
+    "line_number": 20,
+    "formula": "~~(((R > ~S) > ~~((R > (P v ~R)) . (R . (~~~R v P)))) . ~~((~~S > ~~S) v ~P))",
+    "justification": "DN 19",
+    "depth": 0
+  }
+]

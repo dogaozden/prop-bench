@@ -3,7 +3,9 @@ import { test } from "node:test";
 import * as fs from "node:fs";
 import * as os from "node:os";
 import * as path from "node:path";
+import { spawnSync } from "node:child_process";
 import { publicationCanonical as canonical, publicationSha256 as sha, publicCohort, verifyPublication } from "./verify-publication";
+import { analyzePublication } from "./analyze-publication";
 
 type Json = Record<string, any>;
 const ROOT = path.resolve(__dirname, "..");
@@ -239,4 +241,102 @@ test("cumulative checkpoints begin at the inherited incumbent length", async () 
     assert.equal((await f.verify()).independently_replayed_checkpoint_proofs, 2);
     event.previous_line_count = null; await assert.rejects(f.verify(), /previous incumbent length/);
   } finally { f.cleanup(); }
+});
+
+test("CLI report is current and atomic on success; failed replay preserves the prior receipt", () => {
+  const f = fixture();
+  const invoke = (...args: string[]) => spawnSync(process.execPath,
+    ["--require", require.resolve("ts-node/register"), path.join(ROOT, "scripts/verify-publication.ts"), "--data", path.join(f.dir, "results.json"), "--validator", VALIDATOR, ...args],
+    { cwd: ROOT, encoding: "utf8" });
+  try {
+    const run = f.addRun(), dataFile = f.write(), report = path.join(f.dir, "verification.json");
+    const readonly = invoke(); assert.equal(readonly.status, 0, readonly.stderr); assert.equal(fs.existsSync(report), false);
+    fs.writeFileSync(report, "old receipt\n");
+    const written = invoke("--report", report); assert.equal(written.status, 0, written.stderr);
+    const prior = fs.readFileSync(report, "utf8"); assert.equal(prior, written.stdout);
+    assert.equal(JSON.parse(prior).results_sha256, sha(fs.readFileSync(dataFile)));
+    fs.appendFileSync(path.join(f.dir, run.items[0].proof_file), " ");
+    const failed = invoke("--report", report); assert.notEqual(failed.status, 0); assert.match(failed.stderr, /Exact proof bytes hash mismatch/);
+    assert.equal(failed.stdout, ""); assert.equal(fs.readFileSync(report, "utf8"), prior);
+    const absentReport = path.join(f.dir, "new-receipt.json");
+    assert.notEqual(invoke("--report", absentReport).status, 0); assert.equal(fs.existsSync(absentReport), false);
+    assert.equal(fs.readdirSync(f.dir).some(name => name.startsWith(".verification-")), false);
+    assert.notEqual(invoke("--report", dataFile).status, 0); assert.equal(sha(fs.readFileSync(dataFile)), JSON.parse(prior).results_sha256);
+  } finally { f.cleanup(); }
+});
+
+test("packaging requires current successful replay and summary receipts for the main data and every pilot", async t => {
+  const f = fixture(), site = fs.mkdtempSync(path.join(os.tmpdir(), "propbench-package-receipts-"));
+  const output = path.join(site, "release.zip");
+  const pack = () => spawnSync("python3", [path.join(ROOT, "scripts/package-publication.py"), "--source", site, "--output", output, "--allow-partial"], { cwd: ROOT, encoding: "utf8" });
+  try {
+    const unaided = f.addRun(), frontier = f.addRun("frontier-fresh"), checkpoint = f.improvement(frontier, PROOF, null, 1); f.write();
+    const receipt = await f.verify(), { summary, csv } = analyzePublication(f.data);
+    summary.source_export_sha256 = sha(fs.readFileSync(path.join(f.dir, "results.json")));
+    fs.writeFileSync(path.join(f.dir, "verification.json"), JSON.stringify(receipt));
+    fs.writeFileSync(path.join(f.dir, "summary.json"), JSON.stringify(summary));
+    fs.writeFileSync(path.join(f.dir, "jobs.csv"), csv);
+    for (const prefix of ["", "pilots/20260925"]) {
+      const base = path.join(site, prefix); fs.mkdirSync(base, { recursive: true });
+      for (const name of ["index.html", "app.js", "data.js", "style.css", "favicon.svg"]) fs.writeFileSync(path.join(base, name), "synthetic packaging fixture\n");
+      fs.cpSync(f.dir, path.join(base, "data"), { recursive: true });
+    }
+    const good = pack(); assert.equal(good.status, 0, good.stderr); const priorArchive = fs.readFileSync(output);
+    const changes: Array<[string, string, (bytes: Buffer) => Buffer | null, RegExp]> = [
+      ["missing verification", "verification.json", () => null, /Missing verification.json/],
+      ["false verification", "verification.json", bytes => Buffer.from(JSON.stringify({ ...JSON.parse(bytes.toString()), verified: false })), /unsuccessful verification/],
+      ["stale verification hash", "verification.json", bytes => Buffer.from(JSON.stringify({ ...JSON.parse(bytes.toString()), results_sha256: "f".repeat(64) })), /stale.*verification/],
+      ["new export after replay", "results.json", bytes => Buffer.concat([bytes, Buffer.from(" \n")]), /stale.*verification/],
+      ["missing summary", "summary.json", () => null, /Missing summary.json/],
+      ["stale summary", "summary.json", bytes => Buffer.from(JSON.stringify({ ...JSON.parse(bytes.toString()), source_export_sha256: "f".repeat(64) })), /stale analysis summary/],
+      ["missing job ledger", "jobs.csv", () => null, /Missing jobs.csv/],
+    ];
+    for (const [label, filename] of [
+      ["final proof", unaided.items[0].proof_file], ["checkpoint proof", checkpoint.proof_file],
+      ["theorem", `theorems/${f.data.items[0].id}.json`], ["manifest", "theorems/manifest.json"], ["rules", "rules.md"],
+    ]) {
+      changes.push([`missing ${label}`, filename, () => null, /Missing evidence asset/]);
+      changes.push([`changed ${label} bytes`, filename, () => Buffer.from("[]\n"), /Evidence asset byte hash mismatch/]);
+    }
+    for (const prefix of ["data", "pilots/20260925/data"]) for (const [name, filename, change, expected] of changes) await t.test(`${prefix}: ${name}`, () => {
+      const file = path.join(site, prefix, filename), original = fs.readFileSync(file), changed = change(original);
+      try {
+        if (changed === null) fs.unlinkSync(file); else fs.writeFileSync(file, changed);
+        const result = pack(); assert.notEqual(result.status, 0); assert.match(result.stderr, expected);
+        assert.deepEqual(fs.readFileSync(output), priorArchive, "Rejected package must preserve the previous ZIP");
+      } finally { fs.writeFileSync(file, original); }
+    });
+    for (const prefix of ["data", "pilots/20260925/data"]) await t.test(`${prefix}: proof path cannot escape its data root even with rehashed receipts`, () => {
+      const names = ["results.json", "verification.json", "summary.json"];
+      const originals = names.map(name => fs.readFileSync(path.join(site, prefix, name)));
+      try {
+        const result = JSON.parse(originals[0].toString()); result.runs[0].items[0].proof_file = "../outside.json";
+        const bytes = Buffer.from(JSON.stringify(result));
+        const receipt = { ...JSON.parse(originals[1].toString()), results_sha256: sha(bytes) };
+        const summary = { ...JSON.parse(originals[2].toString()), source_export_sha256: sha(bytes) };
+        for (const [index, value] of [bytes, Buffer.from(JSON.stringify(receipt)), Buffer.from(JSON.stringify(summary))].entries()) fs.writeFileSync(path.join(site, prefix, names[index]), value);
+        const rejected = pack(); assert.notEqual(rejected.status, 0); assert.match(rejected.stderr, /Unexpected final proof asset path/);
+        assert.deepEqual(fs.readFileSync(output), priorArchive);
+      } finally { names.forEach((name, index) => fs.writeFileSync(path.join(site, prefix, name), originals[index])); }
+    });
+    for (const prefix of ["data", "pilots/20260925/data"]) {
+      for (const [name, relative, contents] of [
+        ["unlisted account metadata", "account.json", '{"account_type":"synthetic","email":"fixture@example.invalid"}\n'],
+        ["unreferenced proof", "proofs/old-run/unlisted.json", JSON.stringify(PROOF)],
+      ]) await t.test(`${prefix}: reject ${name}`, () => {
+        const file = path.join(site, prefix, relative); fs.mkdirSync(path.dirname(file), { recursive: true }); fs.writeFileSync(file, contents);
+        try {
+          const rejected = pack(); assert.notEqual(rejected.status, 0); assert.match(rejected.stderr, /Unexpected data asset/);
+          assert.deepEqual(fs.readFileSync(output), priorArchive);
+        } finally { fs.unlinkSync(file); }
+      });
+    }
+    for (const prefix of ["data", "pilots/20260925/data"]) await t.test(`${prefix}: optional README is allowed`, () => {
+      const file = path.join(site, prefix, "README.md"); fs.writeFileSync(file, "# Synthetic archive note\n\nThis file explains the fixture.\n");
+      try {
+        const accepted = pack(); assert.equal(accepted.status, 0, accepted.stderr);
+        assert.equal(JSON.parse(accepted.stdout).files, JSON.parse(good.stdout).files + 1);
+      } finally { fs.unlinkSync(file); }
+    });
+  } finally { f.cleanup(); fs.rmSync(site, { recursive: true, force: true }); }
 });

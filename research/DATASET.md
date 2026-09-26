@@ -30,24 +30,32 @@ claimed as a new regeneration of all 24 items:
 | 3 | 2,200,000–2,205,899 | 10 | 8 | 23–29 |
 
 All 24 selected candidates reportedly survived the additional bounded search
-gate: at most the planted par in lines, 1,000,000 search nodes, and 128
-equivalence moves per state. No selected freeze attempt failed and no seed was
-discarded for taking too long. The generator then replayed each planted proof
-and required its count to equal par. These are achieved upper bounds; bounded
-search failure does not prove a lower bound, minimality, or universal hardness.
+gate. The [generator at the freeze commit](https://github.com/dogaozden/prop-bench/blob/ea5775353a2eb0c3575809bf1bf6bfa1755996f2/src/golf.rs#L294-L300)
+configures at most the planted par in lines, 1,000,000 search nodes, and 128
+equivalence moves per state. The historical records report no failed selected
+freeze attempt and no seed discarded for taking too long. These search results
+were not rerun in the current audit; bounded search failure does not prove a
+lower bound, minimality, or universal hardness.
 
-Provenance source in the surrounding development workspace:
-`docs/superpowers/plans/2026-08-24-proof-golf-MEASUREMENTS.md`, “Addendum (Task 15):
-Set v2 (v0.3.4) frozen” and “Par softness” subsections. Supporting records are
-`docs/superpowers/reviews/2026-08-24-proof-golf/task-15-report.md`,
-`task-15-review.md`, `task-16-report.md`, and `task-16-review.md`. These are
-sibling-workspace records, not automatically present in a PropBench clone.
-A public release must include a lawful source/provenance archive or a permanent
-link and hash for the historical records it relies upon.
+The [public provenance archive](provenance/README.md) contains selected factual
+excerpts from `2026-08-24-proof-golf-MEASUREMENTS.md` and the Task 15/16 reports
+and reviews. Its [source manifest](provenance/historical-sources.json) records
+full source hashes, exact excerpt hashes and byte offsets, and every omitted
+line range. The source documents were local working records outside Git:
+these hashes identify the inspected snapshots, not authenticated historical
+timestamps or independent human review. Private workflow material, host paths,
+and proof contents are omitted. No additional license grant is inferred.
 
-The historical planted answer key is stored outside this repository. This audit
-did not inspect that key. A separately generated temporary single-item proof
-was used to test the full-CLI regeneration leak; see the pre-campaign audit.
+The retained planted answer key remains outside this repository. On
+2026-09-26 UTC, a [current strict replay](provenance/retained-reference-replay.json)
+checked all 24 retained proofs without regeneration or search: all passed both
+the strict CLI and the Tracks owner wrapper, and all counts equaled manifest
+par (475 total lines). The report records exact proof-byte hashes and lengths,
+validator/source identity, and per-item verdicts. Reference pars are therefore
+currently verified achievable upper bounds. Proof bytes are withheld, so this
+public record identifies the checked artifacts but cannot by itself support
+independent replay. A separately generated temporary single-item proof was used
+to test the full-CLI regeneration leak; see the pre-campaign audit.
 Reproducible generation and key-withholding during evaluation are distinct
 requirements. Public seeds and generator availability prevent treating v2 as a
 secret held-out set even after the contestant runtime is fixed.
@@ -81,11 +89,15 @@ does not define the Tracks `efficiency-v2` loss.
   ownership or permission for every upstream dependency, historical prompt,
   provider event, model-generated proof/tool, or included transcript. Those
   materials need an explicit release inventory and applicable provenance.
-- No current provider contractual permissions or output-redistribution terms
-  were verified in this repository audit. Do not describe subscription access
-  as publication permission, and do not copy private authentication/account
-  records into a public research archive.
+- OpenAI's [individual Terms of Use](https://openai.com/policies/row-terms-of-use/)
+  (effective 2026-01-01; checked 2026-09-26 UTC) assign its rights in output to
+  the user to the extent law permits, excluding other users' and third-party
+  output. Its [Sharing & Publication Policy](https://openai.com/policies/sharing-publication-policy/)
+  calls for attribution, clear AI disclosure, and manual review before sharing.
+  These are narrow source facts, not general legal clearance or an assertion
+  that a human reviewed every output. Private authentication/account records
+  are excluded from the public archive.
 
-This section records observable repository facts, not a legal clearance. A
-release owner should state the intended scope of the existing MIT grant for
-the new dataset/research artifacts and preserve applicable upstream notices.
+The [release inventory](RELEASE-INVENTORY.md) records the shipped artifacts,
+the existing MIT notice included with the package, and excluded materials.
+This section records observable provenance and license facts.

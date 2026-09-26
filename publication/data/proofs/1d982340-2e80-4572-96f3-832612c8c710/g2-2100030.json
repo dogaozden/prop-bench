@@ -1,0 +1,74 @@
+[
+  {
+    "line_number": 2,
+    "formula": "~S . ~Q",
+    "justification": "Taut 1",
+    "depth": 0
+  },
+  {
+    "line_number": 3,
+    "formula": "~S",
+    "justification": "Simp 2",
+    "depth": 0
+  },
+  {
+    "line_number": 4,
+    "formula": "~S v ~Q",
+    "justification": "Add 3",
+    "depth": 0
+  },
+  {
+    "line_number": 5,
+    "formula": "(~S . ~Q) v ~R",
+    "justification": "Add 2",
+    "depth": 0
+  },
+  {
+    "line_number": 6,
+    "formula": "((~S . ~Q) v ~R) . (~S v ~Q)",
+    "justification": "Conj 5,4",
+    "depth": 0
+  },
+  {
+    "line_number": 7,
+    "formula": "~(~P . ~P) v (((~S . ~Q) v ~R) . (~S v ~Q))",
+    "justification": "Add 6",
+    "depth": 0
+  },
+  {
+    "line_number": 8,
+    "formula": "(~P . ~P) > (((~S . ~Q) v ~R) . (~S v ~Q))",
+    "justification": "Impl 7",
+    "depth": 0
+  },
+  {
+    "line_number": 9,
+    "formula": "~P > (~P > (((~S . ~Q) v ~R) . (~S v ~Q)))",
+    "justification": "Exp 8",
+    "depth": 0
+  },
+  {
+    "line_number": 10,
+    "formula": "(~P > (~P > (((~S . ~Q) v ~R) . (~S v ~Q)))) v ~P",
+    "justification": "Add 9",
+    "depth": 0
+  },
+  {
+    "line_number": 11,
+    "formula": "(~S . ~Q) . ((~P > (~P > (((~S . ~Q) v ~R) . (~S v ~Q)))) v ~P)",
+    "justification": "Conj 2,10",
+    "depth": 0
+  },
+  {
+    "line_number": 12,
+    "formula": "((~S . ~Q) v ~R) v Q",
+    "justification": "Add 5",
+    "depth": 0
+  },
+  {
+    "line_number": 13,
+    "formula": "(((~S . ~Q) v ~R) v Q) . ((~S . ~Q) . ((~P > (~P > (((~S . ~Q) v ~R) . (~S v ~Q)))) v ~P))",
+    "justification": "Conj 12,11",
+    "depth": 0
+  }
+]

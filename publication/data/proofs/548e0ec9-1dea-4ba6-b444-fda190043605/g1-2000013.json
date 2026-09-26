@@ -1,0 +1,56 @@
+[
+  {
+    "line_number": 2,
+    "formula": "~~Q . ~Q",
+    "justification": "Assumption IP",
+    "depth": 1
+  },
+  {
+    "line_number": 3,
+    "formula": "~(~~Q . ~Q)",
+    "justification": "IP 2-2",
+    "depth": 0
+  },
+  {
+    "line_number": 4,
+    "formula": "~Q",
+    "justification": "Taut 1",
+    "depth": 0
+  },
+  {
+    "line_number": 5,
+    "formula": "(~Q . ~(~~Q . ~Q))",
+    "justification": "Conj 4,3",
+    "depth": 0
+  },
+  {
+    "line_number": 6,
+    "formula": "(~Q . ~(~~Q . ~Q)) v P",
+    "justification": "Add 5",
+    "depth": 0
+  },
+  {
+    "line_number": 7,
+    "formula": "(~Q . ~(~~Q . ~Q)) . ((~Q . ~(~~Q . ~Q)) v P)",
+    "justification": "Conj 5,6",
+    "depth": 0
+  },
+  {
+    "line_number": 8,
+    "formula": "(~~~Q . ~(~~~~Q . ~~~Q)) . ((~~~Q . ~(~~~~Q . ~~~Q)) v P)",
+    "justification": "DN 7",
+    "depth": 0
+  },
+  {
+    "line_number": 9,
+    "formula": "~R v ((~~~Q . ~(~~~~Q . ~~~Q)) . ((~~~Q . ~(~~~~Q . ~~~Q)) v P))",
+    "justification": "Add 8",
+    "depth": 0
+  },
+  {
+    "line_number": 10,
+    "formula": "R > ((~~~Q . ~(~~~~Q . ~~~Q)) . ((~~~Q . ~(~~~~Q . ~~~Q)) v P))",
+    "justification": "Impl 9",
+    "depth": 0
+  }
+]

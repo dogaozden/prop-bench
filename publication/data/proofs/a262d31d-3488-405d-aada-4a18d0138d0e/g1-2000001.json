@@ -1,0 +1,38 @@
+[
+  {
+    "line_number": 2,
+    "formula": "~S",
+    "justification": "Taut 1",
+    "depth": 0
+  },
+  {
+    "line_number": 3,
+    "formula": "~S ∨ (~S · ~~R)",
+    "justification": "Add 2",
+    "depth": 0
+  },
+  {
+    "line_number": 4,
+    "formula": "(~S ∨ ~S) · (~S ∨ ~~R)",
+    "justification": "Dist 3",
+    "depth": 0
+  },
+  {
+    "line_number": 5,
+    "formula": "(~S ∨ ~S) · ~(S · ~R)",
+    "justification": "DeM 4",
+    "depth": 0
+  },
+  {
+    "line_number": 6,
+    "formula": "(~S ∨ ~S) · ~~~(S · ~R)",
+    "justification": "DN 5",
+    "depth": 0
+  },
+  {
+    "line_number": 7,
+    "formula": "(~S ∨ ~S) · (~~~(S · ~R) · ~~~(S · ~R))",
+    "justification": "Taut 6",
+    "depth": 0
+  }
+]

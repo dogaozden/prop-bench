@@ -12,10 +12,32 @@ Use the recorded campaign that you intend to publish:
 ```sh
 npm run publication:export -- track-runs/my-campaign publication/data/results.json
 npm run publication:analyze -- publication/data/results.json
-npm run publication:verify -- --data publication/data/results.json
+npm run publication:verify -- --data publication/data/results.json \
+  --report publication/data/verification.json
 npm run test:publication
 python3 scripts/package-publication.py
 ```
+
+`--report` writes the verification receipt atomically after successful replay;
+failed verification preserves the previous receipt. Without it the command
+prints JSON and leaves files unchanged. Recheck each archived pilot without
+rewriting its original receipt:
+
+```sh
+npm run publication:verify -- --data publication/pilots/20260925/data/results.json
+```
+
+The archived pilot's original successful receipt remains bound to its unchanged
+results bytes. A fresh replay is additional evidence in the verification output;
+it does not replace the retained archive.
+
+Packaging requires a successful `verification.json` and an analysis summary
+whose source hashes match the exact `results.json` bytes in both the main data
+and every archived pilot. After a new export, rerun analysis and verification
+before packaging. The packager also checks every referenced theorem, rule and
+final/checkpoint proof against the exact captured bytes going into the ZIP;
+altered or missing assets are rejected. A receipt establishes recorded replay,
+not publisher authenticity.
 
 The export binds each run to its prespecified campaign job, reruns the pinned
 referee, and emits only public fields. It also writes the exact frozen theorem

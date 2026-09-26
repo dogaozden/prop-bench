@@ -24,6 +24,7 @@ access or endpoints for executing commands.
 
 - [Public results explorer](publication/index.html) — portable static website;
   serve it over HTTP using the instructions below.
+- [Observed results and known capture limitation](research/RESULTS.md)
 - [Protocol and prespecified campaign](research/PROTOCOL.md)
 - [Dataset construction and semantic audit](research/DATASET.md)
 - [Limitations](research/LIMITATIONS.md)
@@ -60,6 +61,9 @@ website directory, including all files in `data/`. Relative URLs support hosting
 under a subpath. See [PUBLISHING.md](PUBLISHING.md) before publishing an export.
 
 ## Run locally
+
+`npm run bench` opens the current Tracks CLI help. The retained API harness is
+explicitly named `npm run bench:legacy`; it is separate from these evaluations.
 
 Requirements: Rust stable, Node 22 or later, and native Codex signed in through
 ChatGPT. Use the same Node version to install and run native dependencies.

@@ -1,27 +1,27 @@
 {
   "schema_version": "propbench-publication-analysis-v1",
   "source_schema_version": "propbench-publication-v1",
-  "source_generated_at": "2026-09-26T05:30:24.789Z",
-  "campaign_id": "5b02fde5-91a6-4c8d-923b-956fee47bc57",
+  "source_generated_at": "2026-09-26T06:38:59.672Z",
+  "campaign_id": "f5718b6e-dc3e-4219-b823-cd62cb98023c",
   "set_version": "v2",
   "status": "incomplete",
   "planned_jobs": 96,
-  "completed_jobs": 8,
-  "nonvalid_completed_jobs": 0,
-  "interrupted_jobs": 4,
+  "completed_jobs": 43,
+  "nonvalid_completed_jobs": 3,
+  "interrupted_jobs": 0,
   "active_jobs": 0,
-  "pending_jobs": 84,
+  "pending_jobs": 53,
   "conditions": {
     "unaided-1": {
       "planned": 24,
-      "completed": 6,
-      "valid": 6,
+      "completed": 12,
+      "valid": 12,
       "nonvalid_completed": 0,
       "interrupted": 0,
       "active": 0,
-      "pending": 18,
+      "pending": 12,
       "outcome_counts": {
-        "valid": 6,
+        "valid": 12,
         "invalid": 0,
         "parse_error": 0,
         "transport_error": 0,
@@ -30,26 +30,46 @@
         "interrupted": 0
       },
       "loss": {
-        "completed_sum": 2.389105962293053,
-        "completed_mean": 0.39818432704884216,
+        "completed_sum": 4.413327003745515,
+        "completed_mean": 0.3677772503121262,
         "full_census_mean": null,
-        "denominator_completed": 6,
+        "denominator_completed": 12,
         "denominator_planned": 24
       },
       "valid_proof_lengths": {
-        "sum": 56,
-        "mean": 9.333333333333334,
-        "par_sum_for_valid": 85,
+        "sum": 136,
+        "mean": 11.333333333333334,
+        "par_sum_for_valid": 238,
         "pairs": [
           {
             "item_id": "g1-2000001",
-            "lines": 6,
+            "lines": 7,
             "par": 13
           },
           {
+            "item_id": "g2-2100023",
+            "lines": 5,
+            "par": 23
+          },
+          {
+            "item_id": "g3-2200607",
+            "lines": 17,
+            "par": 25
+          },
+          {
             "item_id": "g1-2000011",
-            "lines": 10,
+            "lines": 11,
             "par": 19
+          },
+          {
+            "item_id": "g2-2100030",
+            "lines": 12,
+            "par": 17
+          },
+          {
+            "item_id": "g3-2200683",
+            "lines": 16,
+            "par": 25
           },
           {
             "item_id": "g1-2000013",
@@ -57,19 +77,29 @@
             "par": 13
           },
           {
+            "item_id": "g2-2100067",
+            "lines": 15,
+            "par": 20
+          },
+          {
+            "item_id": "g3-2200923",
+            "lines": 9,
+            "par": 26
+          },
+          {
             "item_id": "g1-2000021",
             "lines": 11,
             "par": 11
           },
           {
-            "item_id": "g1-2000025",
-            "lines": 10,
-            "par": 16
+            "item_id": "g2-2100087",
+            "lines": 12,
+            "par": 17
           },
           {
-            "item_id": "g1-2000031",
-            "lines": 9,
-            "par": 13
+            "item_id": "g3-2201428",
+            "lines": 11,
+            "par": 29
           }
         ]
       },
@@ -78,36 +108,36 @@
         "max_tool_calls": 0
       },
       "native_observations": {
-        "jobs_in_group": 6,
-        "jobs_with_public_run": 6,
+        "jobs_in_group": 12,
+        "jobs_with_public_run": 12,
         "tokens": {
           "input": {
-            "observed_sum": 7706,
-            "runs_with_observation": 6,
-            "jobs_in_group": 6
+            "observed_sum": 15493,
+            "runs_with_observation": 12,
+            "jobs_in_group": 12
           },
           "output": {
-            "observed_sum": 15208,
-            "runs_with_observation": 6,
-            "jobs_in_group": 6
+            "observed_sum": 33679,
+            "runs_with_observation": 12,
+            "jobs_in_group": 12
           },
           "thinking": {
             "observed_sum": null,
             "runs_with_observation": 0,
-            "jobs_in_group": 6
+            "jobs_in_group": 12
           },
           "total": {
             "observed_sum": null,
             "runs_with_observation": 0,
-            "jobs_in_group": 6
+            "jobs_in_group": 12
           }
         },
-        "client_sessions_observed": 6,
-        "runs_with_session_count": 6,
+        "client_sessions_observed": 12,
+        "runs_with_session_count": 12,
         "usage_receipts": {
-          "with_usage": 6,
-          "total": 6,
-          "runs_with_coverage": 6
+          "with_usage": 12,
+          "total": 12,
+          "runs_with_coverage": 12
         },
         "exact_inference_requests": null,
         "exact_cost_usd": null,
@@ -152,14 +182,14 @@
     },
     "unaided-2": {
       "planned": 24,
-      "completed": 0,
-      "valid": 0,
+      "completed": 11,
+      "valid": 11,
       "nonvalid_completed": 0,
       "interrupted": 0,
       "active": 0,
-      "pending": 24,
+      "pending": 13,
       "outcome_counts": {
-        "valid": 0,
+        "valid": 11,
         "invalid": 0,
         "parse_error": 0,
         "transport_error": 0,
@@ -168,53 +198,109 @@
         "interrupted": 0
       },
       "loss": {
-        "completed_sum": 0,
-        "completed_mean": null,
+        "completed_sum": 4.082277396969954,
+        "completed_mean": 0.37111612699726854,
         "full_census_mean": null,
-        "denominator_completed": 0,
+        "denominator_completed": 11,
         "denominator_planned": 24
       },
       "valid_proof_lengths": {
-        "sum": 0,
-        "mean": null,
-        "par_sum_for_valid": 0,
-        "pairs": []
+        "sum": 123,
+        "mean": 11.181818181818182,
+        "par_sum_for_valid": 209,
+        "pairs": [
+          {
+            "item_id": "g1-2000001",
+            "lines": 6,
+            "par": 13
+          },
+          {
+            "item_id": "g2-2100023",
+            "lines": 5,
+            "par": 23
+          },
+          {
+            "item_id": "g3-2200607",
+            "lines": 17,
+            "par": 25
+          },
+          {
+            "item_id": "g1-2000011",
+            "lines": 10,
+            "par": 19
+          },
+          {
+            "item_id": "g2-2100030",
+            "lines": 12,
+            "par": 17
+          },
+          {
+            "item_id": "g3-2200683",
+            "lines": 16,
+            "par": 25
+          },
+          {
+            "item_id": "g1-2000013",
+            "lines": 10,
+            "par": 13
+          },
+          {
+            "item_id": "g2-2100067",
+            "lines": 15,
+            "par": 20
+          },
+          {
+            "item_id": "g3-2200923",
+            "lines": 9,
+            "par": 26
+          },
+          {
+            "item_id": "g1-2000021",
+            "lines": 11,
+            "par": 11
+          },
+          {
+            "item_id": "g2-2100087",
+            "lines": 12,
+            "par": 17
+          }
+        ]
       },
       "budget_per_job": {
         "wall_seconds": 900,
         "max_tool_calls": 0
       },
       "native_observations": {
-        "jobs_in_group": 0,
-        "jobs_with_public_run": 0,
+        "jobs_in_group": 11,
+        "jobs_with_public_run": 11,
         "tokens": {
           "input": {
-            "observed_sum": null,
-            "runs_with_observation": 0,
-            "jobs_in_group": 0
+            "observed_sum": 14189,
+            "runs_with_observation": 11,
+            "jobs_in_group": 11
           },
           "output": {
-            "observed_sum": null,
-            "runs_with_observation": 0,
-            "jobs_in_group": 0
+            "observed_sum": 32252,
+            "runs_with_observation": 11,
+            "jobs_in_group": 11
           },
           "thinking": {
             "observed_sum": null,
             "runs_with_observation": 0,
-            "jobs_in_group": 0
+            "jobs_in_group": 11
           },
           "total": {
             "observed_sum": null,
             "runs_with_observation": 0,
-            "jobs_in_group": 0
+            "jobs_in_group": 11
           }
         },
-        "client_sessions_observed": 0,
-        "runs_with_session_count": 0,
+        "client_sessions_observed": 11,
+        "runs_with_session_count": 11,
         "usage_receipts": {
-          "with_usage": 0,
-          "total": 0,
-          "runs_with_coverage": 0
+          "with_usage": 11,
+          "total": 11,
+          "runs_with_coverage": 11
         },
         "exact_inference_requests": null,
         "exact_cost_usd": null,
@@ -259,42 +345,77 @@
     },
     "frontier-fresh": {
       "planned": 24,
-      "completed": 2,
-      "valid": 2,
-      "nonvalid_completed": 0,
-      "interrupted": 4,
+      "completed": 11,
+      "valid": 9,
+      "nonvalid_completed": 2,
+      "interrupted": 0,
       "active": 0,
-      "pending": 18,
+      "pending": 13,
       "outcome_counts": {
-        "valid": 2,
+        "valid": 9,
         "invalid": 0,
         "parse_error": 0,
         "transport_error": 0,
         "protocol_error": 0,
-        "missing": 0,
+        "missing": 2,
         "interrupted": 0
       },
       "loss": {
-        "completed_sum": 0.8448275862068966,
-        "completed_mean": 0.4224137931034483,
+        "completed_sum": 5.168484293521678,
+        "completed_mean": 0.46986220850197075,
         "full_census_mean": null,
-        "denominator_completed": 2,
+        "denominator_completed": 11,
         "denominator_planned": 24
       },
       "valid_proof_lengths": {
-        "sum": 21,
-        "mean": 10.5,
-        "par_sum_for_valid": 30,
+        "sum": 100,
+        "mean": 11.11111111111111,
+        "par_sum_for_valid": 181,
         "pairs": [
+          {
+            "item_id": "g1-2000001",
+            "lines": 6,
+            "par": 13
+          },
+          {
+            "item_id": "g2-2100023",
+            "lines": 5,
+            "par": 23
+          },
+          {
+            "item_id": "g3-2200607",
+            "lines": 17,
+            "par": 25
+          },
           {
             "item_id": "g1-2000011",
             "lines": 10,
             "par": 19
           },
           {
-            "item_id": "g1-2000021",
-            "lines": 11,
-            "par": 11
+            "item_id": "g3-2200683",
+            "lines": 16,
+            "par": 25
+          },
+          {
+            "item_id": "g1-2000013",
+            "lines": 10,
+            "par": 13
+          },
+          {
+            "item_id": "g2-2100067",
+            "lines": 15,
+            "par": 20
+          },
+          {
+            "item_id": "g3-2200923",
+            "lines": 9,
+            "par": 26
+          },
+          {
+            "item_id": "g2-2100087",
+            "lines": 12,
+            "par": 17
           }
         ]
       },
@@ -303,71 +424,71 @@
         "max_tool_calls": 128
       },
       "native_observations": {
-        "jobs_in_group": 2,
-        "jobs_with_public_run": 2,
+        "jobs_in_group": 11,
+        "jobs_with_public_run": 11,
         "tokens": {
           "input": {
-            "observed_sum": 497289,
-            "runs_with_observation": 2,
-            "jobs_in_group": 2
+            "observed_sum": 1577440,
+            "runs_with_observation": 11,
+            "jobs_in_group": 11
           },
           "output": {
-            "observed_sum": 44349,
-            "runs_with_observation": 2,
-            "jobs_in_group": 2
+            "observed_sum": 176341,
+            "runs_with_observation": 11,
+            "jobs_in_group": 11
           },
           "thinking": {
             "observed_sum": null,
             "runs_with_observation": 0,
-            "jobs_in_group": 2
+            "jobs_in_group": 11
           },
           "total": {
             "observed_sum": null,
             "runs_with_observation": 0,
-            "jobs_in_group": 2
+            "jobs_in_group": 11
           }
         },
-        "client_sessions_observed": 7,
-        "runs_with_session_count": 2,
+        "client_sessions_observed": 48,
+        "runs_with_session_count": 11,
         "usage_receipts": {
-          "with_usage": 7,
-          "total": 7,
-          "runs_with_coverage": 2
+          "with_usage": 35,
+          "total": 48,
+          "runs_with_coverage": 11
         },
         "exact_inference_requests": null,
         "exact_cost_usd": null,
         "note": "Native-client token observations can be incomplete; session counts are not exact inference requests and no exact charge is available.",
         "interrupted": {
-          "jobs_in_group": 4,
-          "jobs_with_public_run": 3,
+          "jobs_in_group": 0,
+          "jobs_with_public_run": 0,
           "tokens": {
             "input": {
-              "observed_sum": 186213,
-              "runs_with_observation": 3,
-              "jobs_in_group": 4
+              "observed_sum": null,
+              "runs_with_observation": 0,
+              "jobs_in_group": 0
             },
             "output": {
-              "observed_sum": 31108,
-              "runs_with_observation": 3,
-              "jobs_in_group": 4
+              "observed_sum": null,
+              "runs_with_observation": 0,
+              "jobs_in_group": 0
             },
             "thinking": {
               "observed_sum": null,
               "runs_with_observation": 0,
-              "jobs_in_group": 4
+              "jobs_in_group": 0
             },
             "total": {
               "observed_sum": null,
               "runs_with_observation": 0,
-              "jobs_in_group": 4
+              "jobs_in_group": 0
             }
           },
-          "client_sessions_observed": 17,
-          "runs_with_session_count": 3,
+          "client_sessions_observed": 0,
+          "runs_with_session_count": 0,
           "usage_receipts": {
-            "with_usage": 6,
-            "total": 17,
-            "runs_with_coverage": 3
+            "with_usage": 0,
+            "total": 0,
+            "runs_with_coverage": 0
           },
           "exact_inference_requests": null,
           "exact_cost_usd": null,
@@ -377,69 +498,110 @@
     },
     "frontier-cumulative": {
       "planned": 24,
-      "completed": 0,
-      "valid": 0,
-      "nonvalid_completed": 0,
+      "completed": 9,
+      "valid": 8,
+      "nonvalid_completed": 1,
       "interrupted": 0,
       "active": 0,
-      "pending": 24,
+      "pending": 15,
       "outcome_counts": {
-        "valid": 0,
+        "valid": 8,
         "invalid": 0,
         "parse_error": 0,
         "transport_error": 0,
         "protocol_error": 0,
-        "missing": 0,
+        "missing": 1,
         "interrupted": 0
       },
       "loss": {
-        "completed_sum": 0,
-        "completed_mean": null,
+        "completed_sum": 3.7289994904686594,
+        "completed_mean": 0.41433327671873993,
         "full_census_mean": null,
-        "denominator_completed": 0,
+        "denominator_completed": 9,
         "denominator_planned": 24
       },
       "valid_proof_lengths": {
-        "sum": 0,
-        "mean": null,
-        "par_sum_for_valid": 0,
-        "pairs": []
+        "sum": 87,
+        "mean": 10.875,
+        "par_sum_for_valid": 164,
+        "pairs": [
+          {
+            "item_id": "g1-2000001",
+            "lines": 6,
+            "par": 13
+          },
+          {
+            "item_id": "g2-2100023",
+            "lines": 5,
+            "par": 23
+          },
+          {
+            "item_id": "g3-2200607",
+            "lines": 17,
+            "par": 25
+          },
+          {
+            "item_id": "g1-2000011",
+            "lines": 10,
+            "par": 19
+          },
+          {
+            "item_id": "g3-2200683",
+            "lines": 16,
+            "par": 25
+          },
+          {
+            "item_id": "g1-2000013",
+            "lines": 9,
+            "par": 13
+          },
+          {
+            "item_id": "g2-2100067",
+            "lines": 15,
+            "par": 20
+          },
+          {
+            "item_id": "g3-2200923",
+            "lines": 9,
+            "par": 26
+          }
+        ]
       },
       "budget_per_job": {
         "wall_seconds": 900,
         "max_tool_calls": 128
       },
       "native_observations": {
-        "jobs_in_group": 0,
-        "jobs_with_public_run": 0,
+        "jobs_in_group": 9,
+        "jobs_with_public_run": 9,
         "tokens": {
           "input": {
-            "observed_sum": null,
-            "runs_with_observation": 0,
-            "jobs_in_group": 0
+            "observed_sum": 1681121,
+            "runs_with_observation": 9,
+            "jobs_in_group": 9
           },
           "output": {
-            "observed_sum": null,
-            "runs_with_observation": 0,
-            "jobs_in_group": 0
+            "observed_sum": 144193,
+            "runs_with_observation": 9,
+            "jobs_in_group": 9
           },
           "thinking": {
             "observed_sum": null,
             "runs_with_observation": 0,
-            "jobs_in_group": 0
+            "jobs_in_group": 9
           },
           "total": {
             "observed_sum": null,
             "runs_with_observation": 0,
-            "jobs_in_group": 0
+            "jobs_in_group": 9
           }
         },
-        "client_sessions_observed": 0,
-        "runs_with_session_count": 0,
+        "client_sessions_observed": 32,
+        "runs_with_session_count": 9,
         "usage_receipts": {
-          "with_usage": 0,
-          "total": 0,
-          "runs_with_coverage": 0
+          "with_usage": 19,
+          "total": 32,
+          "runs_with_coverage": 9
         },
         "exact_inference_requests": null,
         "exact_cost_usd": null,
@@ -485,72 +647,72 @@
   },
   "native_observations": {
     "completed": {
-      "jobs_in_group": 8,
-      "jobs_with_public_run": 8,
+      "jobs_in_group": 43,
+      "jobs_with_public_run": 43,
       "tokens": {
         "input": {
-          "observed_sum": 504995,
-          "runs_with_observation": 8,
-          "jobs_in_group": 8
+          "observed_sum": 3288243,
+          "runs_with_observation": 43,
+          "jobs_in_group": 43
         },
         "output": {
-          "observed_sum": 59557,
-          "runs_with_observation": 8,
-          "jobs_in_group": 8
+          "observed_sum": 386465,
+          "runs_with_observation": 43,
+          "jobs_in_group": 43
         },
         "thinking": {
           "observed_sum": null,
           "runs_with_observation": 0,
-          "jobs_in_group": 8
+          "jobs_in_group": 43
         },
         "total": {
           "observed_sum": null,
           "runs_with_observation": 0,
-          "jobs_in_group": 8
+          "jobs_in_group": 43
         }
       },
-      "client_sessions_observed": 13,
-      "runs_with_session_count": 8,
+      "client_sessions_observed": 103,
+      "runs_with_session_count": 43,
       "usage_receipts": {
-        "with_usage": 13,
-        "total": 13,
-        "runs_with_coverage": 8
+        "with_usage": 77,
+        "total": 103,
+        "runs_with_coverage": 43
       },
       "exact_inference_requests": null,
       "exact_cost_usd": null,
       "note": "Native-client token observations can be incomplete; session counts are not exact inference requests and no exact charge is available."
     },
     "interrupted": {
-      "jobs_in_group": 4,
-      "jobs_with_public_run": 3,
+      "jobs_in_group": 0,
+      "jobs_with_public_run": 0,
       "tokens": {
         "input": {
-          "observed_sum": 186213,
-          "runs_with_observation": 3,
-          "jobs_in_group": 4
+          "observed_sum": null,
+          "runs_with_observation": 0,
+          "jobs_in_group": 0
         },
         "output": {
-          "observed_sum": 31108,
-          "runs_with_observation": 3,
-          "jobs_in_group": 4
+          "observed_sum": null,
+          "runs_with_observation": 0,
+          "jobs_in_group": 0
         },
         "thinking": {
           "observed_sum": null,
           "runs_with_observation": 0,
-          "jobs_in_group": 4
+          "jobs_in_group": 0
         },
         "total": {
           "observed_sum": null,
           "runs_with_observation": 0,
-          "jobs_in_group": 4
+          "jobs_in_group": 0
         }
       },
-      "client_sessions_observed": 17,
-      "runs_with_session_count": 3,
+      "client_sessions_observed": 0,
+      "runs_with_session_count": 0,
       "usage_receipts": {
-        "with_usage": 6,
-        "total": 17,
-        "runs_with_coverage": 3
+        "with_usage": 0,
+        "total": 0,
+        "runs_with_coverage": 0
       },
       "exact_inference_requests": null,
       "exact_cost_usd": null,
@@ -562,30 +724,30 @@
       "left": "unaided-1",
       "right": "frontier-fresh",
       "planned_pairs": 24,
-      "matched_completed_pairs": 2,
-      "unmatched_pairs": 22,
-      "mean_loss_delta_matched": 0,
+      "matched_completed_pairs": 11,
+      "unmatched_pairs": 13,
+      "mean_loss_delta_matched": 0.09365066270692406,
       "full_census_mean_loss_delta": null,
-      "right_improved": 0,
-      "tied": 2,
-      "right_worsened": 0,
-      "both_valid_length_pairs": 2,
-      "mean_absolute_loss_difference_matched": 0,
+      "right_improved": 2,
+      "tied": 7,
+      "right_worsened": 2,
+      "both_valid_length_pairs": 9,
+      "mean_absolute_loss_difference_matched": 0.10384150030248035,
       "items": [
         {
           "item_id": "g1-2000001",
           "par": 13,
           "left_status": "complete",
-          "right_status": "interrupted",
-          "matched_completed": false,
-          "left_verdict": null,
-          "right_verdict": null,
-          "left_lines": null,
-          "right_lines": null,
-          "left_loss": null,
-          "right_loss": null,
-          "loss_delta_right_minus_left": null,
-          "line_delta_when_both_valid": null
+          "right_status": "complete",
+          "matched_completed": true,
+          "left_verdict": "valid",
+          "right_verdict": "valid",
+          "left_lines": 7,
+          "right_lines": 6,
+          "left_loss": 0.35,
+          "right_loss": 0.3157894736842105,
+          "loss_delta_right_minus_left": -0.03421052631578947,
+          "line_delta_when_both_valid": -1
         },
         {
           "item_id": "g1-2000011",
@@ -595,27 +757,27 @@
           "matched_completed": true,
           "left_verdict": "valid",
           "right_verdict": "valid",
-          "left_lines": 10,
+          "left_lines": 11,
           "right_lines": 10,
-          "left_loss": 0.3448275862068966,
+          "left_loss": 0.36666666666666664,
           "right_loss": 0.3448275862068966,
-          "loss_delta_right_minus_left": 0,
-          "line_delta_when_both_valid": 0
+          "loss_delta_right_minus_left": -0.021839080459770066,
+          "line_delta_when_both_valid": -1
         },
         {
           "item_id": "g1-2000013",
           "par": 13,
           "left_status": "complete",
-          "right_status": "interrupted",
-          "matched_completed": false,
-          "left_verdict": null,
-          "right_verdict": null,
-          "left_lines": null,
-          "right_lines": null,
-          "left_loss": null,
-          "right_loss": null,
-          "loss_delta_right_minus_left": null,
-          "line_delta_when_both_valid": null
+          "right_status": "complete",
+          "matched_completed": true,
+          "left_verdict": "valid",
+          "right_verdict": "valid",
+          "left_lines": 10,
+          "right_lines": 10,
+          "left_loss": 0.43478260869565216,
+          "right_loss": 0.43478260869565216,
+          "loss_delta_right_minus_left": 0,
+          "line_delta_when_both_valid": 0
         },
         {
           "item_id": "g1-2000021",
@@ -624,19 +786,19 @@
           "right_status": "complete",
           "matched_completed": true,
           "left_verdict": "valid",
-          "right_verdict": "valid",
+          "right_verdict": "missing",
           "left_lines": 11,
-          "right_lines": 11,
+          "right_lines": null,
           "left_loss": 0.5,
-          "right_loss": 0.5,
-          "loss_delta_right_minus_left": 0,
-          "line_delta_when_both_valid": 0
+          "right_loss": 1,
+          "loss_delta_right_minus_left": 0.5,
+          "line_delta_when_both_valid": null
         },
         {
           "item_id": "g1-2000025",
           "par": 16,
-          "left_status": "complete",
-          "right_status": "interrupted",
+          "left_status": "queued",
+          "right_status": "queued",
           "matched_completed": false,
           "left_verdict": null,
           "right_verdict": null,
@@ -650,8 +812,8 @@
         {
           "item_id": "g1-2000031",
           "par": 13,
-          "left_status": "complete",
-          "right_status": "interrupted",
+          "left_status": "queued",
+          "right_status": "queued",
           "matched_completed": false,
           "left_verdict": null,
           "right_verdict": null,
@@ -695,62 +857,62 @@
         {
           "item_id": "g2-2100023",
           "par": 23,
-          "left_status": "queued",
-          "right_status": "queued",
-          "matched_completed": false,
-          "left_verdict": null,
-          "right_verdict": null,
-          "left_lines": null,
-          "right_lines": null,
-          "left_loss": null,
-          "right_loss": null,
-          "loss_delta_right_minus_left": null,
-          "line_delta_when_both_valid": null
+          "left_status": "complete",
+          "right_status": "complete",
+          "matched_completed": true,
+          "left_verdict": "valid",
+          "right_verdict": "valid",
+          "left_lines": 5,
+          "right_lines": 5,
+          "left_loss": 0.17857142857142858,
+          "right_loss": 0.17857142857142858,
+          "loss_delta_right_minus_left": 0,
+          "line_delta_when_both_valid": 0
         },
         {
           "item_id": "g2-2100030",
           "par": 17,
-          "left_status": "queued",
-          "right_status": "queued",
-          "matched_completed": false,
-          "left_verdict": null,
-          "right_verdict": null,
-          "left_lines": null,
+          "left_status": "complete",
+          "right_status": "complete",
+          "matched_completed": true,
+          "left_verdict": "valid",
+          "right_verdict": "missing",
+          "left_lines": 12,
           "right_lines": null,
-          "left_loss": null,
-          "right_loss": null,
-          "loss_delta_right_minus_left": null,
+          "left_loss": 0.41379310344827586,
+          "right_loss": 1,
+          "loss_delta_right_minus_left": 0.5862068965517242,
           "line_delta_when_both_valid": null
         },
         {
           "item_id": "g2-2100067",
           "par": 20,
-          "left_status": "queued",
-          "right_status": "queued",
-          "matched_completed": false,
-          "left_verdict": null,
-          "right_verdict": null,
-          "left_lines": null,
-          "right_lines": null,
-          "left_loss": null,
-          "right_loss": null,
-          "loss_delta_right_minus_left": null,
-          "line_delta_when_both_valid": null
+          "left_status": "complete",
+          "right_status": "complete",
+          "matched_completed": true,
+          "left_verdict": "valid",
+          "right_verdict": "valid",
+          "left_lines": 15,
+          "right_lines": 15,
+          "left_loss": 0.42857142857142855,
+          "right_loss": 0.42857142857142855,
+          "loss_delta_right_minus_left": 0,
+          "line_delta_when_both_valid": 0
         },
         {
           "item_id": "g2-2100087",
           "par": 17,
-          "left_status": "queued",
-          "right_status": "queued",
-          "matched_completed": false,
-          "left_verdict": null,
-          "right_verdict": null,
-          "left_lines": null,
-          "right_lines": null,
-          "left_loss": null,
-          "right_loss": null,
-          "loss_delta_right_minus_left": null,
-          "line_delta_when_both_valid": null
+          "left_status": "complete",
+          "right_status": "complete",
+          "matched_completed": true,
+          "left_verdict": "valid",
+          "right_verdict": "valid",
+          "left_lines": 12,
+          "right_lines": 12,
+          "left_loss": 0.41379310344827586,
+          "right_loss": 0.41379310344827586,
+          "loss_delta_right_minus_left": 0,
+          "line_delta_when_both_valid": 0
         },
         {
           "item_id": "g2-2100100",
@@ -815,52 +977,52 @@
         {
           "item_id": "g3-2200607",
           "par": 25,
-          "left_status": "queued",
-          "right_status": "queued",
-          "matched_completed": false,
-          "left_verdict": null,
-          "right_verdict": null,
-          "left_lines": null,
-          "right_lines": null,
-          "left_loss": null,
-          "right_loss": null,
-          "loss_delta_right_minus_left": null,
-          "line_delta_when_both_valid": null
+          "left_status": "complete",
+          "right_status": "complete",
+          "matched_completed": true,
+          "left_verdict": "valid",
+          "right_verdict": "valid",
+          "left_lines": 17,
+          "right_lines": 17,
+          "left_loss": 0.40476190476190477,
+          "right_loss": 0.40476190476190477,
+          "loss_delta_right_minus_left": 0,
+          "line_delta_when_both_valid": 0
         },
         {
           "item_id": "g3-2200683",
           "par": 25,
-          "left_status": "queued",
-          "right_status": "queued",
-          "matched_completed": false,
-          "left_verdict": null,
-          "right_verdict": null,
-          "left_lines": null,
-          "right_lines": null,
-          "left_loss": null,
-          "right_loss": null,
-          "loss_delta_right_minus_left": null,
-          "line_delta_when_both_valid": null
+          "left_status": "complete",
+          "right_status": "complete",
+          "matched_completed": true,
+          "left_verdict": "valid",
+          "right_verdict": "valid",
+          "left_lines": 16,
+          "right_lines": 16,
+          "left_loss": 0.3902439024390244,
+          "right_loss": 0.3902439024390244,
+          "loss_delta_right_minus_left": 0,
+          "line_delta_when_both_valid": 0
         },
         {
           "item_id": "g3-2200923",
           "par": 26,
-          "left_status": "queued",
-          "right_status": "queued",
-          "matched_completed": false,
-          "left_verdict": null,
-          "right_verdict": null,
-          "left_lines": null,
-          "right_lines": null,
-          "left_loss": null,
-          "right_loss": null,
-          "loss_delta_right_minus_left": null,
-          "line_delta_when_both_valid": null
+          "left_status": "complete",
+          "right_status": "complete",
+          "matched_completed": true,
+          "left_verdict": "valid",
+          "right_verdict": "valid",
+          "left_lines": 9,
+          "right_lines": 9,
+          "left_loss": 0.2571428571428571,
+          "right_loss": 0.2571428571428571,
+          "loss_delta_right_minus_left": 0,
+          "line_delta_when_both_valid": 0
         },
         {
           "item_id": "g3-2201428",
           "par": 29,
-          "left_status": "queued",
+          "left_status": "complete",
           "right_status": "queued",
           "matched_completed": false,
           "left_verdict": null,
@@ -942,81 +1104,81 @@
       "left": "unaided-2",
       "right": "frontier-fresh",
       "planned_pairs": 24,
-      "matched_completed_pairs": 0,
-      "unmatched_pairs": 24,
-      "mean_loss_delta_matched": null,
+      "matched_completed_pairs": 11,
+      "unmatched_pairs": 13,
+      "mean_loss_delta_matched": 0.0987460815047022,
       "full_census_mean_loss_delta": null,
       "right_improved": 0,
-      "tied": 0,
-      "right_worsened": 0,
-      "both_valid_length_pairs": 0,
-      "mean_absolute_loss_difference_matched": null,
+      "tied": 9,
+      "right_worsened": 2,
+      "both_valid_length_pairs": 9,
+      "mean_absolute_loss_difference_matched": 0.0987460815047022,
       "items": [
         {
           "item_id": "g1-2000001",
           "par": 13,
-          "left_status": "queued",
-          "right_status": "interrupted",
-          "matched_completed": false,
-          "left_verdict": null,
-          "right_verdict": null,
-          "left_lines": null,
-          "right_lines": null,
-          "left_loss": null,
-          "right_loss": null,
-          "loss_delta_right_minus_left": null,
-          "line_delta_when_both_valid": null
+          "left_status": "complete",
+          "right_status": "complete",
+          "matched_completed": true,
+          "left_verdict": "valid",
+          "right_verdict": "valid",
+          "left_lines": 6,
+          "right_lines": 6,
+          "left_loss": 0.3157894736842105,
+          "right_loss": 0.3157894736842105,
+          "loss_delta_right_minus_left": 0,
+          "line_delta_when_both_valid": 0
         },
         {
           "item_id": "g1-2000011",
           "par": 19,
-          "left_status": "queued",
+          "left_status": "complete",
           "right_status": "complete",
-          "matched_completed": false,
-          "left_verdict": null,
-          "right_verdict": null,
-          "left_lines": null,
-          "right_lines": null,
-          "left_loss": null,
-          "right_loss": null,
-          "loss_delta_right_minus_left": null,
-          "line_delta_when_both_valid": null
+          "matched_completed": true,
+          "left_verdict": "valid",
+          "right_verdict": "valid",
+          "left_lines": 10,
+          "right_lines": 10,
+          "left_loss": 0.3448275862068966,
+          "right_loss": 0.3448275862068966,
+          "loss_delta_right_minus_left": 0,
+          "line_delta_when_both_valid": 0
         },
         {
           "item_id": "g1-2000013",
           "par": 13,
-          "left_status": "queued",
-          "right_status": "interrupted",
-          "matched_completed": false,
-          "left_verdict": null,
-          "right_verdict": null,
-          "left_lines": null,
-          "right_lines": null,
-          "left_loss": null,
-          "right_loss": null,
-          "loss_delta_right_minus_left": null,
-          "line_delta_when_both_valid": null
+          "left_status": "complete",
+          "right_status": "complete",
+          "matched_completed": true,
+          "left_verdict": "valid",
+          "right_verdict": "valid",
+          "left_lines": 10,
+          "right_lines": 10,
+          "left_loss": 0.43478260869565216,
+          "right_loss": 0.43478260869565216,
+          "loss_delta_right_minus_left": 0,
+          "line_delta_when_both_valid": 0
         },
         {
           "item_id": "g1-2000021",
           "par": 11,
-          "left_status": "queued",
+          "left_status": "complete",
           "right_status": "complete",
-          "matched_completed": false,
-          "left_verdict": null,
-          "right_verdict": null,
-          "left_lines": null,
+          "matched_completed": true,
+          "left_verdict": "valid",
+          "right_verdict": "missing",
+          "left_lines": 11,
           "right_lines": null,
-          "left_loss": null,
-          "right_loss": null,
-          "loss_delta_right_minus_left": null,
+          "left_loss": 0.5,
+          "right_loss": 1,
+          "loss_delta_right_minus_left": 0.5,
           "line_delta_when_both_valid": null
         },
         {
           "item_id": "g1-2000025",
           "par": 16,
           "left_status": "queued",
-          "right_status": "interrupted",
+          "right_status": "queued",
           "matched_completed": false,
           "left_verdict": null,
           "right_verdict": null,
@@ -1031,7 +1193,7 @@
           "item_id": "g1-2000031",
           "par": 13,
           "left_status": "queued",
-          "right_status": "interrupted",
+          "right_status": "queued",
           "matched_completed": false,
           "left_verdict": null,
           "right_verdict": null,
@@ -1075,62 +1237,62 @@
         {
           "item_id": "g2-2100023",
           "par": 23,
-          "left_status": "queued",
-          "right_status": "queued",
-          "matched_completed": false,
-          "left_verdict": null,
-          "right_verdict": null,
-          "left_lines": null,
-          "right_lines": null,
-          "left_loss": null,
-          "right_loss": null,
-          "loss_delta_right_minus_left": null,
-          "line_delta_when_both_valid": null
+          "left_status": "complete",
+          "right_status": "complete",
+          "matched_completed": true,
+          "left_verdict": "valid",
+          "right_verdict": "valid",
+          "left_lines": 5,
+          "right_lines": 5,
+          "left_loss": 0.17857142857142858,
+          "right_loss": 0.17857142857142858,
+          "loss_delta_right_minus_left": 0,
+          "line_delta_when_both_valid": 0
         },
         {
           "item_id": "g2-2100030",
           "par": 17,
-          "left_status": "queued",
-          "right_status": "queued",
-          "matched_completed": false,
-          "left_verdict": null,
-          "right_verdict": null,
-          "left_lines": null,
+          "left_status": "complete",
+          "right_status": "complete",
+          "matched_completed": true,
+          "left_verdict": "valid",
+          "right_verdict": "missing",
+          "left_lines": 12,
           "right_lines": null,
-          "left_loss": null,
-          "right_loss": null,
-          "loss_delta_right_minus_left": null,
+          "left_loss": 0.41379310344827586,
+          "right_loss": 1,
+          "loss_delta_right_minus_left": 0.5862068965517242,
           "line_delta_when_both_valid": null
         },
         {
           "item_id": "g2-2100067",
           "par": 20,
-          "left_status": "queued",
-          "right_status": "queued",
-          "matched_completed": false,
-          "left_verdict": null,
-          "right_verdict": null,
-          "left_lines": null,
-          "right_lines": null,
-          "left_loss": null,
-          "right_loss": null,
-          "loss_delta_right_minus_left": null,
-          "line_delta_when_both_valid": null
+          "left_status": "complete",
+          "right_status": "complete",
+          "matched_completed": true,
+          "left_verdict": "valid",
+          "right_verdict": "valid",
+          "left_lines": 15,
+          "right_lines": 15,
+          "left_loss": 0.42857142857142855,
+          "right_loss": 0.42857142857142855,
+          "loss_delta_right_minus_left": 0,
+          "line_delta_when_both_valid": 0
         },
         {
           "item_id": "g2-2100087",
           "par": 17,
-          "left_status": "queued",
-          "right_status": "queued",
-          "matched_completed": false,
-          "left_verdict": null,
-          "right_verdict": null,
-          "left_lines": null,
-          "right_lines": null,
-          "left_loss": null,
-          "right_loss": null,
-          "loss_delta_right_minus_left": null,
-          "line_delta_when_both_valid": null
+          "left_status": "complete",
+          "right_status": "complete",
+          "matched_completed": true,
+          "left_verdict": "valid",
+          "right_verdict": "valid",
+          "left_lines": 12,
+          "right_lines": 12,
+          "left_loss": 0.41379310344827586,
+          "right_loss": 0.41379310344827586,
+          "loss_delta_right_minus_left": 0,
+          "line_delta_when_both_valid": 0
         },
         {
           "item_id": "g2-2100100",
@@ -1195,47 +1357,47 @@
         {
           "item_id": "g3-2200607",
           "par": 25,
-          "left_status": "queued",
-          "right_status": "queued",
-          "matched_completed": false,
-          "left_verdict": null,
-          "right_verdict": null,
-          "left_lines": null,
-          "right_lines": null,
-          "left_loss": null,
-          "right_loss": null,
-          "loss_delta_right_minus_left": null,
-          "line_delta_when_both_valid": null
+          "left_status": "complete",
+          "right_status": "complete",
+          "matched_completed": true,
+          "left_verdict": "valid",
+          "right_verdict": "valid",
+          "left_lines": 17,
+          "right_lines": 17,
+          "left_loss": 0.40476190476190477,
+          "right_loss": 0.40476190476190477,
+          "loss_delta_right_minus_left": 0,
+          "line_delta_when_both_valid": 0
         },
         {
           "item_id": "g3-2200683",
           "par": 25,
-          "left_status": "queued",
-          "right_status": "queued",
-          "matched_completed": false,
-          "left_verdict": null,
-          "right_verdict": null,
-          "left_lines": null,
-          "right_lines": null,
-          "left_loss": null,
-          "right_loss": null,
-          "loss_delta_right_minus_left": null,
-          "line_delta_when_both_valid": null
+          "left_status": "complete",
+          "right_status": "complete",
+          "matched_completed": true,
+          "left_verdict": "valid",
+          "right_verdict": "valid",
+          "left_lines": 16,
+          "right_lines": 16,
+          "left_loss": 0.3902439024390244,
+          "right_loss": 0.3902439024390244,
+          "loss_delta_right_minus_left": 0,
+          "line_delta_when_both_valid": 0
         },
         {
           "item_id": "g3-2200923",
           "par": 26,
-          "left_status": "queued",
-          "right_status": "queued",
-          "matched_completed": false,
-          "left_verdict": null,
-          "right_verdict": null,
-          "left_lines": null,
-          "right_lines": null,
-          "left_loss": null,
-          "right_loss": null,
-          "loss_delta_right_minus_left": null,
-          "line_delta_when_both_valid": null
+          "left_status": "complete",
+          "right_status": "complete",
+          "matched_completed": true,
+          "left_verdict": "valid",
+          "right_verdict": "valid",
+          "left_lines": 9,
+          "right_lines": 9,
+          "left_loss": 0.2571428571428571,
+          "right_loss": 0.2571428571428571,
+          "loss_delta_right_minus_left": 0,
+          "line_delta_when_both_valid": 0
         },
         {
           "item_id": "g3-2201428",
@@ -1322,60 +1484,60 @@
       "left": "frontier-fresh",
       "right": "frontier-cumulative",
       "planned_pairs": 24,
-      "matched_completed_pairs": 0,
-      "unmatched_pairs": 24,
-      "mean_loss_delta_matched": null,
+      "matched_completed_pairs": 9,
+      "unmatched_pairs": 15,
+      "mean_loss_delta_matched": -0.002854633289415894,
       "full_census_mean_loss_delta": null,
-      "right_improved": 0,
-      "tied": 0,
+      "right_improved": 1,
+      "tied": 8,
       "right_worsened": 0,
-      "both_valid_length_pairs": 0,
-      "mean_absolute_loss_difference_matched": null,
+      "both_valid_length_pairs": 8,
+      "mean_absolute_loss_difference_matched": 0.002854633289415894,
       "items": [
         {
           "item_id": "g1-2000001",
           "par": 13,
-          "left_status": "interrupted",
-          "right_status": "queued",
-          "matched_completed": false,
-          "left_verdict": null,
-          "right_verdict": null,
-          "left_lines": null,
-          "right_lines": null,
-          "left_loss": null,
-          "right_loss": null,
-          "loss_delta_right_minus_left": null,
-          "line_delta_when_both_valid": null
+          "left_status": "complete",
+          "right_status": "complete",
+          "matched_completed": true,
+          "left_verdict": "valid",
+          "right_verdict": "valid",
+          "left_lines": 6,
+          "right_lines": 6,
+          "left_loss": 0.3157894736842105,
+          "right_loss": 0.3157894736842105,
+          "loss_delta_right_minus_left": 0,
+          "line_delta_when_both_valid": 0
         },
         {
           "item_id": "g1-2000011",
           "par": 19,
           "left_status": "complete",
-          "right_status": "queued",
-          "matched_completed": false,
-          "left_verdict": null,
-          "right_verdict": null,
-          "left_lines": null,
-          "right_lines": null,
-          "left_loss": null,
-          "right_loss": null,
-          "loss_delta_right_minus_left": null,
-          "line_delta_when_both_valid": null
+          "right_status": "complete",
+          "matched_completed": true,
+          "left_verdict": "valid",
+          "right_verdict": "valid",
+          "left_lines": 10,
+          "right_lines": 10,
+          "left_loss": 0.3448275862068966,
+          "right_loss": 0.3448275862068966,
+          "loss_delta_right_minus_left": 0,
+          "line_delta_when_both_valid": 0
         },
         {
           "item_id": "g1-2000013",
           "par": 13,
-          "left_status": "interrupted",
-          "right_status": "queued",
-          "matched_completed": false,
-          "left_verdict": null,
-          "right_verdict": null,
-          "left_lines": null,
-          "right_lines": null,
-          "left_loss": null,
-          "right_loss": null,
-          "loss_delta_right_minus_left": null,
-          "line_delta_when_both_valid": null
+          "left_status": "complete",
+          "right_status": "complete",
+          "matched_completed": true,
+          "left_verdict": "valid",
+          "right_verdict": "valid",
+          "left_lines": 10,
+          "right_lines": 9,
+          "left_loss": 0.43478260869565216,
+          "right_loss": 0.4090909090909091,
+          "loss_delta_right_minus_left": -0.025691699604743046,
+          "line_delta_when_both_valid": -1
         },
         {
           "item_id": "g1-2000021",
@@ -1395,7 +1557,7 @@
         {
           "item_id": "g1-2000025",
           "par": 16,
-          "left_status": "interrupted",
+          "left_status": "queued",
           "right_status": "queued",
           "matched_completed": false,
           "left_verdict": null,
@@ -1410,7 +1572,7 @@
         {
           "item_id": "g1-2000031",
           "par": 13,
-          "left_status": "interrupted",
+          "left_status": "queued",
           "right_status": "queued",
           "matched_completed": false,
           "left_verdict": null,
@@ -1455,52 +1617,52 @@
         {
           "item_id": "g2-2100023",
           "par": 23,
-          "left_status": "queued",
-          "right_status": "queued",
-          "matched_completed": false,
-          "left_verdict": null,
-          "right_verdict": null,
-          "left_lines": null,
-          "right_lines": null,
-          "left_loss": null,
-          "right_loss": null,
-          "loss_delta_right_minus_left": null,
-          "line_delta_when_both_valid": null
+          "left_status": "complete",
+          "right_status": "complete",
+          "matched_completed": true,
+          "left_verdict": "valid",
+          "right_verdict": "valid",
+          "left_lines": 5,
+          "right_lines": 5,
+          "left_loss": 0.17857142857142858,
+          "right_loss": 0.17857142857142858,
+          "loss_delta_right_minus_left": 0,
+          "line_delta_when_both_valid": 0
         },
         {
           "item_id": "g2-2100030",
           "par": 17,
-          "left_status": "queued",
-          "right_status": "queued",
-          "matched_completed": false,
-          "left_verdict": null,
-          "right_verdict": null,
+          "left_status": "complete",
+          "right_status": "complete",
+          "matched_completed": true,
+          "left_verdict": "missing",
+          "right_verdict": "missing",
           "left_lines": null,
           "right_lines": null,
-          "left_loss": null,
-          "right_loss": null,
-          "loss_delta_right_minus_left": null,
+          "left_loss": 1,
+          "right_loss": 1,
+          "loss_delta_right_minus_left": 0,
           "line_delta_when_both_valid": null
         },
         {
           "item_id": "g2-2100067",
           "par": 20,
-          "left_status": "queued",
-          "right_status": "queued",
-          "matched_completed": false,
-          "left_verdict": null,
-          "right_verdict": null,
-          "left_lines": null,
-          "right_lines": null,
-          "left_loss": null,
-          "right_loss": null,
-          "loss_delta_right_minus_left": null,
-          "line_delta_when_both_valid": null
+          "left_status": "complete",
+          "right_status": "complete",
+          "matched_completed": true,
+          "left_verdict": "valid",
+          "right_verdict": "valid",
+          "left_lines": 15,
+          "right_lines": 15,
+          "left_loss": 0.42857142857142855,
+          "right_loss": 0.42857142857142855,
+          "loss_delta_right_minus_left": 0,
+          "line_delta_when_both_valid": 0
         },
         {
           "item_id": "g2-2100087",
           "par": 17,
-          "left_status": "queued",
+          "left_status": "complete",
           "right_status": "queued",
           "matched_completed": false,
           "left_verdict": null,
@@ -1575,47 +1737,47 @@
         {
           "item_id": "g3-2200607",
           "par": 25,
-          "left_status": "queued",
-          "right_status": "queued",
-          "matched_completed": false,
-          "left_verdict": null,
-          "right_verdict": null,
-          "left_lines": null,
-          "right_lines": null,
-          "left_loss": null,
-          "right_loss": null,
-          "loss_delta_right_minus_left": null,
-          "line_delta_when_both_valid": null
+          "left_status": "complete",
+          "right_status": "complete",
+          "matched_completed": true,
+          "left_verdict": "valid",
+          "right_verdict": "valid",
+          "left_lines": 17,
+          "right_lines": 17,
+          "left_loss": 0.40476190476190477,
+          "right_loss": 0.40476190476190477,
+          "loss_delta_right_minus_left": 0,
+          "line_delta_when_both_valid": 0
         },
         {
           "item_id": "g3-2200683",
           "par": 25,
-          "left_status": "queued",
-          "right_status": "queued",
-          "matched_completed": false,
-          "left_verdict": null,
-          "right_verdict": null,
-          "left_lines": null,
-          "right_lines": null,
-          "left_loss": null,
-          "right_loss": null,
-          "loss_delta_right_minus_left": null,
-          "line_delta_when_both_valid": null
+          "left_status": "complete",
+          "right_status": "complete",
+          "matched_completed": true,
+          "left_verdict": "valid",
+          "right_verdict": "valid",
+          "left_lines": 16,
+          "right_lines": 16,
+          "left_loss": 0.3902439024390244,
+          "right_loss": 0.3902439024390244,
+          "loss_delta_right_minus_left": 0,
+          "line_delta_when_both_valid": 0
         },
         {
           "item_id": "g3-2200923",
           "par": 26,
-          "left_status": "queued",
-          "right_status": "queued",
-          "matched_completed": false,
-          "left_verdict": null,
-          "right_verdict": null,
-          "left_lines": null,
-          "right_lines": null,
-          "left_loss": null,
-          "right_loss": null,
-          "loss_delta_right_minus_left": null,
-          "line_delta_when_both_valid": null
+          "left_status": "complete",
+          "right_status": "complete",
+          "matched_completed": true,
+          "left_verdict": "valid",
+          "right_verdict": "valid",
+          "left_lines": 9,
+          "right_lines": 9,
+          "left_loss": 0.2571428571428571,
+          "right_loss": 0.2571428571428571,
+          "loss_delta_right_minus_left": 0,
+          "line_delta_when_both_valid": 0
         },
         {
           "item_id": "g3-2201428",
@@ -1707,80 +1869,80 @@
       "left": "unaided-1",
       "right": "unaided-2",
       "planned_pairs": 24,
-      "matched_completed_pairs": 0,
-      "unmatched_pairs": 24,
-      "mean_loss_delta_matched": null,
+      "matched_completed_pairs": 11,
+      "unmatched_pairs": 13,
+      "mean_loss_delta_matched": -0.0050954187977781396,
       "full_census_mean_loss_delta": null,
-      "right_improved": 0,
-      "tied": 0,
+      "right_improved": 2,
+      "tied": 9,
       "right_worsened": 0,
-      "both_valid_length_pairs": 0,
-      "mean_absolute_loss_difference_matched": null,
+      "both_valid_length_pairs": 11,
+      "mean_absolute_loss_difference_matched": 0.0050954187977781396,
       "items": [
         {
           "item_id": "g1-2000001",
           "par": 13,
           "left_status": "complete",
-          "right_status": "queued",
-          "matched_completed": false,
-          "left_verdict": null,
-          "right_verdict": null,
-          "left_lines": null,
-          "right_lines": null,
-          "left_loss": null,
-          "right_loss": null,
-          "loss_delta_right_minus_left": null,
-          "line_delta_when_both_valid": null
+          "right_status": "complete",
+          "matched_completed": true,
+          "left_verdict": "valid",
+          "right_verdict": "valid",
+          "left_lines": 7,
+          "right_lines": 6,
+          "left_loss": 0.35,
+          "right_loss": 0.3157894736842105,
+          "loss_delta_right_minus_left": -0.03421052631578947,
+          "line_delta_when_both_valid": -1
         },
         {
           "item_id": "g1-2000011",
           "par": 19,
           "left_status": "complete",
-          "right_status": "queued",
-          "matched_completed": false,
-          "left_verdict": null,
-          "right_verdict": null,
-          "left_lines": null,
-          "right_lines": null,
-          "left_loss": null,
-          "right_loss": null,
-          "loss_delta_right_minus_left": null,
-          "line_delta_when_both_valid": null
+          "right_status": "complete",
+          "matched_completed": true,
+          "left_verdict": "valid",
+          "right_verdict": "valid",
+          "left_lines": 11,
+          "right_lines": 10,
+          "left_loss": 0.36666666666666664,
+          "right_loss": 0.3448275862068966,
+          "loss_delta_right_minus_left": -0.021839080459770066,
+          "line_delta_when_both_valid": -1
         },
         {
           "item_id": "g1-2000013",
           "par": 13,
           "left_status": "complete",
-          "right_status": "queued",
-          "matched_completed": false,
-          "left_verdict": null,
-          "right_verdict": null,
-          "left_lines": null,
-          "right_lines": null,
-          "left_loss": null,
-          "right_loss": null,
-          "loss_delta_right_minus_left": null,
-          "line_delta_when_both_valid": null
+          "right_status": "complete",
+          "matched_completed": true,
+          "left_verdict": "valid",
+          "right_verdict": "valid",
+          "left_lines": 10,
+          "right_lines": 10,
+          "left_loss": 0.43478260869565216,
+          "right_loss": 0.43478260869565216,
+          "loss_delta_right_minus_left": 0,
+          "line_delta_when_both_valid": 0
         },
         {
           "item_id": "g1-2000021",
           "par": 11,
           "left_status": "complete",
-          "right_status": "queued",
-          "matched_completed": false,
-          "left_verdict": null,
-          "right_verdict": null,
-          "left_lines": null,
-          "right_lines": null,
-          "left_loss": null,
-          "right_loss": null,
-          "loss_delta_right_minus_left": null,
-          "line_delta_when_both_valid": null
+          "right_status": "complete",
+          "matched_completed": true,
+          "left_verdict": "valid",
+          "right_verdict": "valid",
+          "left_lines": 11,
+          "right_lines": 11,
+          "left_loss": 0.5,
+          "right_loss": 0.5,
+          "loss_delta_right_minus_left": 0,
+          "line_delta_when_both_valid": 0
         },
         {
           "item_id": "g1-2000025",
           "par": 16,
-          "left_status": "complete",
+          "left_status": "queued",
           "right_status": "queued",
           "matched_completed": false,
           "left_verdict": null,
@@ -1795,7 +1957,7 @@
         {
           "item_id": "g1-2000031",
           "par": 13,
-          "left_status": "complete",
+          "left_status": "queued",
           "right_status": "queued",
           "matched_completed": false,
           "left_verdict": null,
@@ -1840,62 +2002,62 @@
         {
           "item_id": "g2-2100023",
           "par": 23,
-          "left_status": "queued",
-          "right_status": "queued",
-          "matched_completed": false,
-          "left_verdict": null,
-          "right_verdict": null,
-          "left_lines": null,
-          "right_lines": null,
-          "left_loss": null,
-          "right_loss": null,
-          "loss_delta_right_minus_left": null,
-          "line_delta_when_both_valid": null
+          "left_status": "complete",
+          "right_status": "complete",
+          "matched_completed": true,
+          "left_verdict": "valid",
+          "right_verdict": "valid",
+          "left_lines": 5,
+          "right_lines": 5,
+          "left_loss": 0.17857142857142858,
+          "right_loss": 0.17857142857142858,
+          "loss_delta_right_minus_left": 0,
+          "line_delta_when_both_valid": 0
         },
         {
           "item_id": "g2-2100030",
           "par": 17,
-          "left_status": "queued",
-          "right_status": "queued",
-          "matched_completed": false,
-          "left_verdict": null,
-          "right_verdict": null,
-          "left_lines": null,
-          "right_lines": null,
-          "left_loss": null,
-          "right_loss": null,
-          "loss_delta_right_minus_left": null,
-          "line_delta_when_both_valid": null
+          "left_status": "complete",
+          "right_status": "complete",
+          "matched_completed": true,
+          "left_verdict": "valid",
+          "right_verdict": "valid",
+          "left_lines": 12,
+          "right_lines": 12,
+          "left_loss": 0.41379310344827586,
+          "right_loss": 0.41379310344827586,
+          "loss_delta_right_minus_left": 0,
+          "line_delta_when_both_valid": 0
         },
         {
           "item_id": "g2-2100067",
           "par": 20,
-          "left_status": "queued",
-          "right_status": "queued",
-          "matched_completed": false,
-          "left_verdict": null,
-          "right_verdict": null,
-          "left_lines": null,
-          "right_lines": null,
-          "left_loss": null,
-          "right_loss": null,
-          "loss_delta_right_minus_left": null,
-          "line_delta_when_both_valid": null
+          "left_status": "complete",
+          "right_status": "complete",
+          "matched_completed": true,
+          "left_verdict": "valid",
+          "right_verdict": "valid",
+          "left_lines": 15,
+          "right_lines": 15,
+          "left_loss": 0.42857142857142855,
+          "right_loss": 0.42857142857142855,
+          "loss_delta_right_minus_left": 0,
+          "line_delta_when_both_valid": 0
         },
         {
           "item_id": "g2-2100087",
           "par": 17,
-          "left_status": "queued",
-          "right_status": "queued",
-          "matched_completed": false,
-          "left_verdict": null,
-          "right_verdict": null,
-          "left_lines": null,
-          "right_lines": null,
-          "left_loss": null,
-          "right_loss": null,
-          "loss_delta_right_minus_left": null,
-          "line_delta_when_both_valid": null
+          "left_status": "complete",
+          "right_status": "complete",
+          "matched_completed": true,
+          "left_verdict": "valid",
+          "right_verdict": "valid",
+          "left_lines": 12,
+          "right_lines": 12,
+          "left_loss": 0.41379310344827586,
+          "right_loss": 0.41379310344827586,
+          "loss_delta_right_minus_left": 0,
+          "line_delta_when_both_valid": 0
         },
         {
           "item_id": "g2-2100100",
@@ -1960,52 +2122,52 @@
         {
           "item_id": "g3-2200607",
           "par": 25,
-          "left_status": "queued",
-          "right_status": "queued",
-          "matched_completed": false,
-          "left_verdict": null,
-          "right_verdict": null,
-          "left_lines": null,
-          "right_lines": null,
-          "left_loss": null,
-          "right_loss": null,
-          "loss_delta_right_minus_left": null,
-          "line_delta_when_both_valid": null
+          "left_status": "complete",
+          "right_status": "complete",
+          "matched_completed": true,
+          "left_verdict": "valid",
+          "right_verdict": "valid",
+          "left_lines": 17,
+          "right_lines": 17,
+          "left_loss": 0.40476190476190477,
+          "right_loss": 0.40476190476190477,
+          "loss_delta_right_minus_left": 0,
+          "line_delta_when_both_valid": 0
         },
         {
           "item_id": "g3-2200683",
           "par": 25,
-          "left_status": "queued",
-          "right_status": "queued",
-          "matched_completed": false,
-          "left_verdict": null,
-          "right_verdict": null,
-          "left_lines": null,
-          "right_lines": null,
-          "left_loss": null,
-          "right_loss": null,
-          "loss_delta_right_minus_left": null,
-          "line_delta_when_both_valid": null
+          "left_status": "complete",
+          "right_status": "complete",
+          "matched_completed": true,
+          "left_verdict": "valid",
+          "right_verdict": "valid",
+          "left_lines": 16,
+          "right_lines": 16,
+          "left_loss": 0.3902439024390244,
+          "right_loss": 0.3902439024390244,
+          "loss_delta_right_minus_left": 0,
+          "line_delta_when_both_valid": 0
         },
         {
           "item_id": "g3-2200923",
           "par": 26,
-          "left_status": "queued",
-          "right_status": "queued",
-          "matched_completed": false,
-          "left_verdict": null,
-          "right_verdict": null,
-          "left_lines": null,
-          "right_lines": null,
-          "left_loss": null,
-          "right_loss": null,
-          "loss_delta_right_minus_left": null,
-          "line_delta_when_both_valid": null
+          "left_status": "complete",
+          "right_status": "complete",
+          "matched_completed": true,
+          "left_verdict": "valid",
+          "right_verdict": "valid",
+          "left_lines": 9,
+          "right_lines": 9,
+          "left_loss": 0.2571428571428571,
+          "right_loss": 0.2571428571428571,
+          "loss_delta_right_minus_left": 0,
+          "line_delta_when_both_valid": 0
         },
         {
           "item_id": "g3-2201428",
           "par": 29,
-          "left_status": "queued",
+          "left_status": "complete",
           "right_status": "queued",
           "matched_completed": false,
           "left_verdict": null,
@@ -2082,5 +2244,5 @@
     }
   },
   "interpretation": "This is a descriptive census of 24 public synthetic items. Partial completed subsets are shown with explicit denominators; no population inference is claimed.",
-  "source_export_sha256": "f2415cf98ee232df23ce50e4426b25ba55816074ffafa78019f39f6b3977b7f9"
+  "source_export_sha256": "73cf5bdbf0aed3d8c203980b619c52806341687cb20c71b7d38476cbdfcca0c9"
 }

@@ -1,0 +1,32 @@
+[
+  {
+    "line_number": 4,
+    "formula": "~P",
+    "justification": "Simp 1",
+    "depth": 0
+  },
+  {
+    "line_number": 5,
+    "formula": "S · S",
+    "justification": "Simp 2",
+    "depth": 0
+  },
+  {
+    "line_number": 6,
+    "formula": "S",
+    "justification": "Simp 5",
+    "depth": 0
+  },
+  {
+    "line_number": 7,
+    "formula": "~P ∨ ((Q ∨ Q) ⊃ ((Q ∨ Q) · ((~S ⊃ (~~S ∨ (~P · (R ∨ R)))) · (S ∨ (P ∨ Q)))))",
+    "justification": "Add 4",
+    "depth": 0
+  },
+  {
+    "line_number": 8,
+    "formula": "S · (~P ∨ ((Q ∨ Q) ⊃ ((Q ∨ Q) · ((~S ⊃ (~~S ∨ (~P · (R ∨ R)))) · (S ∨ (P ∨ Q))))))",
+    "justification": "Conj 6,7",
+    "depth": 0
+  }
+]

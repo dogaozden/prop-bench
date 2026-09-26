@@ -8,6 +8,17 @@ const CAMPAIGN_CONDITIONS = {
   "frontier-fresh": { track: "frontier", mode: "fresh" },
   "frontier-cumulative": { track: "frontier", mode: "cumulative" }
 };
+const EDITORIAL_LIMITATIONS = {
+  "f5718b6e-dc3e-4219-b823-cd62cb98023c": {
+    title: "Editorial limitation · submission capture",
+    body: "In this campaign, an extra draft JSON file in a proof folder caused the frozen harness to reject canonical submissions. Affected published verdicts remain missing (loss 1). This is a submission-capture failure, not evidence that the model could not construct a valid proof.",
+    href: "https://github.com/dogaozden/prop-bench/blob/master/research/SUBMISSION-FAILURE.md"
+  }
+};
+
+export function editorialLimitation(campaign) {
+  return campaign && Object.hasOwn(EDITORIAL_LIMITATIONS, campaign.id) ? EDITORIAL_LIMITATIONS[campaign.id] : null;
+}
 
 function object(value, label) {
   if (value === null || typeof value !== "object" || Array.isArray(value)) throw new Error(`${label} must be an object`);
@@ -275,4 +286,59 @@ export function groupRuns(data) {
         [...new Set(group.runs.map(run => `${run.budget.wall_seconds}s${run.subscription?.max_tool_calls == null ? "" : ` / ${run.subscription.max_tool_calls} calls`}`))]
     };
   });
+}
+
+export const MATCHED_CONDITIONS = ["unaided-1", "unaided-2", "frontier-fresh", "frontier-cumulative"];
+
+/** A campaign-only view of each planned theorem; interrupted records stay inspectable but unscored. */
+export function matchedLedger(data, groups) {
+  if (!data.campaign) return null;
+  const byCondition = new Map(groups.filter(group => group.campaign_id === data.campaign.id && group.campaign_condition)
+    .map(group => [group.campaign_condition, group]));
+  const columns = MATCHED_CONDITIONS.map(condition => {
+    const group = byCondition.get(condition);
+    return { condition, group, completed: group?.scoredRecords.length ?? 0, planned: group?.jobs.length ?? 0 };
+  });
+  const rows = data.items.map(item => ({ item, cells: columns.map(column => {
+    const group = column.group;
+    const job = group?.jobs.find(candidate => candidate.item_id === item.id);
+    const record = group?.records.find(candidate => candidate.result.id === item.id);
+    if (record && group.scoredRecords.includes(record)) {
+      if (record.result.status === "valid") return { kind: "valid", label: `${record.result.line_count} ${record.result.line_count === 1 ? "line" : "lines"}`, record, group };
+      return { kind: "nonvalid", label: record.result.status.replaceAll("_", " "), record, group };
+    }
+    if (job?.status === "interrupted" || record?.run.evaluation_status === "interrupted")
+      return { kind: "interrupted", label: "Interrupted", record, group };
+    if (record) return { kind: "incomplete", label: "Incomplete record", record, group };
+    if (job?.status === "complete") return { kind: "awaiting", label: "Awaiting export", record: null, group };
+    if (["running", "preparing", "prepared"].includes(job?.status)) return { kind: "active", label: "Active", record: null, group };
+    return { kind: job ? "pending" : "unplanned", label: job ? "Pending" : "Not planned", record: null, group };
+  }) }));
+  return { columns, rows };
+}
+
+/** Descriptive counts only; every compared cell is a completed, valid campaign verdict. */
+export function summarizeMatchedEvidence(ledger) {
+  if (!ledger) return null;
+  const total = ledger.rows.length;
+  const fresh = { matched: 0, unavailable: 0, shorterThanBoth: 0, withinUnaidedRange: 0, longerThanBoth: 0 };
+  const cumulative = { matched: 0, unavailable: 0, shorter: 0, tied: 0, longer: 0 };
+  for (const row of ledger.rows) {
+    const [u1, u2, frontierFresh, frontierCumulative] = row.cells;
+    if ([u1, u2, frontierFresh].every(cell => cell.kind === "valid")) {
+      fresh.matched++;
+      const a = u1.record.result.line_count, b = u2.record.result.line_count, f = frontierFresh.record.result.line_count;
+      if (f < Math.min(a, b)) fresh.shorterThanBoth++;
+      else if (f > Math.max(a, b)) fresh.longerThanBoth++;
+      else fresh.withinUnaidedRange++;
+    } else fresh.unavailable++;
+    if ([frontierFresh, frontierCumulative].every(cell => cell.kind === "valid")) {
+      cumulative.matched++;
+      const f = frontierFresh.record.result.line_count, c = frontierCumulative.record.result.line_count;
+      if (c < f) cumulative.shorter++;
+      else if (c > f) cumulative.longer++;
+      else cumulative.tied++;
+    } else cumulative.unavailable++;
+  }
+  return { total, fresh, cumulative };
 }

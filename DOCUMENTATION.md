@@ -1,4 +1,9 @@
-# PropBench Documentation
+# PropBench Documentation — historical API/Elo harness
+
+This is a reference for the earlier Gemini/OpenRouter API harness and Elo GUI.
+For current Codex-subscription Frontier and Unaided runs, use [README.md](README.md)
+and [TRACKS.md](TRACKS.md). The API harness has an explicit
+`npm run bench:legacy -- ...` entrypoint; `npm run bench` opens the current Tracks CLI.
 
 An LLM benchmark that scores models on proof efficiency (fewest lines) for propositional logic natural deduction. Models receive tautologies and must produce Fitch-style proofs; the model with the fewest total proof lines wins.
 

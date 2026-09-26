@@ -2,6 +2,7 @@ import * as assert from "node:assert/strict";
 import * as fs from "node:fs";
 import * as os from "node:os";
 import * as path from "node:path";
+import { execFileSync } from "node:child_process";
 import { test } from "node:test";
 import { performance } from "node:perf_hooks";
 
@@ -228,9 +229,11 @@ test("Frontier rejects bundle overlap, snapshot symlinks, and unknown submission
     }
     const bundle = path.join(base, "submit-bundle");
     const ctx = prepareFrontier(options(path.join(base, "owner-runs-4"), validatorBinary, "external"), bundle);
+    fs.copyFileSync(VALID_PROOF, path.join(bundle, "proofs", "r1.json"));
     fs.writeFileSync(path.join(bundle, "proofs", "unknown.json"), "[]");
     await assert.rejects(() => submitFrontier(ctx.dir, path.join(bundle, "proofs"), validatorBinary), /Unknown submission/);
     assert.ok(!fs.existsSync(path.join(ctx.dir, "submissions", "unknown.json")));
+    assert.ok(!fs.existsSync(path.join(ctx.dir, "submissions", "r1.json")));
   } finally {
     fs.rmSync(base, { recursive: true, force: true });
   }
@@ -361,6 +364,9 @@ test("subscription checkpoints retain the shortest proof and freeze submitted by
   const base = makeBase();
   try {
     const { ctx, bundle, activate } = checkpointRun(base, validator);
+    const goal = fs.readFileSync(path.join(bundle, "GOAL.md"), "utf8");
+    assert.match(goal, /Checkpoint capture accepts only proofs\/<selected-theorem-id>\.json/);
+    assert.match(goal, /Put scratch proofs and alternate JSON drafts in tools\//);
     const checkpoints = activate();
     const file = path.join(bundle, "proofs/r1.json");
     const shortest = fs.readFileSync(VALID_PROOF);
@@ -398,6 +404,36 @@ test("subscription checkpoints retain the shortest proof and freeze submitted by
   } finally { fs.rmSync(base, { recursive: true, force: true }); }
 });
 
+test("subscription checkpoints accept selected proof despite regular JSON drafts and freeze its bytes", async () => {
+  const validator = validatorPath()!;
+  const base = makeBase();
+  try {
+    const { ctx, bundle, activate } = checkpointRun(base, validator);
+    const checkpoints = activate();
+    const proof = path.join(bundle, "proofs/r1.json");
+    fs.copyFileSync(VALID_PROOF, proof);
+    fs.writeFileSync(path.join(bundle, "proofs/candidate.json"), "[]\n");
+    await checkpointExecution(ctx, 1, checkpoints.afterExecution);
+    const checkpoint = JSON.parse(fs.readFileSync(path.join(ctx.dir, "checkpoints/000001.json"), "utf8"));
+    assert.deepEqual(checkpoint.ignored_proof_drafts, ["candidate.json"]);
+    assert.equal(checkpoint.contestant_rejection, undefined);
+    assert.deepEqual(checkpoint.submissions.map((entry: {id: string}) => entry.id), ["r1"]);
+    assert.deepEqual(Buffer.from(checkpoint.submissions[0].proof_bytes_base64, "base64"), fs.readFileSync(VALID_PROOF));
+    assert.deepEqual(fs.readFileSync(path.join(ctx.dir, "submissions/r1.json")), fs.readFileSync(VALID_PROOF));
+    assert.equal(fs.existsSync(path.join(ctx.dir, "submissions/candidate.json")), false);
+
+    checkpoints.close();
+    fs.writeFileSync(proof, "[]\n"); // A later live mutation cannot rescue or invalidate sealed bytes.
+    fs.writeFileSync(path.join(ctx.dir, "controller.json"), JSON.stringify({ status: "complete" }));
+    const { report } = await finalizeControlledFrontier(ctx.dir, path.join(bundle, "proofs"), validator);
+    assert.equal(report.items[0].line_count, 1);
+    assert.equal(report.items[0].status, "valid");
+    const archive = path.join(ctx.dir, "archives", fs.readdirSync(path.join(ctx.dir, "archives")).sort().at(-1)!);
+    assert.deepEqual(fs.readFileSync(path.join(archive, "proofs/r1.json")), fs.readFileSync(VALID_PROOF));
+    assert.equal(fs.existsSync(path.join(archive, "proofs/candidate.json")), false);
+  } finally { fs.rmSync(base, { recursive: true, force: true }); }
+});
+
 test("checkpoints require an active controller, completed locked execution, and an unexpired cutoff", async () => {
   const base = makeBase();
   try {
@@ -430,8 +466,8 @@ test("checkpoints require an active controller, completed locked execution, and 
   } finally { fs.rmSync(base, { recursive: true, force: true }); }
 });
 
-test("checkpoints reject unknown paths, proof links, and changed symlink ancestry", async t => {
-  for (const scenario of ["unknown", "symlink", "hardlink", "proofs-link", "ancestor-link"] as const) {
+test("checkpoints reject unsafe draft paths, proof links, and changed symlink ancestry", async t => {
+  for (const scenario of ["draft-nonjson", "draft-symlink", "draft-hardlink", "draft-special", "draft-oversize", "symlink", "hardlink", "proofs-link", "ancestor-link"] as const) {
     await t.test(scenario, async () => {
       const base = makeBase();
       try {
@@ -439,7 +475,13 @@ test("checkpoints reject unknown paths, proof links, and changed symlink ancestr
         const checkpoints = activate();
         const source = path.join(base, "outside.json");
         fs.copyFileSync(VALID_PROOF, source);
-        if (scenario === "unknown") fs.copyFileSync(source, path.join(bundle, "proofs/unknown.json"));
+        fs.copyFileSync(VALID_PROOF, path.join(bundle, "proofs/r1.json"));
+        if (scenario === "draft-nonjson") fs.writeFileSync(path.join(bundle, "proofs/draft.txt"), "not a proof");
+        if (scenario === "draft-symlink") fs.symlinkSync(source, path.join(bundle, "proofs/draft.json"));
+        if (scenario === "draft-hardlink") fs.linkSync(source, path.join(bundle, "proofs/draft.json"));
+        if (scenario === "draft-special") execFileSync("mkfifo", [path.join(bundle, "proofs/draft.json")]);
+        if (scenario === "draft-oversize") fs.writeFileSync(path.join(bundle, "proofs/draft.json"), Buffer.alloc(16 * 1024 * 1024 + 1));
+        if (scenario === "symlink" || scenario === "hardlink") fs.unlinkSync(path.join(bundle, "proofs/r1.json"));
         if (scenario === "symlink") fs.symlinkSync(source, path.join(bundle, "proofs/r1.json"));
         if (scenario === "hardlink") fs.linkSync(source, path.join(bundle, "proofs/r1.json"));
         if (scenario === "proofs-link") {
@@ -454,7 +496,7 @@ test("checkpoints reject unknown paths, proof links, and changed symlink ancestr
         await checkpointExecution(ctx, 1, checkpoints.afterExecution);
         assert.equal(fs.existsSync(path.join(ctx.dir, "submissions/r1.json")), false);
         const checkpoint = JSON.parse(fs.readFileSync(path.join(ctx.dir, "checkpoints/000001.json"), "utf8"));
-        assert.match(checkpoint.contestant_rejection, /Unknown submission|Symlink|Hardlink/);
+        assert.match(checkpoint.contestant_rejection, /Proofs directory may contain|Symlink|Hardlink|File exceeds size cap/);
         assert.deepEqual(checkpoint.submissions, []);
       } finally { fs.rmSync(base, { recursive: true, force: true }); }
     });

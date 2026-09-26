@@ -1,4 +1,10 @@
-# PropBench Architecture
+# PropBench Architecture — historical API/Elo harness
+
+This document describes the earlier API and Elo architecture. For the current
+Codex-subscription Frontier and Unaided system, start with [README.md](README.md),
+[TRACKS.md](TRACKS.md), and [research/REPRODUCIBILITY.md](research/REPRODUCIBILITY.md).
+The API harness has an explicit `npm run bench:legacy -- ...` entrypoint;
+`npm run bench` opens the current Tracks CLI.
 
 ## System Overview
 

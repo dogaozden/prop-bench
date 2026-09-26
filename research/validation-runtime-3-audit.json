@@ -1,0 +1,444 @@
+{
+  "schema": "propbench-validation-runtime-3-audit-v1",
+  "audited_at_utc": "2026-09-26T05:48:28.621364+00:00",
+  "source_commit": "64b2026857d0dc9da54497eca50cf7a63534e95f",
+  "image": {
+    "Id": "sha256:b86705d37917c9e9cdcd98c139b4a052bb77cad812e6f80c03f461db0bce9859",
+    "Created": "2026-09-25T22:33:11.869795076-07:00",
+    "Architecture": "arm64",
+    "Os": "linux",
+    "Size": 268851044,
+    "RepoTags": [
+      "propbench-frontier:3"
+    ],
+    "RepoDigests": [
+      "propbench-frontier@sha256:b86705d37917c9e9cdcd98c139b4a052bb77cad812e6f80c03f461db0bce9859"
+    ],
+    "labels": {
+      "org.propbench.frontier-runtime": "3"
+    },
+    "rootfs_layers": [
+      "sha256:055ab12bd547e17a0630037f06a186cf405e3f61bb03a614562ca8f5ab52a8be",
+      "sha256:bd1048ab078eace972661c040aa441c45c2311aeaf0cf108ac0fe53dd722520c",
+      "sha256:99a3145caca67963c749fc4a7278dfeedce33e34fa163ed9262dbd42d653ec6b",
+      "sha256:521f5ade323e5c7c86f0f166a3016e68d0559d834bc8c4abf72d0f62e4b26f9d",
+      "sha256:531cb9479b9ceb4db4ffc4560334b2088ad42931f82b8f540f23147883f5be60"
+    ]
+  },
+  "dockerfile_sha256": "6228b1b4b6f8684a0c128e3ac30328fffe535bcc599c5588c9c942de51935c4e",
+  "base_images": [
+    {
+      "dockerfile_reference": "rust:1.92.0-bookworm@sha256:e90e846de4124376164ddfbaab4b0774c7bdeef5e738866295e5a90a34a307a2",
+      "local_inspection": {
+        "Id": "sha256:e90e846de4124376164ddfbaab4b0774c7bdeef5e738866295e5a90a34a307a2",
+        "Created": "2026-01-13T06:14:27.803459611Z",
+        "Architecture": "arm64",
+        "Os": "linux",
+        "Size": 519872774,
+        "RepoTags": [
+          "rust:1.92.0-bookworm"
+        ],
+        "RepoDigests": [
+          "rust@sha256:e90e846de4124376164ddfbaab4b0774c7bdeef5e738866295e5a90a34a307a2"
+        ],
+        "labels": {
+          "org.opencontainers.image.source": "https://github.com/rust-lang/docker-rust"
+        },
+        "rootfs_layers": [
+          "sha256:44a715592563a40b443c16d48ec7a0ea8ba711fa0bacb2536226436e7f80af6e",
+          "sha256:491efbadf17f5ddbb7e60584e47c620c1d843a7aff418c37d5e43857c6970371",
+          "sha256:d9f787eb710b5ae2475c14b8277460252bbcf854db79929e70161ff1dc7507ca",
+          "sha256:d72b0c5b35567cbf352bc5f7292c925079774c8d58bc52cd14c73f8cf0a39312",
+          "sha256:b85f2de09abde45f35a3e659fd14cef27632d7295995c4a92737677437041968"
+        ]
+      },
+      "runtime_layers_start_with_base": false,
+      "stage": "validator-build"
+    },
+    {
+      "dockerfile_reference": "debian:bookworm-slim@sha256:3783cc01769c7b2b1b83a5c5ad96c815348e28ed7da68e2e3687004faa906251",
+      "local_inspection": {
+        "Id": "sha256:3783cc01769c7b2b1b83a5c5ad96c815348e28ed7da68e2e3687004faa906251",
+        "Created": "2026-09-18T00:00:00Z",
+        "Architecture": "arm64",
+        "Os": "linux",
+        "Size": 28130840,
+        "RepoTags": [
+          "debian:bookworm-slim@sha256:3783cc01769c7b2b1b83a5c5ad96c815348e28ed7da68e2e3687004faa906251"
+        ],
+        "RepoDigests": [
+          "debian:bookworm-slim@sha256:3783cc01769c7b2b1b83a5c5ad96c815348e28ed7da68e2e3687004faa906251"
+        ],
+        "labels": {},
+        "rootfs_layers": [
+          "sha256:055ab12bd547e17a0630037f06a186cf405e3f61bb03a614562ca8f5ab52a8be"
+        ]
+      },
+      "runtime_layers_start_with_base": true,
+      "stage": "runtime"
+    }
+  ],
+  "scope": "Lightweight direct checks against the existing immutable runtime3 image; no image build, source edit, native provider invocation, inference, or CPU stress test.",
+  "host_referee_sha256": "90c4b05d1c1f1a2be9294fe19184276ab20584a28660ea35bfbb954f65891f97",
+  "runtime_validator": {
+    "binary_sha256": "3c72cfa0c5f72ae5dcafcf8f492f848d4cb162184729cc9cc4ca764845e21c01",
+    "binary_mode": "0o555",
+    "command_denials": [
+      {
+        "launcher": "/opt/propbench/validator",
+        "arguments": [
+          "golf",
+          "plant",
+          "--count",
+          "1",
+          "--seed",
+          "2000001",
+          "--band",
+          "1",
+          "--out-set",
+          "generated",
+          "--out-key",
+          "regenerated"
+        ],
+        "exit_code": 2,
+        "stdout": "",
+        "stderr": "error: unrecognized subcommand 'golf'\n\nUsage: validator <COMMAND>\n\nFor more information, try '--help'.\n"
+      },
+      {
+        "launcher": "./validator",
+        "arguments": [
+          "golf",
+          "plant",
+          "--count",
+          "1",
+          "--seed",
+          "2000001",
+          "--band",
+          "1",
+          "--out-set",
+          "generated",
+          "--out-key",
+          "regenerated"
+        ],
+        "exit_code": 2,
+        "stdout": "",
+        "stderr": "error: unrecognized subcommand 'golf'\n\nUsage: validator <COMMAND>\n\nFor more information, try '--help'.\n"
+      },
+      {
+        "launcher": "/opt/propbench/validator",
+        "arguments": [
+          "generate",
+          "--help"
+        ],
+        "exit_code": 2,
+        "stdout": "",
+        "stderr": "error: unrecognized subcommand 'generate'\n\nUsage: validator <COMMAND>\n\nFor more information, try '--help'.\n"
+      },
+      {
+        "launcher": "/opt/propbench/validator",
+        "arguments": [
+          "analyze",
+          "--help"
+        ],
+        "exit_code": 2,
+        "stdout": "",
+        "stderr": "error: unrecognized subcommand 'analyze'\n\nUsage: validator <COMMAND>\n\nFor more information, try '--help'.\n"
+      }
+    ],
+    "help": {
+      "exit_code": 0,
+      "stdout": "Validate propositional logic proofs\n\nUsage: validator <COMMAND>\n\nCommands:\n  validate  Validate a proof against a theorem\n  help      Print this message or the help of the given subcommand(s)\n\nOptions:\n  -h, --help  Print help\n",
+      "stderr": ""
+    },
+    "generator_string_matches": [],
+    "generator_symbol_matches": [],
+    "no_regeneration_outputs": true,
+    "validator_write_open_denied": true,
+    "process_status": {
+      "Uid": "65534\t65534\t65534\t65534",
+      "Gid": "65534\t65534\t65534\t65534",
+      "CapEff": "0000000000000000",
+      "NoNewPrivs": "1",
+      "Seccomp": "2"
+    }
+  },
+  "strict_validation_parity": [
+    {
+      "case": "valid_mp",
+      "owner": {
+        "exit_code": 0,
+        "stdout": "{\n  \"valid\": true,\n  \"line_count\": 1,\n  \"errors\": []\n}\n",
+        "stderr": ""
+      },
+      "runtime": {
+        "exit_code": 0,
+        "stdout": "{\n  \"valid\": true,\n  \"line_count\": 1,\n  \"errors\": []\n}\n",
+        "stderr": ""
+      },
+      "exact_stdout_stderr_exit_parity": true
+    },
+    {
+      "case": "valid_cp",
+      "owner": {
+        "exit_code": 0,
+        "stdout": "{\n  \"valid\": true,\n  \"line_count\": 2,\n  \"errors\": []\n}\n",
+        "stderr": ""
+      },
+      "runtime": {
+        "exit_code": 0,
+        "stdout": "{\n  \"valid\": true,\n  \"line_count\": 2,\n  \"errors\": []\n}\n",
+        "stderr": ""
+      },
+      "exact_stdout_stderr_exit_parity": true
+    },
+    {
+      "case": "invalid_formula",
+      "owner": {
+        "exit_code": 0,
+        "stdout": "{\n  \"valid\": false,\n  \"line_count\": 0,\n  \"errors\": [\n    \"Line 3: Invalid formula '(': Parse error at position 1: Expected atom, negation, or parenthesized expression\"\n  ]\n}\n",
+        "stderr": ""
+      },
+      "runtime": {
+        "exit_code": 0,
+        "stdout": "{\n  \"valid\": false,\n  \"line_count\": 0,\n  \"errors\": [\n    \"Line 3: Invalid formula '(': Parse error at position 1: Expected atom, negation, or parenthesized expression\"\n  ]\n}\n",
+        "stderr": ""
+      },
+      "exact_stdout_stderr_exit_parity": true
+    },
+    {
+      "case": "forged_depth",
+      "owner": {
+        "exit_code": 0,
+        "stdout": "{\n  \"valid\": false,\n  \"line_count\": 0,\n  \"errors\": [\n    \"Line 3: input declared depth 999 but the engine-derived depth is 0\"\n  ]\n}\n",
+        "stderr": ""
+      },
+      "runtime": {
+        "exit_code": 0,
+        "stdout": "{\n  \"valid\": false,\n  \"line_count\": 0,\n  \"errors\": [\n    \"Line 3: input declared depth 999 but the engine-derived depth is 0\"\n  ]\n}\n",
+        "stderr": ""
+      },
+      "exact_stdout_stderr_exit_parity": true
+    },
+    {
+      "case": "bad_numbering",
+      "owner": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "Error: Line 4: input declared line 4 but the next engine-assigned line number is 3\n"
+      },
+      "runtime": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "Error: Line 4: input declared line 4 but the next engine-assigned line number is 3\n"
+      },
+      "exact_stdout_stderr_exit_parity": true
+    }
+  ],
+  "runtime_inventory": {
+    "packages": [
+      {
+        "package": "bash",
+        "version": "5.2.15-2+b13",
+        "architecture": "arm64"
+      },
+      {
+        "package": "build-essential",
+        "version": "12.9",
+        "architecture": "arm64"
+      },
+      {
+        "package": "clang",
+        "version": "1:14.0-55.7~deb12u1",
+        "architecture": "arm64"
+      },
+      {
+        "package": "coreutils",
+        "version": "9.1-1",
+        "architecture": "arm64"
+      },
+      {
+        "package": "dash",
+        "version": "0.5.12-2",
+        "architecture": "arm64"
+      },
+      {
+        "package": "diffutils",
+        "version": "1:3.8-4",
+        "architecture": "arm64"
+      },
+      {
+        "package": "file",
+        "version": "1:5.44-3",
+        "architecture": "arm64"
+      },
+      {
+        "package": "findutils",
+        "version": "4.9.0-4",
+        "architecture": "arm64"
+      },
+      {
+        "package": "gawk",
+        "version": "1:5.2.1-2",
+        "architecture": "arm64"
+      },
+      {
+        "package": "grep",
+        "version": "3.8-5",
+        "architecture": "arm64"
+      },
+      {
+        "package": "jq",
+        "version": "1.6-2.1+deb12u2",
+        "architecture": "arm64"
+      },
+      {
+        "package": "libc6:arm64",
+        "version": "2.36-9+deb12u14",
+        "architecture": "arm64"
+      },
+      {
+        "package": "libstdc++6:arm64",
+        "version": "12.2.0-14+deb12u1",
+        "architecture": "arm64"
+      },
+      {
+        "package": "lld:arm64",
+        "version": "1:14.0-55.7~deb12u1",
+        "architecture": "arm64"
+      },
+      {
+        "package": "make",
+        "version": "4.3-4.1",
+        "architecture": "arm64"
+      },
+      {
+        "package": "nodejs",
+        "version": "18.20.4+dfsg-1~deb12u2",
+        "architecture": "arm64"
+      },
+      {
+        "package": "npm",
+        "version": "9.2.0~ds1-1",
+        "architecture": "all"
+      },
+      {
+        "package": "pkg-config:arm64",
+        "version": "1.8.1-1",
+        "architecture": "arm64"
+      },
+      {
+        "package": "python3",
+        "version": "3.11.2-1+b1",
+        "architecture": "arm64"
+      },
+      {
+        "package": "python3-venv",
+        "version": "3.11.2-1+b1",
+        "architecture": "arm64"
+      },
+      {
+        "package": "ripgrep",
+        "version": "13.0.0-4+b2",
+        "architecture": "arm64"
+      },
+      {
+        "package": "sed",
+        "version": "4.9-1+deb12u1",
+        "architecture": "arm64"
+      }
+    ],
+    "program_versions": {
+      "bash": {
+        "exit_code": 0,
+        "first_line": "GNU bash, version 5.2.15(1)-release (aarch64-unknown-linux-gnu)"
+      },
+      "cc": {
+        "exit_code": 0,
+        "first_line": "cc (Debian 12.2.0-14+deb12u1) 12.2.0"
+      },
+      "clang": {
+        "exit_code": 0,
+        "first_line": "Debian clang version 14.0.6"
+      },
+      "node": {
+        "exit_code": 0,
+        "first_line": "v18.20.4"
+      },
+      "npm": {
+        "exit_code": 0,
+        "first_line": "9.2.0"
+      },
+      "python3": {
+        "exit_code": 0,
+        "first_line": "Python 3.11.2"
+      },
+      "jq": {
+        "exit_code": 0,
+        "first_line": "jq-1.6"
+      },
+      "rg": {
+        "exit_code": 0,
+        "first_line": "ripgrep 13.0.0"
+      }
+    },
+    "source_path_absence": {
+      "/build": true,
+      "/usr/local/cargo": true,
+      "/root/.cargo": true
+    },
+    "provider_client_path_lookup": {
+      "codex": null,
+      "claude": null
+    },
+    "os_release": "PRETTY_NAME=\"Debian GNU/Linux 12 (bookworm)\"\nNAME=\"Debian GNU/Linux\"\nVERSION_ID=\"12\"\nVERSION=\"12 (bookworm)\"\nVERSION_CODENAME=bookworm\nID=debian\nHOME_URL=\"https://www.debian.org/\"\nSUPPORT_URL=\"https://www.debian.org/support\"\nBUG_REPORT_URL=\"https://bugs.debian.org/\"\n"
+  },
+  "audit_container_configuration": {
+    "user": "65534:65534",
+    "network": "none",
+    "ipc": "none",
+    "root_filesystem": "read-only",
+    "fixture_bind": "read-only",
+    "capabilities": "ALL dropped",
+    "no_new_privileges": true,
+    "pids_limit": 64,
+    "memory_mib": 256,
+    "cpus": 0.25,
+    "tmpfs_tmp_mib": 16,
+    "tmpfs_tmp_flags": [
+      "noexec",
+      "nosuid"
+    ]
+  },
+  "owner_metadata_inspection": "Separate read-only, network-disabled, capability-dropped container as uid0 inspected package metadata and absence of build/cache paths; no contestant data or credentials mounted.",
+  "preservation": {
+    "source_and_binary_hashes_unchanged": true,
+    "head_unchanged": true,
+    "runtime2_audit_sha256": "8693dc534dc91610c0b106a0ecd8be92177a9f7160008f64d8f6066e79298835",
+    "runtime2_audit_unchanged": true,
+    "runtime3_tag_still_resolves_to_audited_image": true
+  },
+  "local_image_archive": {
+    "status": "saved_locally",
+    "relative_path": "track-runs/runtime3/propbench-frontier-runtime3-b86705d37917.tar",
+    "bytes": 268861952,
+    "sha256": "2f1264d14c1d86d6ea2fee64897090a59018bc5a772318dd4ac733ada0b692b3",
+    "exported_at_utc": "2026-09-26T05:50:48.612707+00:00",
+    "export_elapsed_seconds": 12.691,
+    "image_id": "sha256:b86705d37917c9e9cdcd98c139b4a052bb77cad812e6f80c03f461db0bce9859",
+    "archive_index_references_requested_image": true,
+    "archive_config_architecture_and_layers_match_inspection": true,
+    "extra_compression_applied": false,
+    "ignored_by_git": true,
+    "published": false,
+    "provider_client_exported": false
+  },
+  "limits": [
+    "Parity is tested on five small fixtures, not every possible proof.",
+    "Direct command and symbol/string checks address the known owner-generator exposure; they do not prove universal sandbox security.",
+    "Network isolation and resource limits are configured here; this audit does not run a general escape, egress, deadline, or resource-exhaustion test.",
+    "The Dockerfile pins both bases, and local runtime-base layer ancestry is checked where available; this is not a signed build attestation.",
+    "Package repository state is represented by observed installed versions, not claimed bit-for-bit rebuild reproducibility.",
+    "The audit fixture bind mount was read-only; production contestant workspaces are writable by design. This audit does not re-test every production mount or checkpoint boundary."
+  ],
+  "provider_inference_calls": 0
+}

@@ -1,0 +1,1660 @@
+{
+  "schema_version": "propbench-replacement-campaign-control-audit-v1",
+  "status": "final_stopped_incomplete",
+  "snapshot_kind": "terminal",
+  "cutoff_utc": "2026-09-26T06:38:49.960Z",
+  "campaign_id": "f5718b6e-dc3e-4219-b823-cd62cb98023c",
+  "campaign_created_at": "2026-09-26T05:42:57.448Z",
+  "campaign_state_updated_at": "2026-09-26T06:38:18.608Z",
+  "campaign_manifest_sha256": "0b33c6651516db06150b6de830ac7bb59a0101d0c9c07852bebc2ec2bda93331",
+  "source_commit": "64b2026857d0dc9da54497eca50cf7a63534e95f",
+  "evaluator_hash": "934a19358db98ad8fa5aa61b4a3048b957230ecb371f08507a24fa5ba2249c83",
+  "rulebook_sha256": "def467059453a4fa90756363eee6bbd5fbcc588c46b2853b25dd4727c10f027f",
+  "validator_sha256": "90c4b05d1c1f1a2be9294fe19184276ab20584a28660ea35bfbb954f65891f97",
+  "native_client": {
+    "version": "codex-cli 0.158.0-alpha.2",
+    "sha256": "c3e30211bd454da70ceb4d9cbc2e05fe6466812ab05c311c3bbff6addeb14202"
+  },
+  "runtime_image": {
+    "image_id": "sha256:b86705d37917c9e9cdcd98c139b4a052bb77cad812e6f80c03f461db0bce9859",
+    "architecture": "arm64",
+    "runtime_label": "3"
+  },
+  "model": "gpt-6-astra",
+  "effort": "xhigh",
+  "provider": "codex-subscription",
+  "planned_jobs": 96,
+  "condition_counts": {
+    "unaided-1": 24,
+    "frontier-fresh": 24,
+    "unaided-2": 24,
+    "frontier-cumulative": 24
+  },
+  "job_status_counts": {
+    "queued": 53,
+    "preparing": 0,
+    "prepared": 0,
+    "running": 0,
+    "complete": 43,
+    "interrupted": 0
+  },
+  "dispatch_stopped": true,
+  "checks": {
+    "frozen_source_commit": {
+      "passed": 1,
+      "failed": 0
+    },
+    "frozen_protocol_source_unchanged": {
+      "passed": 1,
+      "failed": 0
+    },
+    "manifest_state_binding": {
+      "passed": 1,
+      "failed": 0
+    },
+    "evaluator_source_digest": {
+      "passed": 1,
+      "failed": 0
+    },
+    "owner_referee_binary": {
+      "passed": 1,
+      "failed": 0
+    },
+    "rulebook_bytes": {
+      "passed": 1,
+      "failed": 0
+    },
+    "audited_native_binary": {
+      "passed": 1,
+      "failed": 0
+    },
+    "frozen_set_manifest": {
+      "passed": 1,
+      "failed": 0
+    },
+    "frozen_set_identity": {
+      "passed": 1,
+      "failed": 0
+    },
+    "frozen_theorem_bytes": {
+      "passed": 24,
+      "failed": 0
+    },
+    "campaign_model_and_provider": {
+      "passed": 1,
+      "failed": 0
+    },
+    "prespecified_band_interleaved_96_job_census": {
+      "passed": 1,
+      "failed": 0
+    },
+    "state_full_denominator": {
+      "passed": 1,
+      "failed": 0
+    },
+    "distinct_pilot_campaign_identity": {
+      "passed": 1,
+      "failed": 0
+    },
+    "planned_condition_and_dependency": {
+      "passed": 96,
+      "failed": 0
+    },
+    "no_pilot_run_reuse": {
+      "passed": 43,
+      "failed": 0
+    },
+    "sealed_run_config": {
+      "passed": 43,
+      "failed": 0
+    },
+    "run_condition_settings": {
+      "passed": 43,
+      "failed": 0
+    },
+    "run_track_protocol": {
+      "passed": 43,
+      "failed": 0
+    },
+    "run_source_and_set_identity": {
+      "passed": 43,
+      "failed": 0
+    },
+    "run_pinned_referee_bytes": {
+      "passed": 43,
+      "failed": 0
+    },
+    "no_fixture_client_marker": {
+      "passed": 43,
+      "failed": 0
+    },
+    "session_and_tool_allowances": {
+      "passed": 43,
+      "failed": 0
+    },
+    "fresh_start_identity": {
+      "passed": 34,
+      "failed": 0
+    },
+    "native_client_model_effort": {
+      "passed": 103,
+      "failed": 0
+    },
+    "native_tool_catalog": {
+      "passed": 103,
+      "failed": 0
+    },
+    "native_restricted_model_metadata": {
+      "passed": 103,
+      "failed": 0
+    },
+    "native_normal_speed_restricted_config": {
+      "passed": 103,
+      "failed": 0
+    },
+    "distinct_native_thread": {
+      "passed": 103,
+      "failed": 0
+    },
+    "native_thread_controls": {
+      "passed": 103,
+      "failed": 0
+    },
+    "completed_native_result_identity": {
+      "passed": 77,
+      "failed": 0
+    },
+    "terminal_report_identity": {
+      "passed": 43,
+      "failed": 0
+    },
+    "run_docker_runtime": {
+      "passed": 20,
+      "failed": 0
+    },
+    "blank_fresh_archive": {
+      "passed": 11,
+      "failed": 0
+    },
+    "completed_exec_runtime": {
+      "passed": 438,
+      "failed": 0
+    },
+    "own_fresh_seed_lineage": {
+      "passed": 9,
+      "failed": 0
+    },
+    "installed_docker_image": {
+      "passed": 1,
+      "failed": 0
+    }
+  },
+  "findings": [],
+  "runs": [
+    {
+      "job": "g1-2000001--unaided-1",
+      "run_id": "e1abecd7-26dc-4ba9-8290-e41951eba59a",
+      "observed_job_status": "complete",
+      "subscription_status": "complete",
+      "track": "unaided",
+      "mode": "unaided",
+      "wall_seconds": 900,
+      "max_tool_calls": 0,
+      "starting_snapshot": null,
+      "runtime": null,
+      "counts": {
+        "session_archives": 1,
+        "control_audits": 1,
+        "thread_receipts": 1,
+        "native_completed_results": 1,
+        "completed_exec_receipts": 0,
+        "pending_exec_receipts": 0
+      },
+      "report": {
+        "evaluation_status": "complete",
+        "evidence": "subscription",
+        "client_sessions": 1,
+        "usage_coverage": {
+          "attempts": 1,
+          "attempts_with_usage": 1
+        },
+        "returned_models": [
+          "gpt-6-astra"
+        ]
+      }
+    },
+    {
+      "job": "g1-2000001--frontier-fresh",
+      "run_id": "61c97c91-5198-4302-9339-18f5d4be18b0",
+      "observed_job_status": "complete",
+      "subscription_status": "complete",
+      "track": "frontier",
+      "mode": "fresh",
+      "wall_seconds": 900,
+      "max_tool_calls": 128,
+      "starting_snapshot": null,
+      "runtime": {
+        "backend": "docker",
+        "image_id": "sha256:b86705d37917c9e9cdcd98c139b4a052bb77cad812e6f80c03f461db0bce9859",
+        "architecture": "arm64"
+      },
+      "counts": {
+        "session_archives": 5,
+        "control_audits": 5,
+        "thread_receipts": 5,
+        "native_completed_results": 5,
+        "completed_exec_receipts": 29,
+        "pending_exec_receipts": 0
+      },
+      "report": {
+        "evaluation_status": "complete",
+        "evidence": "subscription",
+        "client_sessions": 5,
+        "usage_coverage": {
+          "attempts": 5,
+          "attempts_with_usage": 5
+        },
+        "returned_models": [
+          "gpt-6-astra"
+        ]
+      }
+    },
+    {
+      "job": "g1-2000001--unaided-2",
+      "run_id": "a262d31d-3488-405d-aada-4a18d0138d0e",
+      "observed_job_status": "complete",
+      "subscription_status": "complete",
+      "track": "unaided",
+      "mode": "unaided",
+      "wall_seconds": 900,
+      "max_tool_calls": 0,
+      "starting_snapshot": null,
+      "runtime": null,
+      "counts": {
+        "session_archives": 1,
+        "control_audits": 1,
+        "thread_receipts": 1,
+        "native_completed_results": 1,
+        "completed_exec_receipts": 0,
+        "pending_exec_receipts": 0
+      },
+      "report": {
+        "evaluation_status": "complete",
+        "evidence": "subscription",
+        "client_sessions": 1,
+        "usage_coverage": {
+          "attempts": 1,
+          "attempts_with_usage": 1
+        },
+        "returned_models": [
+          "gpt-6-astra"
+        ]
+      }
+    },
+    {
+      "job": "g1-2000001--frontier-cumulative",
+      "run_id": "b00c5b0e-c29c-46ea-aec3-5c4213767538",
+      "observed_job_status": "complete",
+      "subscription_status": "complete",
+      "track": "frontier",
+      "mode": "cumulative",
+      "wall_seconds": 900,
+      "max_tool_calls": 128,
+      "starting_snapshot": "61d71e6ed60a5659563c3562c36cf4410257eab42daed17af43b7a5d77efea73",
+      "runtime": {
+        "backend": "docker",
+        "image_id": "sha256:b86705d37917c9e9cdcd98c139b4a052bb77cad812e6f80c03f461db0bce9859",
+        "architecture": "arm64"
+      },
+      "counts": {
+        "session_archives": 5,
+        "control_audits": 5,
+        "thread_receipts": 5,
+        "native_completed_results": 2,
+        "completed_exec_receipts": 27,
+        "pending_exec_receipts": 0
+      },
+      "report": {
+        "evaluation_status": "complete",
+        "evidence": "subscription",
+        "client_sessions": 5,
+        "usage_coverage": {
+          "attempts": 5,
+          "attempts_with_usage": 2
+        },
+        "returned_models": [
+          "gpt-6-astra"
+        ]
+      }
+    },
+    {
+      "job": "g2-2100023--unaided-1",
+      "run_id": "6374ad3b-150c-48d3-a473-bf3fb2bffc43",
+      "observed_job_status": "complete",
+      "subscription_status": "complete",
+      "track": "unaided",
+      "mode": "unaided",
+      "wall_seconds": 900,
+      "max_tool_calls": 0,
+      "starting_snapshot": null,
+      "runtime": null,
+      "counts": {
+        "session_archives": 1,
+        "control_audits": 1,
+        "thread_receipts": 1,
+        "native_completed_results": 1,
+        "completed_exec_receipts": 0,
+        "pending_exec_receipts": 0
+      },
+      "report": {
+        "evaluation_status": "complete",
+        "evidence": "subscription",
+        "client_sessions": 1,
+        "usage_coverage": {
+          "attempts": 1,
+          "attempts_with_usage": 1
+        },
+        "returned_models": [
+          "gpt-6-astra"
+        ]
+      }
+    },
+    {
+      "job": "g2-2100023--frontier-fresh",
+      "run_id": "9048c7e0-9fcc-4d85-b56e-fdc11258df24",
+      "observed_job_status": "complete",
+      "subscription_status": "complete",
+      "track": "frontier",
+      "mode": "fresh",
+      "wall_seconds": 900,
+      "max_tool_calls": 128,
+      "starting_snapshot": null,
+      "runtime": {
+        "backend": "docker",
+        "image_id": "sha256:b86705d37917c9e9cdcd98c139b4a052bb77cad812e6f80c03f461db0bce9859",
+        "architecture": "arm64"
+      },
+      "counts": {
+        "session_archives": 2,
+        "control_audits": 2,
+        "thread_receipts": 2,
+        "native_completed_results": 2,
+        "completed_exec_receipts": 10,
+        "pending_exec_receipts": 0
+      },
+      "report": {
+        "evaluation_status": "complete",
+        "evidence": "subscription",
+        "client_sessions": 2,
+        "usage_coverage": {
+          "attempts": 2,
+          "attempts_with_usage": 2
+        },
+        "returned_models": [
+          "gpt-6-astra"
+        ]
+      }
+    },
+    {
+      "job": "g2-2100023--unaided-2",
+      "run_id": "2828f415-7902-4ff6-b2d3-802a37127c05",
+      "observed_job_status": "complete",
+      "subscription_status": "complete",
+      "track": "unaided",
+      "mode": "unaided",
+      "wall_seconds": 900,
+      "max_tool_calls": 0,
+      "starting_snapshot": null,
+      "runtime": null,
+      "counts": {
+        "session_archives": 1,
+        "control_audits": 1,
+        "thread_receipts": 1,
+        "native_completed_results": 1,
+        "completed_exec_receipts": 0,
+        "pending_exec_receipts": 0
+      },
+      "report": {
+        "evaluation_status": "complete",
+        "evidence": "subscription",
+        "client_sessions": 1,
+        "usage_coverage": {
+          "attempts": 1,
+          "attempts_with_usage": 1
+        },
+        "returned_models": [
+          "gpt-6-astra"
+        ]
+      }
+    },
+    {
+      "job": "g2-2100023--frontier-cumulative",
+      "run_id": "96dc0c48-2872-4b4e-a1a3-75f5c0961efd",
+      "observed_job_status": "complete",
+      "subscription_status": "complete",
+      "track": "frontier",
+      "mode": "cumulative",
+      "wall_seconds": 900,
+      "max_tool_calls": 128,
+      "starting_snapshot": "af8fb3df9ac3a5b669b86b439c4d479c0c0b2f3ea00f7b59f7ca172cf9ed2bc1",
+      "runtime": {
+        "backend": "docker",
+        "image_id": "sha256:b86705d37917c9e9cdcd98c139b4a052bb77cad812e6f80c03f461db0bce9859",
+        "architecture": "arm64"
+      },
+      "counts": {
+        "session_archives": 2,
+        "control_audits": 2,
+        "thread_receipts": 2,
+        "native_completed_results": 2,
+        "completed_exec_receipts": 10,
+        "pending_exec_receipts": 0
+      },
+      "report": {
+        "evaluation_status": "complete",
+        "evidence": "subscription",
+        "client_sessions": 2,
+        "usage_coverage": {
+          "attempts": 2,
+          "attempts_with_usage": 2
+        },
+        "returned_models": [
+          "gpt-6-astra"
+        ]
+      }
+    },
+    {
+      "job": "g3-2200607--unaided-1",
+      "run_id": "3369891a-bd1a-4b9d-a6e9-59373994dad7",
+      "observed_job_status": "complete",
+      "subscription_status": "complete",
+      "track": "unaided",
+      "mode": "unaided",
+      "wall_seconds": 900,
+      "max_tool_calls": 0,
+      "starting_snapshot": null,
+      "runtime": null,
+      "counts": {
+        "session_archives": 1,
+        "control_audits": 1,
+        "thread_receipts": 1,
+        "native_completed_results": 1,
+        "completed_exec_receipts": 0,
+        "pending_exec_receipts": 0
+      },
+      "report": {
+        "evaluation_status": "complete",
+        "evidence": "subscription",
+        "client_sessions": 1,
+        "usage_coverage": {
+          "attempts": 1,
+          "attempts_with_usage": 1
+        },
+        "returned_models": [
+          "gpt-6-astra"
+        ]
+      }
+    },
+    {
+      "job": "g3-2200607--frontier-fresh",
+      "run_id": "ad5df3ab-364f-40ba-b239-fdd20162ad85",
+      "observed_job_status": "complete",
+      "subscription_status": "complete",
+      "track": "frontier",
+      "mode": "fresh",
+      "wall_seconds": 900,
+      "max_tool_calls": 128,
+      "starting_snapshot": null,
+      "runtime": {
+        "backend": "docker",
+        "image_id": "sha256:b86705d37917c9e9cdcd98c139b4a052bb77cad812e6f80c03f461db0bce9859",
+        "architecture": "arm64"
+      },
+      "counts": {
+        "session_archives": 5,
+        "control_audits": 5,
+        "thread_receipts": 5,
+        "native_completed_results": 5,
+        "completed_exec_receipts": 28,
+        "pending_exec_receipts": 0
+      },
+      "report": {
+        "evaluation_status": "complete",
+        "evidence": "subscription",
+        "client_sessions": 5,
+        "usage_coverage": {
+          "attempts": 5,
+          "attempts_with_usage": 5
+        },
+        "returned_models": [
+          "gpt-6-astra"
+        ]
+      }
+    },
+    {
+      "job": "g3-2200607--unaided-2",
+      "run_id": "1655cbe2-22c3-4e4d-822d-b9c3c700a9a4",
+      "observed_job_status": "complete",
+      "subscription_status": "complete",
+      "track": "unaided",
+      "mode": "unaided",
+      "wall_seconds": 900,
+      "max_tool_calls": 0,
+      "starting_snapshot": null,
+      "runtime": null,
+      "counts": {
+        "session_archives": 1,
+        "control_audits": 1,
+        "thread_receipts": 1,
+        "native_completed_results": 1,
+        "completed_exec_receipts": 0,
+        "pending_exec_receipts": 0
+      },
+      "report": {
+        "evaluation_status": "complete",
+        "evidence": "subscription",
+        "client_sessions": 1,
+        "usage_coverage": {
+          "attempts": 1,
+          "attempts_with_usage": 1
+        },
+        "returned_models": [
+          "gpt-6-astra"
+        ]
+      }
+    },
+    {
+      "job": "g3-2200607--frontier-cumulative",
+      "run_id": "12a62f61-a8b6-4712-9342-a6d00ed81823",
+      "observed_job_status": "complete",
+      "subscription_status": "complete",
+      "track": "frontier",
+      "mode": "cumulative",
+      "wall_seconds": 900,
+      "max_tool_calls": 128,
+      "starting_snapshot": "7bbbcc807f7ccf2b6f73bff9cfa7bd7850b99e1eb08de1ebed803a9398c5ee67",
+      "runtime": {
+        "backend": "docker",
+        "image_id": "sha256:b86705d37917c9e9cdcd98c139b4a052bb77cad812e6f80c03f461db0bce9859",
+        "architecture": "arm64"
+      },
+      "counts": {
+        "session_archives": 5,
+        "control_audits": 5,
+        "thread_receipts": 5,
+        "native_completed_results": 3,
+        "completed_exec_receipts": 18,
+        "pending_exec_receipts": 0
+      },
+      "report": {
+        "evaluation_status": "complete",
+        "evidence": "subscription",
+        "client_sessions": 5,
+        "usage_coverage": {
+          "attempts": 5,
+          "attempts_with_usage": 3
+        },
+        "returned_models": [
+          "gpt-6-astra"
+        ]
+      }
+    },
+    {
+      "job": "g1-2000011--unaided-1",
+      "run_id": "8c149174-0d47-494e-bf83-ad84dac8890e",
+      "observed_job_status": "complete",
+      "subscription_status": "complete",
+      "track": "unaided",
+      "mode": "unaided",
+      "wall_seconds": 900,
+      "max_tool_calls": 0,
+      "starting_snapshot": null,
+      "runtime": null,
+      "counts": {
+        "session_archives": 1,
+        "control_audits": 1,
+        "thread_receipts": 1,
+        "native_completed_results": 1,
+        "completed_exec_receipts": 0,
+        "pending_exec_receipts": 0
+      },
+      "report": {
+        "evaluation_status": "complete",
+        "evidence": "subscription",
+        "client_sessions": 1,
+        "usage_coverage": {
+          "attempts": 1,
+          "attempts_with_usage": 1
+        },
+        "returned_models": [
+          "gpt-6-astra"
+        ]
+      }
+    },
+    {
+      "job": "g1-2000011--frontier-fresh",
+      "run_id": "87438275-01cb-4138-a2b5-eb8e6edd9377",
+      "observed_job_status": "complete",
+      "subscription_status": "complete",
+      "track": "frontier",
+      "mode": "fresh",
+      "wall_seconds": 900,
+      "max_tool_calls": 128,
+      "starting_snapshot": null,
+      "runtime": {
+        "backend": "docker",
+        "image_id": "sha256:b86705d37917c9e9cdcd98c139b4a052bb77cad812e6f80c03f461db0bce9859",
+        "architecture": "arm64"
+      },
+      "counts": {
+        "session_archives": 5,
+        "control_audits": 5,
+        "thread_receipts": 5,
+        "native_completed_results": 2,
+        "completed_exec_receipts": 29,
+        "pending_exec_receipts": 0
+      },
+      "report": {
+        "evaluation_status": "complete",
+        "evidence": "subscription",
+        "client_sessions": 5,
+        "usage_coverage": {
+          "attempts": 5,
+          "attempts_with_usage": 2
+        },
+        "returned_models": [
+          "gpt-6-astra"
+        ]
+      }
+    },
+    {
+      "job": "g1-2000011--unaided-2",
+      "run_id": "547944a8-e8b7-4307-a506-06e2f5de3f68",
+      "observed_job_status": "complete",
+      "subscription_status": "complete",
+      "track": "unaided",
+      "mode": "unaided",
+      "wall_seconds": 900,
+      "max_tool_calls": 0,
+      "starting_snapshot": null,
+      "runtime": null,
+      "counts": {
+        "session_archives": 1,
+        "control_audits": 1,
+        "thread_receipts": 1,
+        "native_completed_results": 1,
+        "completed_exec_receipts": 0,
+        "pending_exec_receipts": 0
+      },
+      "report": {
+        "evaluation_status": "complete",
+        "evidence": "subscription",
+        "client_sessions": 1,
+        "usage_coverage": {
+          "attempts": 1,
+          "attempts_with_usage": 1
+        },
+        "returned_models": [
+          "gpt-6-astra"
+        ]
+      }
+    },
+    {
+      "job": "g1-2000011--frontier-cumulative",
+      "run_id": "73df7be1-eca0-4548-b9f7-fe78f3168d35",
+      "observed_job_status": "complete",
+      "subscription_status": "complete",
+      "track": "frontier",
+      "mode": "cumulative",
+      "wall_seconds": 900,
+      "max_tool_calls": 128,
+      "starting_snapshot": "b077aba076e6a638d948b0973df88d277aac14507964bad3f10a0acb862a8a10",
+      "runtime": {
+        "backend": "docker",
+        "image_id": "sha256:b86705d37917c9e9cdcd98c139b4a052bb77cad812e6f80c03f461db0bce9859",
+        "architecture": "arm64"
+      },
+      "counts": {
+        "session_archives": 4,
+        "control_audits": 4,
+        "thread_receipts": 4,
+        "native_completed_results": 2,
+        "completed_exec_receipts": 22,
+        "pending_exec_receipts": 0
+      },
+      "report": {
+        "evaluation_status": "complete",
+        "evidence": "subscription",
+        "client_sessions": 4,
+        "usage_coverage": {
+          "attempts": 4,
+          "attempts_with_usage": 2
+        },
+        "returned_models": [
+          "gpt-6-astra"
+        ]
+      }
+    },
+    {
+      "job": "g2-2100030--unaided-1",
+      "run_id": "1d982340-2e80-4572-96f3-832612c8c710",
+      "observed_job_status": "complete",
+      "subscription_status": "complete",
+      "track": "unaided",
+      "mode": "unaided",
+      "wall_seconds": 900,
+      "max_tool_calls": 0,
+      "starting_snapshot": null,
+      "runtime": null,
+      "counts": {
+        "session_archives": 1,
+        "control_audits": 1,
+        "thread_receipts": 1,
+        "native_completed_results": 1,
+        "completed_exec_receipts": 0,
+        "pending_exec_receipts": 0
+      },
+      "report": {
+        "evaluation_status": "complete",
+        "evidence": "subscription",
+        "client_sessions": 1,
+        "usage_coverage": {
+          "attempts": 1,
+          "attempts_with_usage": 1
+        },
+        "returned_models": [
+          "gpt-6-astra"
+        ]
+      }
+    },
+    {
+      "job": "g2-2100030--frontier-fresh",
+      "run_id": "54813a29-6d46-4b2f-99eb-059ee7507f3b",
+      "observed_job_status": "complete",
+      "subscription_status": "complete",
+      "track": "frontier",
+      "mode": "fresh",
+      "wall_seconds": 900,
+      "max_tool_calls": 128,
+      "starting_snapshot": null,
+      "runtime": {
+        "backend": "docker",
+        "image_id": "sha256:b86705d37917c9e9cdcd98c139b4a052bb77cad812e6f80c03f461db0bce9859",
+        "architecture": "arm64"
+      },
+      "counts": {
+        "session_archives": 8,
+        "control_audits": 8,
+        "thread_receipts": 8,
+        "native_completed_results": 3,
+        "completed_exec_receipts": 34,
+        "pending_exec_receipts": 0
+      },
+      "report": {
+        "evaluation_status": "complete",
+        "evidence": "subscription",
+        "client_sessions": 8,
+        "usage_coverage": {
+          "attempts": 8,
+          "attempts_with_usage": 3
+        },
+        "returned_models": [
+          "gpt-6-astra"
+        ]
+      }
+    },
+    {
+      "job": "g2-2100030--unaided-2",
+      "run_id": "d8ae30f3-bbd5-4ea9-b737-9bb802e90310",
+      "observed_job_status": "complete",
+      "subscription_status": "complete",
+      "track": "unaided",
+      "mode": "unaided",
+      "wall_seconds": 900,
+      "max_tool_calls": 0,
+      "starting_snapshot": null,
+      "runtime": null,
+      "counts": {
+        "session_archives": 1,
+        "control_audits": 1,
+        "thread_receipts": 1,
+        "native_completed_results": 1,
+        "completed_exec_receipts": 0,
+        "pending_exec_receipts": 0
+      },
+      "report": {
+        "evaluation_status": "complete",
+        "evidence": "subscription",
+        "client_sessions": 1,
+        "usage_coverage": {
+          "attempts": 1,
+          "attempts_with_usage": 1
+        },
+        "returned_models": [
+          "gpt-6-astra"
+        ]
+      }
+    },
+    {
+      "job": "g2-2100030--frontier-cumulative",
+      "run_id": "7a694f88-4f9f-4572-b2bd-39e706a9cef5",
+      "observed_job_status": "complete",
+      "subscription_status": "complete",
+      "track": "frontier",
+      "mode": "cumulative",
+      "wall_seconds": 900,
+      "max_tool_calls": 128,
+      "starting_snapshot": "c57eb3a45f2fcad6c558c6bfa011d7833e553e84568d29b88fd55f8d24a70242",
+      "runtime": {
+        "backend": "docker",
+        "image_id": "sha256:b86705d37917c9e9cdcd98c139b4a052bb77cad812e6f80c03f461db0bce9859",
+        "architecture": "arm64"
+      },
+      "counts": {
+        "session_archives": 2,
+        "control_audits": 2,
+        "thread_receipts": 2,
+        "native_completed_results": 2,
+        "completed_exec_receipts": 22,
+        "pending_exec_receipts": 0
+      },
+      "report": {
+        "evaluation_status": "complete",
+        "evidence": "subscription",
+        "client_sessions": 2,
+        "usage_coverage": {
+          "attempts": 2,
+          "attempts_with_usage": 2
+        },
+        "returned_models": [
+          "gpt-6-astra"
+        ]
+      }
+    },
+    {
+      "job": "g3-2200683--unaided-1",
+      "run_id": "d6038b7f-9ed6-4993-bf29-a039f48d8473",
+      "observed_job_status": "complete",
+      "subscription_status": "complete",
+      "track": "unaided",
+      "mode": "unaided",
+      "wall_seconds": 900,
+      "max_tool_calls": 0,
+      "starting_snapshot": null,
+      "runtime": null,
+      "counts": {
+        "session_archives": 1,
+        "control_audits": 1,
+        "thread_receipts": 1,
+        "native_completed_results": 1,
+        "completed_exec_receipts": 0,
+        "pending_exec_receipts": 0
+      },
+      "report": {
+        "evaluation_status": "complete",
+        "evidence": "subscription",
+        "client_sessions": 1,
+        "usage_coverage": {
+          "attempts": 1,
+          "attempts_with_usage": 1
+        },
+        "returned_models": [
+          "gpt-6-astra"
+        ]
+      }
+    },
+    {
+      "job": "g3-2200683--frontier-fresh",
+      "run_id": "4766f91b-d97f-4386-9a92-adc4298939ea",
+      "observed_job_status": "complete",
+      "subscription_status": "complete",
+      "track": "frontier",
+      "mode": "fresh",
+      "wall_seconds": 900,
+      "max_tool_calls": 128,
+      "starting_snapshot": null,
+      "runtime": {
+        "backend": "docker",
+        "image_id": "sha256:b86705d37917c9e9cdcd98c139b4a052bb77cad812e6f80c03f461db0bce9859",
+        "architecture": "arm64"
+      },
+      "counts": {
+        "session_archives": 5,
+        "control_audits": 5,
+        "thread_receipts": 5,
+        "native_completed_results": 2,
+        "completed_exec_receipts": 22,
+        "pending_exec_receipts": 0
+      },
+      "report": {
+        "evaluation_status": "complete",
+        "evidence": "subscription",
+        "client_sessions": 5,
+        "usage_coverage": {
+          "attempts": 5,
+          "attempts_with_usage": 2
+        },
+        "returned_models": [
+          "gpt-6-astra"
+        ]
+      }
+    },
+    {
+      "job": "g3-2200683--unaided-2",
+      "run_id": "5c403d81-46c7-4c8e-8cb6-52c4481f30b6",
+      "observed_job_status": "complete",
+      "subscription_status": "complete",
+      "track": "unaided",
+      "mode": "unaided",
+      "wall_seconds": 900,
+      "max_tool_calls": 0,
+      "starting_snapshot": null,
+      "runtime": null,
+      "counts": {
+        "session_archives": 1,
+        "control_audits": 1,
+        "thread_receipts": 1,
+        "native_completed_results": 1,
+        "completed_exec_receipts": 0,
+        "pending_exec_receipts": 0
+      },
+      "report": {
+        "evaluation_status": "complete",
+        "evidence": "subscription",
+        "client_sessions": 1,
+        "usage_coverage": {
+          "attempts": 1,
+          "attempts_with_usage": 1
+        },
+        "returned_models": [
+          "gpt-6-astra"
+        ]
+      }
+    },
+    {
+      "job": "g3-2200683--frontier-cumulative",
+      "run_id": "78985a4a-3814-402f-91dd-17a8ee3d2311",
+      "observed_job_status": "complete",
+      "subscription_status": "complete",
+      "track": "frontier",
+      "mode": "cumulative",
+      "wall_seconds": 900,
+      "max_tool_calls": 128,
+      "starting_snapshot": "38894a3082a0e806c22aaac0f25ffd4aee6463230e2229074ccd5af4abf36ae7",
+      "runtime": {
+        "backend": "docker",
+        "image_id": "sha256:b86705d37917c9e9cdcd98c139b4a052bb77cad812e6f80c03f461db0bce9859",
+        "architecture": "arm64"
+      },
+      "counts": {
+        "session_archives": 2,
+        "control_audits": 2,
+        "thread_receipts": 2,
+        "native_completed_results": 2,
+        "completed_exec_receipts": 21,
+        "pending_exec_receipts": 0
+      },
+      "report": {
+        "evaluation_status": "complete",
+        "evidence": "subscription",
+        "client_sessions": 2,
+        "usage_coverage": {
+          "attempts": 2,
+          "attempts_with_usage": 2
+        },
+        "returned_models": [
+          "gpt-6-astra"
+        ]
+      }
+    },
+    {
+      "job": "g1-2000013--unaided-1",
+      "run_id": "cd94ee77-72bc-4869-91f7-ba2526dc5473",
+      "observed_job_status": "complete",
+      "subscription_status": "complete",
+      "track": "unaided",
+      "mode": "unaided",
+      "wall_seconds": 900,
+      "max_tool_calls": 0,
+      "starting_snapshot": null,
+      "runtime": null,
+      "counts": {
+        "session_archives": 1,
+        "control_audits": 1,
+        "thread_receipts": 1,
+        "native_completed_results": 1,
+        "completed_exec_receipts": 0,
+        "pending_exec_receipts": 0
+      },
+      "report": {
+        "evaluation_status": "complete",
+        "evidence": "subscription",
+        "client_sessions": 1,
+        "usage_coverage": {
+          "attempts": 1,
+          "attempts_with_usage": 1
+        },
+        "returned_models": [
+          "gpt-6-astra"
+        ]
+      }
+    },
+    {
+      "job": "g1-2000013--frontier-fresh",
+      "run_id": "71ed4f97-641e-4d51-9f6b-0d5fd1613841",
+      "observed_job_status": "complete",
+      "subscription_status": "complete",
+      "track": "frontier",
+      "mode": "fresh",
+      "wall_seconds": 900,
+      "max_tool_calls": 128,
+      "starting_snapshot": null,
+      "runtime": {
+        "backend": "docker",
+        "image_id": "sha256:b86705d37917c9e9cdcd98c139b4a052bb77cad812e6f80c03f461db0bce9859",
+        "architecture": "arm64"
+      },
+      "counts": {
+        "session_archives": 4,
+        "control_audits": 4,
+        "thread_receipts": 4,
+        "native_completed_results": 4,
+        "completed_exec_receipts": 25,
+        "pending_exec_receipts": 0
+      },
+      "report": {
+        "evaluation_status": "complete",
+        "evidence": "subscription",
+        "client_sessions": 4,
+        "usage_coverage": {
+          "attempts": 4,
+          "attempts_with_usage": 4
+        },
+        "returned_models": [
+          "gpt-6-astra"
+        ]
+      }
+    },
+    {
+      "job": "g1-2000013--unaided-2",
+      "run_id": "a056ed1a-d2c0-49d9-af6e-57cf93bc13c0",
+      "observed_job_status": "complete",
+      "subscription_status": "complete",
+      "track": "unaided",
+      "mode": "unaided",
+      "wall_seconds": 900,
+      "max_tool_calls": 0,
+      "starting_snapshot": null,
+      "runtime": null,
+      "counts": {
+        "session_archives": 1,
+        "control_audits": 1,
+        "thread_receipts": 1,
+        "native_completed_results": 1,
+        "completed_exec_receipts": 0,
+        "pending_exec_receipts": 0
+      },
+      "report": {
+        "evaluation_status": "complete",
+        "evidence": "subscription",
+        "client_sessions": 1,
+        "usage_coverage": {
+          "attempts": 1,
+          "attempts_with_usage": 1
+        },
+        "returned_models": [
+          "gpt-6-astra"
+        ]
+      }
+    },
+    {
+      "job": "g1-2000013--frontier-cumulative",
+      "run_id": "548e0ec9-1dea-4ba6-b444-fda190043605",
+      "observed_job_status": "complete",
+      "subscription_status": "complete",
+      "track": "frontier",
+      "mode": "cumulative",
+      "wall_seconds": 900,
+      "max_tool_calls": 128,
+      "starting_snapshot": "f874b6dd67e47930717395a6ee38e1c2c6ec4f37f703663b9578e87529101bca",
+      "runtime": {
+        "backend": "docker",
+        "image_id": "sha256:b86705d37917c9e9cdcd98c139b4a052bb77cad812e6f80c03f461db0bce9859",
+        "architecture": "arm64"
+      },
+      "counts": {
+        "session_archives": 4,
+        "control_audits": 4,
+        "thread_receipts": 4,
+        "native_completed_results": 4,
+        "completed_exec_receipts": 28,
+        "pending_exec_receipts": 0
+      },
+      "report": {
+        "evaluation_status": "complete",
+        "evidence": "subscription",
+        "client_sessions": 4,
+        "usage_coverage": {
+          "attempts": 4,
+          "attempts_with_usage": 4
+        },
+        "returned_models": [
+          "gpt-6-astra"
+        ]
+      }
+    },
+    {
+      "job": "g2-2100067--unaided-1",
+      "run_id": "542d4897-06bf-4b54-9cb3-e7b537d3c00f",
+      "observed_job_status": "complete",
+      "subscription_status": "complete",
+      "track": "unaided",
+      "mode": "unaided",
+      "wall_seconds": 900,
+      "max_tool_calls": 0,
+      "starting_snapshot": null,
+      "runtime": null,
+      "counts": {
+        "session_archives": 1,
+        "control_audits": 1,
+        "thread_receipts": 1,
+        "native_completed_results": 1,
+        "completed_exec_receipts": 0,
+        "pending_exec_receipts": 0
+      },
+      "report": {
+        "evaluation_status": "complete",
+        "evidence": "subscription",
+        "client_sessions": 1,
+        "usage_coverage": {
+          "attempts": 1,
+          "attempts_with_usage": 1
+        },
+        "returned_models": [
+          "gpt-6-astra"
+        ]
+      }
+    },
+    {
+      "job": "g2-2100067--frontier-fresh",
+      "run_id": "24a8a92d-46ac-45f0-bff5-4454a5a37bd3",
+      "observed_job_status": "complete",
+      "subscription_status": "complete",
+      "track": "frontier",
+      "mode": "fresh",
+      "wall_seconds": 900,
+      "max_tool_calls": 128,
+      "starting_snapshot": null,
+      "runtime": {
+        "backend": "docker",
+        "image_id": "sha256:b86705d37917c9e9cdcd98c139b4a052bb77cad812e6f80c03f461db0bce9859",
+        "architecture": "arm64"
+      },
+      "counts": {
+        "session_archives": 4,
+        "control_audits": 4,
+        "thread_receipts": 4,
+        "native_completed_results": 4,
+        "completed_exec_receipts": 27,
+        "pending_exec_receipts": 0
+      },
+      "report": {
+        "evaluation_status": "complete",
+        "evidence": "subscription",
+        "client_sessions": 4,
+        "usage_coverage": {
+          "attempts": 4,
+          "attempts_with_usage": 4
+        },
+        "returned_models": [
+          "gpt-6-astra"
+        ]
+      }
+    },
+    {
+      "job": "g2-2100067--unaided-2",
+      "run_id": "bb485d2e-0780-4703-8694-916a1ce7212e",
+      "observed_job_status": "complete",
+      "subscription_status": "complete",
+      "track": "unaided",
+      "mode": "unaided",
+      "wall_seconds": 900,
+      "max_tool_calls": 0,
+      "starting_snapshot": null,
+      "runtime": null,
+      "counts": {
+        "session_archives": 1,
+        "control_audits": 1,
+        "thread_receipts": 1,
+        "native_completed_results": 1,
+        "completed_exec_receipts": 0,
+        "pending_exec_receipts": 0
+      },
+      "report": {
+        "evaluation_status": "complete",
+        "evidence": "subscription",
+        "client_sessions": 1,
+        "usage_coverage": {
+          "attempts": 1,
+          "attempts_with_usage": 1
+        },
+        "returned_models": [
+          "gpt-6-astra"
+        ]
+      }
+    },
+    {
+      "job": "g2-2100067--frontier-cumulative",
+      "run_id": "587e4112-cec9-4ea4-b133-1fadfaee467a",
+      "observed_job_status": "complete",
+      "subscription_status": "complete",
+      "track": "frontier",
+      "mode": "cumulative",
+      "wall_seconds": 900,
+      "max_tool_calls": 128,
+      "starting_snapshot": "2eac5977a06e9d23af79f6f0808677214ecfd19620e1e16fd33df0a26b3ac513",
+      "runtime": {
+        "backend": "docker",
+        "image_id": "sha256:b86705d37917c9e9cdcd98c139b4a052bb77cad812e6f80c03f461db0bce9859",
+        "architecture": "arm64"
+      },
+      "counts": {
+        "session_archives": 3,
+        "control_audits": 3,
+        "thread_receipts": 3,
+        "native_completed_results": 1,
+        "completed_exec_receipts": 14,
+        "pending_exec_receipts": 0
+      },
+      "report": {
+        "evaluation_status": "complete",
+        "evidence": "subscription",
+        "client_sessions": 3,
+        "usage_coverage": {
+          "attempts": 3,
+          "attempts_with_usage": 1
+        },
+        "returned_models": [
+          "gpt-6-astra"
+        ]
+      }
+    },
+    {
+      "job": "g3-2200923--unaided-1",
+      "run_id": "44254690-e640-4796-be75-c97d03af1c1d",
+      "observed_job_status": "complete",
+      "subscription_status": "complete",
+      "track": "unaided",
+      "mode": "unaided",
+      "wall_seconds": 900,
+      "max_tool_calls": 0,
+      "starting_snapshot": null,
+      "runtime": null,
+      "counts": {
+        "session_archives": 1,
+        "control_audits": 1,
+        "thread_receipts": 1,
+        "native_completed_results": 1,
+        "completed_exec_receipts": 0,
+        "pending_exec_receipts": 0
+      },
+      "report": {
+        "evaluation_status": "complete",
+        "evidence": "subscription",
+        "client_sessions": 1,
+        "usage_coverage": {
+          "attempts": 1,
+          "attempts_with_usage": 1
+        },
+        "returned_models": [
+          "gpt-6-astra"
+        ]
+      }
+    },
+    {
+      "job": "g3-2200923--frontier-fresh",
+      "run_id": "26fe1367-5f45-4d8b-9b9f-ce82de13d543",
+      "observed_job_status": "complete",
+      "subscription_status": "complete",
+      "track": "frontier",
+      "mode": "fresh",
+      "wall_seconds": 900,
+      "max_tool_calls": 128,
+      "starting_snapshot": null,
+      "runtime": {
+        "backend": "docker",
+        "image_id": "sha256:b86705d37917c9e9cdcd98c139b4a052bb77cad812e6f80c03f461db0bce9859",
+        "architecture": "arm64"
+      },
+      "counts": {
+        "session_archives": 3,
+        "control_audits": 3,
+        "thread_receipts": 3,
+        "native_completed_results": 3,
+        "completed_exec_receipts": 16,
+        "pending_exec_receipts": 0
+      },
+      "report": {
+        "evaluation_status": "complete",
+        "evidence": "subscription",
+        "client_sessions": 3,
+        "usage_coverage": {
+          "attempts": 3,
+          "attempts_with_usage": 3
+        },
+        "returned_models": [
+          "gpt-6-astra"
+        ]
+      }
+    },
+    {
+      "job": "g3-2200923--unaided-2",
+      "run_id": "244e1f25-e793-4ecf-8459-103e4482fd40",
+      "observed_job_status": "complete",
+      "subscription_status": "complete",
+      "track": "unaided",
+      "mode": "unaided",
+      "wall_seconds": 900,
+      "max_tool_calls": 0,
+      "starting_snapshot": null,
+      "runtime": null,
+      "counts": {
+        "session_archives": 1,
+        "control_audits": 1,
+        "thread_receipts": 1,
+        "native_completed_results": 1,
+        "completed_exec_receipts": 0,
+        "pending_exec_receipts": 0
+      },
+      "report": {
+        "evaluation_status": "complete",
+        "evidence": "subscription",
+        "client_sessions": 1,
+        "usage_coverage": {
+          "attempts": 1,
+          "attempts_with_usage": 1
+        },
+        "returned_models": [
+          "gpt-6-astra"
+        ]
+      }
+    },
+    {
+      "job": "g3-2200923--frontier-cumulative",
+      "run_id": "9993660c-49bb-4ed7-afde-9be83d62f480",
+      "observed_job_status": "complete",
+      "subscription_status": "complete",
+      "track": "frontier",
+      "mode": "cumulative",
+      "wall_seconds": 900,
+      "max_tool_calls": 128,
+      "starting_snapshot": "333acbf688850e5297e247214bd3f64d26c00eed23d421840dab60b037222bbe",
+      "runtime": {
+        "backend": "docker",
+        "image_id": "sha256:b86705d37917c9e9cdcd98c139b4a052bb77cad812e6f80c03f461db0bce9859",
+        "architecture": "arm64"
+      },
+      "counts": {
+        "session_archives": 5,
+        "control_audits": 5,
+        "thread_receipts": 5,
+        "native_completed_results": 1,
+        "completed_exec_receipts": 12,
+        "pending_exec_receipts": 0
+      },
+      "report": {
+        "evaluation_status": "complete",
+        "evidence": "subscription",
+        "client_sessions": 5,
+        "usage_coverage": {
+          "attempts": 5,
+          "attempts_with_usage": 1
+        },
+        "returned_models": [
+          "gpt-6-astra"
+        ]
+      }
+    },
+    {
+      "job": "g1-2000021--unaided-1",
+      "run_id": "66aad34a-48ce-4b0a-b665-f2f3d2ce8abf",
+      "observed_job_status": "complete",
+      "subscription_status": "complete",
+      "track": "unaided",
+      "mode": "unaided",
+      "wall_seconds": 900,
+      "max_tool_calls": 0,
+      "starting_snapshot": null,
+      "runtime": null,
+      "counts": {
+        "session_archives": 1,
+        "control_audits": 1,
+        "thread_receipts": 1,
+        "native_completed_results": 1,
+        "completed_exec_receipts": 0,
+        "pending_exec_receipts": 0
+      },
+      "report": {
+        "evaluation_status": "complete",
+        "evidence": "subscription",
+        "client_sessions": 1,
+        "usage_coverage": {
+          "attempts": 1,
+          "attempts_with_usage": 1
+        },
+        "returned_models": [
+          "gpt-6-astra"
+        ]
+      }
+    },
+    {
+      "job": "g1-2000021--frontier-fresh",
+      "run_id": "6aa94099-68f0-420e-9af8-b961df7e2092",
+      "observed_job_status": "complete",
+      "subscription_status": "complete",
+      "track": "frontier",
+      "mode": "fresh",
+      "wall_seconds": 900,
+      "max_tool_calls": 128,
+      "starting_snapshot": null,
+      "runtime": {
+        "backend": "docker",
+        "image_id": "sha256:b86705d37917c9e9cdcd98c139b4a052bb77cad812e6f80c03f461db0bce9859",
+        "architecture": "arm64"
+      },
+      "counts": {
+        "session_archives": 4,
+        "control_audits": 4,
+        "thread_receipts": 4,
+        "native_completed_results": 2,
+        "completed_exec_receipts": 19,
+        "pending_exec_receipts": 0
+      },
+      "report": {
+        "evaluation_status": "complete",
+        "evidence": "subscription",
+        "client_sessions": 4,
+        "usage_coverage": {
+          "attempts": 4,
+          "attempts_with_usage": 2
+        },
+        "returned_models": [
+          "gpt-6-astra"
+        ]
+      }
+    },
+    {
+      "job": "g1-2000021--unaided-2",
+      "run_id": "1d0b1e44-0174-4292-ae56-548a6fa1e374",
+      "observed_job_status": "complete",
+      "subscription_status": "complete",
+      "track": "unaided",
+      "mode": "unaided",
+      "wall_seconds": 900,
+      "max_tool_calls": 0,
+      "starting_snapshot": null,
+      "runtime": null,
+      "counts": {
+        "session_archives": 1,
+        "control_audits": 1,
+        "thread_receipts": 1,
+        "native_completed_results": 1,
+        "completed_exec_receipts": 0,
+        "pending_exec_receipts": 0
+      },
+      "report": {
+        "evaluation_status": "complete",
+        "evidence": "subscription",
+        "client_sessions": 1,
+        "usage_coverage": {
+          "attempts": 1,
+          "attempts_with_usage": 1
+        },
+        "returned_models": [
+          "gpt-6-astra"
+        ]
+      }
+    },
+    {
+      "job": "g2-2100087--unaided-1",
+      "run_id": "81597391-6f36-4da8-b9ae-233c24338e96",
+      "observed_job_status": "complete",
+      "subscription_status": "complete",
+      "track": "unaided",
+      "mode": "unaided",
+      "wall_seconds": 900,
+      "max_tool_calls": 0,
+      "starting_snapshot": null,
+      "runtime": null,
+      "counts": {
+        "session_archives": 1,
+        "control_audits": 1,
+        "thread_receipts": 1,
+        "native_completed_results": 1,
+        "completed_exec_receipts": 0,
+        "pending_exec_receipts": 0
+      },
+      "report": {
+        "evaluation_status": "complete",
+        "evidence": "subscription",
+        "client_sessions": 1,
+        "usage_coverage": {
+          "attempts": 1,
+          "attempts_with_usage": 1
+        },
+        "returned_models": [
+          "gpt-6-astra"
+        ]
+      }
+    },
+    {
+      "job": "g2-2100087--frontier-fresh",
+      "run_id": "e927051a-9f4f-452f-aa87-19a5ee7f9b54",
+      "observed_job_status": "complete",
+      "subscription_status": "complete",
+      "track": "frontier",
+      "mode": "fresh",
+      "wall_seconds": 900,
+      "max_tool_calls": 128,
+      "starting_snapshot": null,
+      "runtime": {
+        "backend": "docker",
+        "image_id": "sha256:b86705d37917c9e9cdcd98c139b4a052bb77cad812e6f80c03f461db0bce9859",
+        "architecture": "arm64"
+      },
+      "counts": {
+        "session_archives": 3,
+        "control_audits": 3,
+        "thread_receipts": 3,
+        "native_completed_results": 3,
+        "completed_exec_receipts": 25,
+        "pending_exec_receipts": 0
+      },
+      "report": {
+        "evaluation_status": "complete",
+        "evidence": "subscription",
+        "client_sessions": 3,
+        "usage_coverage": {
+          "attempts": 3,
+          "attempts_with_usage": 3
+        },
+        "returned_models": [
+          "gpt-6-astra"
+        ]
+      }
+    },
+    {
+      "job": "g2-2100087--unaided-2",
+      "run_id": "70978800-cfa4-40eb-819f-324351cd9678",
+      "observed_job_status": "complete",
+      "subscription_status": "complete",
+      "track": "unaided",
+      "mode": "unaided",
+      "wall_seconds": 900,
+      "max_tool_calls": 0,
+      "starting_snapshot": null,
+      "runtime": null,
+      "counts": {
+        "session_archives": 1,
+        "control_audits": 1,
+        "thread_receipts": 1,
+        "native_completed_results": 1,
+        "completed_exec_receipts": 0,
+        "pending_exec_receipts": 0
+      },
+      "report": {
+        "evaluation_status": "complete",
+        "evidence": "subscription",
+        "client_sessions": 1,
+        "usage_coverage": {
+          "attempts": 1,
+          "attempts_with_usage": 1
+        },
+        "returned_models": [
+          "gpt-6-astra"
+        ]
+      }
+    },
+    {
+      "job": "g3-2201428--unaided-1",
+      "run_id": "d148e00f-21a2-4715-b670-dfaab9310d64",
+      "observed_job_status": "complete",
+      "subscription_status": "complete",
+      "track": "unaided",
+      "mode": "unaided",
+      "wall_seconds": 900,
+      "max_tool_calls": 0,
+      "starting_snapshot": null,
+      "runtime": null,
+      "counts": {
+        "session_archives": 1,
+        "control_audits": 1,
+        "thread_receipts": 1,
+        "native_completed_results": 1,
+        "completed_exec_receipts": 0,
+        "pending_exec_receipts": 0
+      },
+      "report": {
+        "evaluation_status": "complete",
+        "evidence": "subscription",
+        "client_sessions": 1,
+        "usage_coverage": {
+          "attempts": 1,
+          "attempts_with_usage": 1
+        },
+        "returned_models": [
+          "gpt-6-astra"
+        ]
+      }
+    }
+  ],
+  "sampled_live_containers": [],
+  "incomplete_trailing_native_records": 0,
+  "limitations": [
+    "This is a terminal controller-state snapshot. Queued or interrupted jobs remain incomplete; terminal does not imply a completed census.",
+    "Native control/model/account-type fields are client-reported provenance; this audit does not cryptographically establish provider-side model identity or hidden inference contents.",
+    "Live Docker configurations were sampled only for containers running at inspection time; completed execution receipts bind image identity but are not continuous operating-system surveillance.",
+    "No credentials, account details, prompts, generated text, raw native events, local paths, or contestant commands are included. No inference was dispatched by this audit.",
+    "Pilot evidence is retained separately and is excluded from this replacement campaign."
+  ]
+}

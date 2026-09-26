@@ -63,3 +63,13 @@ interrupted engineering pilot: eight completed jobs, four interrupted jobs and
 The replacement uses fresh sessions and runtime 3, with deterministic band
 interleaving as recorded in [the amendment](research/CAMPAIGN-AMENDMENT.md).
 No results or inherited artifacts cross from the pilot into the replacement.
+
+## Release outcome
+
+The replacement campaign stopped after a confirmed submission-capture defect.
+All 43 started jobs finished; 53 remain unstarted in the original 96-job plan.
+The release contains 40 accepted final proofs, three missing verdicts, and
+11 accepted checkpoint artifacts. It is a partial engineering case study.
+[RESULTS.md](research/RESULTS.md) records the findings, the 10-to-9-line
+cumulative improvement and the limits of comparison. The subsequent source
+repair changes the evaluator identity and does not regrade these results.

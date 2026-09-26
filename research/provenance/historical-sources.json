@@ -1,0 +1,370 @@
+{
+  "schema": "propbench-historical-provenance-excerpts-v1",
+  "captured_at_utc": "2026-09-26T05:48:22.454697+00:00",
+  "archive_policy": "Only selected factual passages from the five named local source documents. Each fenced excerpt is an exact original UTF-8 byte slice spanning the inclusive one-based source line range, preserving newline bytes; no internal redactions or substitutions. The manifest also records zero-based start and exclusive-end byte offsets in historical-excerpts.md. All other source lines are omitted and enumerated.",
+  "source_status": "Local working documents outside a Git repository, as also stated by Task15report lines298-299 and Task16report line112. Source hashes identify the snapshots inspected at capture time; they do not establish historical timestamp, authorship authentication, complete original logs, or a redistribution license. No permanent public URL for these source documents was established.",
+  "omission_policy": "Omitted sections include superseded experiments, internal workflow/brief excerpts, host and scratch paths, proof examples, unrelated implementation and review material, and redundant data. No prompts, private reasoning transcripts, account details, or reference proof contents are included. Selection is provenance curation, not a claim that every omitted line is private.",
+  "license_status": "No source-specific license declaration was found in the five records. This archive does not add a license or infer clearance from the repository existing MIT notice.",
+  "sources": [
+    {
+      "id": "measurements",
+      "source_relative_path": "docs/superpowers/plans/2026-08-24-proof-golf-MEASUREMENTS.md",
+      "source_sha256": "e341ea6c9208b9a1ada13f23017b32af77a249a89ab3aa4b39abc2ad7d7fc6e0",
+      "source_bytes": 54555,
+      "source_line_count": 578,
+      "source_line_endings": "LF",
+      "attribution": "No named author byline found in the inspected document. Task15 and Task16 reports attribute the respective addenda to their implementing sessions.",
+      "source_git_commit": null,
+      "permanent_public_source_url": null,
+      "excerpts": [
+        {
+          "start_line": 405,
+          "end_line": 417,
+          "artifact": "historical-excerpts.md",
+          "bytes": 1335,
+          "sha256": "7bde9724796001591ed6eac01fa2afc0f93659a64b4528511605538889e5fac7",
+          "artifact_start_byte": 654,
+          "artifact_end_byte_exclusive": 1989
+        },
+        {
+          "start_line": 450,
+          "end_line": 456,
+          "artifact": "historical-excerpts.md",
+          "bytes": 413,
+          "sha256": "8944590582271dcf2f0d39b988472d563deb37744cc058a611a936fc89949b11",
+          "artifact_start_byte": 2056,
+          "artifact_end_byte_exclusive": 2469
+        },
+        {
+          "start_line": 518,
+          "end_line": 522,
+          "artifact": "historical-excerpts.md",
+          "bytes": 631,
+          "sha256": "9547e64e6833a83749191efd35be708f080be6934a715b9928229fbbcb6f83e6",
+          "artifact_start_byte": 2536,
+          "artifact_end_byte_exclusive": 3167
+        },
+        {
+          "start_line": 530,
+          "end_line": 532,
+          "artifact": "historical-excerpts.md",
+          "bytes": 677,
+          "sha256": "ba5401df08b5efcb36c4a7b127712d5981a2314fb575723f8e26f9e328b4d851",
+          "artifact_start_byte": 3234,
+          "artifact_end_byte_exclusive": 3911
+        },
+        {
+          "start_line": 546,
+          "end_line": 548,
+          "artifact": "historical-excerpts.md",
+          "bytes": 353,
+          "sha256": "ec4ff32548bfc9562674ac91510ab62acf2ff7d17a62fe63d1bf702d0e4bbde6",
+          "artifact_start_byte": 3978,
+          "artifact_end_byte_exclusive": 4331
+        },
+        {
+          "start_line": 552,
+          "end_line": 561,
+          "artifact": "historical-excerpts.md",
+          "bytes": 341,
+          "sha256": "25963684ae2621650e5c76dc1091d147e084e62d3fe7a38b179ad141390bf031",
+          "artifact_start_byte": 4398,
+          "artifact_end_byte_exclusive": 4739
+        }
+      ],
+      "omitted_line_ranges": [
+        {
+          "start_line": 1,
+          "end_line": 404
+        },
+        {
+          "start_line": 418,
+          "end_line": 449
+        },
+        {
+          "start_line": 457,
+          "end_line": 517
+        },
+        {
+          "start_line": 523,
+          "end_line": 529
+        },
+        {
+          "start_line": 533,
+          "end_line": 545
+        },
+        {
+          "start_line": 549,
+          "end_line": 551
+        },
+        {
+          "start_line": 562,
+          "end_line": 578
+        }
+      ]
+    },
+    {
+      "id": "task-15-report",
+      "source_relative_path": "docs/superpowers/reviews/2026-08-24-proof-golf/task-15-report.md",
+      "source_sha256": "2195b4c9903811118f0f170b3de2ed2d4f1ade5fd4df39df63caa4982e6a6be7",
+      "source_bytes": 16700,
+      "source_line_count": 318,
+      "source_line_endings": "LF",
+      "attribution": "No named author byline found. Written as an implementation report; review identifies a distinct reviewer.",
+      "source_git_commit": null,
+      "permanent_public_source_url": null,
+      "excerpts": [
+        {
+          "start_line": 63,
+          "end_line": 67,
+          "artifact": "historical-excerpts.md",
+          "bytes": 560,
+          "sha256": "9bc3b8ef47ec5426f97995b66631d40a02419c353daef2ab2526fb24b6bb80e3",
+          "artifact_start_byte": 4993,
+          "artifact_end_byte_exclusive": 5553
+        },
+        {
+          "start_line": 117,
+          "end_line": 119,
+          "artifact": "historical-excerpts.md",
+          "bytes": 173,
+          "sha256": "26520c825e7912108d66114092c8aa75424ea4429dd23cac94fa1bcbc5843b52",
+          "artifact_start_byte": 5622,
+          "artifact_end_byte_exclusive": 5795
+        },
+        {
+          "start_line": 133,
+          "end_line": 136,
+          "artifact": "historical-excerpts.md",
+          "bytes": 274,
+          "sha256": "e6461dc053c9bc2633ad4874659723ecb4cd1af631dd759128098cdf2110feb9",
+          "artifact_start_byte": 5864,
+          "artifact_end_byte_exclusive": 6138
+        },
+        {
+          "start_line": 298,
+          "end_line": 299,
+          "artifact": "historical-excerpts.md",
+          "bytes": 45,
+          "sha256": "4c6cb1ad7149f574ee9bb06df0b1df07c78969309e52bff8772df9ccecc6d156",
+          "artifact_start_byte": 6207,
+          "artifact_end_byte_exclusive": 6252
+        }
+      ],
+      "omitted_line_ranges": [
+        {
+          "start_line": 1,
+          "end_line": 62
+        },
+        {
+          "start_line": 68,
+          "end_line": 116
+        },
+        {
+          "start_line": 120,
+          "end_line": 132
+        },
+        {
+          "start_line": 137,
+          "end_line": 297
+        },
+        {
+          "start_line": 300,
+          "end_line": 318
+        }
+      ]
+    },
+    {
+      "id": "task-15-review",
+      "source_relative_path": "docs/superpowers/reviews/2026-08-24-proof-golf/task-15-review.md",
+      "source_sha256": "d056658cf21e6cb2e160d552ecd3fd27a2af9279486c6ae2707d7ba49838d4af",
+      "source_bytes": 14584,
+      "source_line_count": 208,
+      "source_line_endings": "LF",
+      "attribution": "Self-identifies at line3 as Reviewer: Sonnet (t15-review-sonnet), 2026-09-06. This is source attribution, not independent identity authentication.",
+      "source_git_commit": null,
+      "permanent_public_source_url": null,
+      "excerpts": [
+        {
+          "start_line": 3,
+          "end_line": 4,
+          "artifact": "historical-excerpts.md",
+          "bytes": 177,
+          "sha256": "d63ce45b320e3060389ba0d023e2cd86c0291880f96c3ab03f4e6549b8860bdf",
+          "artifact_start_byte": 6504,
+          "artifact_end_byte_exclusive": 6681
+        },
+        {
+          "start_line": 31,
+          "end_line": 36,
+          "artifact": "historical-excerpts.md",
+          "bytes": 476,
+          "sha256": "a2fc912e9072d126bc7fc43f52aca297ad03ae4b7e98655f34fb5bbd756f002b",
+          "artifact_start_byte": 6748,
+          "artifact_end_byte_exclusive": 7224
+        },
+        {
+          "start_line": 41,
+          "end_line": 44,
+          "artifact": "historical-excerpts.md",
+          "bytes": 315,
+          "sha256": "069ca346b4e765f5773ae4ad0d47b624e3699680743480b3bda810e44624fa85",
+          "artifact_start_byte": 7291,
+          "artifact_end_byte_exclusive": 7606
+        },
+        {
+          "start_line": 49,
+          "end_line": 51,
+          "artifact": "historical-excerpts.md",
+          "bytes": 188,
+          "sha256": "24c3321803eb183d4662b736893fc71d13baf8539393551335020fb8a48eb8bc",
+          "artifact_start_byte": 7673,
+          "artifact_end_byte_exclusive": 7861
+        },
+        {
+          "start_line": 97,
+          "end_line": 104,
+          "artifact": "historical-excerpts.md",
+          "bytes": 525,
+          "sha256": "d067aff453f0508a3cbec28b87a8abf551c9858d803cec659381529ff1423786",
+          "artifact_start_byte": 7929,
+          "artifact_end_byte_exclusive": 8454
+        }
+      ],
+      "omitted_line_ranges": [
+        {
+          "start_line": 1,
+          "end_line": 2
+        },
+        {
+          "start_line": 5,
+          "end_line": 30
+        },
+        {
+          "start_line": 37,
+          "end_line": 40
+        },
+        {
+          "start_line": 45,
+          "end_line": 48
+        },
+        {
+          "start_line": 52,
+          "end_line": 96
+        },
+        {
+          "start_line": 105,
+          "end_line": 208
+        }
+      ]
+    },
+    {
+      "id": "task-16-report",
+      "source_relative_path": "docs/superpowers/reviews/2026-08-24-proof-golf/task-16-report.md",
+      "source_sha256": "772ef92452e87673ce557aae5d394994f2f056b8593ccafd4258ab4607e38181",
+      "source_bytes": 15584,
+      "source_line_count": 144,
+      "source_line_endings": "LF",
+      "attribution": "No named author byline found. Written as an implementation report; review identifies a distinct reviewer.",
+      "source_git_commit": null,
+      "permanent_public_source_url": null,
+      "excerpts": [
+        {
+          "start_line": 3,
+          "end_line": 6,
+          "artifact": "historical-excerpts.md",
+          "bytes": 315,
+          "sha256": "90a7a0aee680ac44243ac1a710a4f6195ff782e6ceeed282e1052451d28ddfb1",
+          "artifact_start_byte": 8706,
+          "artifact_end_byte_exclusive": 9021
+        },
+        {
+          "start_line": 108,
+          "end_line": 108,
+          "artifact": "historical-excerpts.md",
+          "bytes": 329,
+          "sha256": "3cce390a0ff01e7c4bb8c40123810f15b87a74daa557b618bf66456f8bfae6e5",
+          "artifact_start_byte": 9090,
+          "artifact_end_byte_exclusive": 9419
+        },
+        {
+          "start_line": 112,
+          "end_line": 112,
+          "artifact": "historical-excerpts.md",
+          "bytes": 55,
+          "sha256": "8e4bad5c2969aa09e180bc63661c5290c8c4a82b876457422a9256fbff3f8c46",
+          "artifact_start_byte": 9488,
+          "artifact_end_byte_exclusive": 9543
+        }
+      ],
+      "omitted_line_ranges": [
+        {
+          "start_line": 1,
+          "end_line": 2
+        },
+        {
+          "start_line": 7,
+          "end_line": 107
+        },
+        {
+          "start_line": 109,
+          "end_line": 111
+        },
+        {
+          "start_line": 113,
+          "end_line": 144
+        }
+      ]
+    },
+    {
+      "id": "task-16-review",
+      "source_relative_path": "docs/superpowers/reviews/2026-08-24-proof-golf/task-16-review.md",
+      "source_sha256": "3506828003214313c5189123f750552c4f193d474679944536a22585f34c0e5a",
+      "source_bytes": 13296,
+      "source_line_count": 189,
+      "source_line_endings": "LF",
+      "attribution": "Self-identifies at line3 as Reviewer: Sonnet (t15-review-sonnet), 2026-09-06. This is source attribution, not independent identity authentication.",
+      "source_git_commit": null,
+      "permanent_public_source_url": null,
+      "excerpts": [
+        {
+          "start_line": 3,
+          "end_line": 4,
+          "artifact": "historical-excerpts.md",
+          "bytes": 175,
+          "sha256": "539bd97a1418ac9ecba5f460daf16e22444da9eb65c03fef92577cab7cdb20dc",
+          "artifact_start_byte": 9795,
+          "artifact_end_byte_exclusive": 9970
+        },
+        {
+          "start_line": 106,
+          "end_line": 111,
+          "artifact": "historical-excerpts.md",
+          "bytes": 543,
+          "sha256": "a78f0cda176f4a867ed6092cbbc0da9e6ba59da2f3f1739aa2142ae94b08ad5c",
+          "artifact_start_byte": 10039,
+          "artifact_end_byte_exclusive": 10582
+        }
+      ],
+      "omitted_line_ranges": [
+        {
+          "start_line": 1,
+          "end_line": 2
+        },
+        {
+          "start_line": 5,
+          "end_line": 105
+        },
+        {
+          "start_line": 112,
+          "end_line": 189
+        }
+      ]
+    }
+  ],
+  "excerpt_artifact": {
+    "path": "historical-excerpts.md",
+    "sha256": "a0ea05010206247f4f4bf380b5e492161667a6aba879623cdee767ab0481c9cc",
+    "bytes": 10587
+  }
+}

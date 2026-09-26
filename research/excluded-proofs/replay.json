@@ -1,0 +1,22 @@
+{
+  "schema_version": "propbench-excluded-proof-replay-v1",
+  "campaign_id": "f5718b6e-dc3e-4219-b823-cd62cb98023c",
+  "run_id": "54813a29-6d46-4b2f-99eb-059ee7507f3b",
+  "item_id": "g2-2100030",
+  "official_status": "missing",
+  "official_loss": 1,
+  "included_in_campaign_score": false,
+  "proof_file": "g2-2100030-54813a29.json",
+  "proof_bytes": 1525,
+  "proof_sha256": "a6bf92d8f6b1141a41159cd549b6fe14c1d993109b1be696b3280a4ccdff8142",
+  "evidence_source": "exact JSON prefix of owner tool-event 000025 stdout",
+  "event_completed_at": "2026-09-26T05:52:03.696Z",
+  "stdout_sha256": "14ee368814d93287b1a4872906ec7c1eaf61b9c0586a44cea471b9a49ef9f2af",
+  "referee_sha256": "90c4b05d1c1f1a2be9294fe19184276ab20584a28660ea35bfbb954f65891f97",
+  "independent_strict_replay": {
+    "valid": true,
+    "line_count": 11,
+    "errors": []
+  },
+  "limitation": "Excluded forensic artifact; not an accepted owner checkpoint or an alternate campaign result."
+}

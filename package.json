@@ -7,7 +7,8 @@
   "scripts": {
     "build": "tsc",
     "typecheck": "tsc --noEmit",
-    "bench": "ts-node harness.ts",
+    "bench": "ts-node tracks/cli.ts",
+    "bench:legacy": "ts-node harness.ts",
     "migrate": "ts-node migrate.ts",
     "tracks": "ts-node tracks/cli.ts",
     "test:tracks": "node --require ts-node/register/transpile-only --test tracks/*.test.ts",

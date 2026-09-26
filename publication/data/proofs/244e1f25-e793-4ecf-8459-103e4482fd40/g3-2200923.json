@@ -1,0 +1,56 @@
+[
+  {
+    "line_number": 4,
+    "formula": "(~P ⊃ ~S) · (~S ⊃ ~P)",
+    "justification": "Taut 1",
+    "depth": 0
+  },
+  {
+    "line_number": 5,
+    "formula": "~P ≡ ~S",
+    "justification": "Equiv 4",
+    "depth": 0
+  },
+  {
+    "line_number": 6,
+    "formula": "~P ≡ ~~~S",
+    "justification": "DN 5",
+    "depth": 0
+  },
+  {
+    "line_number": 7,
+    "formula": "Q · Q",
+    "justification": "Simp 3",
+    "depth": 0
+  },
+  {
+    "line_number": 8,
+    "formula": "Q",
+    "justification": "Simp 7",
+    "depth": 0
+  },
+  {
+    "line_number": 9,
+    "formula": "~~Q",
+    "justification": "DN 8",
+    "depth": 0
+  },
+  {
+    "line_number": 10,
+    "formula": "~~Q ∨ (((P ∨ ~P) · (P ∨ ~P)) · (~P ∨ ~~Q))",
+    "justification": "Add 9",
+    "depth": 0
+  },
+  {
+    "line_number": 11,
+    "formula": "~Q ⊃ (((P ∨ ~P) · (P ∨ ~P)) · (~P ∨ ~~Q))",
+    "justification": "Impl 10",
+    "depth": 0
+  },
+  {
+    "line_number": 12,
+    "formula": "(~P ≡ ~~~S) · (~Q ⊃ (((P ∨ ~P) · (P ∨ ~P)) · (~P ∨ ~~Q)))",
+    "justification": "Conj 6,11",
+    "depth": 0
+  }
+]

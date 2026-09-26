@@ -1,4 +1,11 @@
-# PropBench Commands
+# PropBench Commands — historical API and generator reference
+
+The generator, Gemini/OpenRouter API harness, and legacy GUI workflows below
+are retained for historical reproduction. The API examples can incur charges.
+For current Codex-subscription Frontier and Unaided evaluations, use
+[README.md](README.md) and [TRACKS.md](TRACKS.md); `npm run bench` or
+`npm run tracks -- help` shows the current CLI. To run the old API harness
+explicitly, use `npm run bench:legacy -- ...`.
 
 ### Development server
 
@@ -8,7 +15,7 @@ npm run dev
 # Runs both Vite frontend (http://localhost:3000) and Express backend (http://localhost:3001) concurrently
 ```
 
-## Setup
+## Historical generator and API-harness setup
 
 ```bash
 # 1. Install TypeScript dependencies
@@ -83,7 +90,7 @@ The generate command supports three modes: **distribution** (legacy), **tier pre
 ./target/release/propbench validate --theorem theorem.json --proof proof.json
 ```
 
-**Note:** The current benchmark uses tautology-only theorems (empty premises). The examples below show the data structure format, which still supports theorems with premises for validation purposes, but the benchmark prompt no longer generates premise-based theorems.
+**Historical note:** The earlier API benchmark used tautology-only theorems (empty premises). The examples below show the data structure format, which still supports theorems with premises for validation purposes, but the benchmark prompt no longer generates premise-based theorems.
 
 **theorem.json** format (formulas use ASCII with alternating brackets):
 ```json
@@ -95,7 +102,7 @@ The generate command supports three modes: **distribution** (legacy), **tier pre
   "difficulty_value": 8
 }
 
-// Tautology example (current benchmark format):
+// Tautology example (historical API benchmark format):
 {
   "id": "v1-042",
   "premises": [],
@@ -123,7 +130,7 @@ The generate command supports three modes: **distribution** (legacy), **tier pre
 }
 ```
 
-## Benchmark Harness (TypeScript)
+## Historical API Benchmark Harness (TypeScript)
 
 ### Run a benchmark
 
@@ -236,7 +243,7 @@ npx ts-node harness.ts \
 
 In the GUI, runs with API errors show as **"Finished with API Errors"** (purple). These appear in the Continue Run dropdown alongside incomplete runs — selecting one automatically enables `--retry-api-errors`.
 
-## Environment Variables
+## Legacy API Environment Variables
 
 **Recommended: Use `.env` file** (v2.5+)
 
@@ -248,7 +255,7 @@ GEMINI_API_KEY=your-key-here
 OPENROUTER_API_KEY=your-key-here
 ```
 
-The harness and GUI server will automatically load these on startup using the `dotenv` package.
+The legacy harness and legacy GUI runner load these on startup using the `dotenv` package. Current Tracks runs do not need API keys.
 
 **Alternative: Shell environment**
 
@@ -263,11 +270,11 @@ export OPENROUTER_API_KEY="your-key-here"
 | `GEMINI_API_KEY` | Direct Gemini models (`gemini-*`) | Google AI API key |
 | `OPENROUTER_API_KEY` | All non-Gemini models (via OpenRouter) | OpenRouter API key |
 
-## Model Identifiers
+## Legacy API Model Identifiers
 
-**IMPORTANT:** When changing model names, defaults, or CLI arguments, always update the GUI to match. See `CLAUDE.md` for the "PropBench: Keep GUI in sync with CLI" rule.
+**Legacy maintenance note:** Keep the API harness model identifiers and legacy GUI runner configuration in sync.
 
-PropBench uses two adapters: **direct Gemini** (via `GEMINI_API_KEY`) and **OpenRouter** (via `OPENROUTER_API_KEY`) for everything else. Known `gemini-*` names route to the direct Gemini adapter; all other model identifiers route through OpenRouter.
+The historical API harness uses two adapters: **direct Gemini** (via `GEMINI_API_KEY`) and **OpenRouter** (via `OPENROUTER_API_KEY`) for everything else. Known `gemini-*` names route to the direct Gemini adapter; all other model identifiers route through OpenRouter.
 
 ### Direct Gemini Models
 

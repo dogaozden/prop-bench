@@ -65,3 +65,19 @@ condition means or paired comparisons. Pending and interrupted denominators
 remain visible. The replacement manifest's frozen source commit, native client
 hash, evaluator/rulebook/referee/set hashes, and final source identity are the
 authority for that campaign; this document does not claim those future values.
+
+## Observed-defect stop — 2026-09-26 06:24 UTC
+
+New dispatch was stopped after confirming that the frozen capture logic could
+exclude valid canonical proofs when the contestant left an unrelated draft
+JSON file in `proofs/`. Both fresh and dependent cumulative `g2-2100030`
+runs were affected; the [forensic note](SUBMISSION-FAILURE.md) preserves the
+evidence and the original missing/loss-1 verdicts. At the signal, 43 jobs had
+started and six were still active. They were allowed to finish under the
+original conditions. All remaining planned jobs stay queued in the record.
+
+This is an owner methodology amendment prompted by an observed harness
+failure, not a prespecified statistical stopping rule or a completed census.
+The [sanitized stop receipt](campaign-stop.json) records the decision.
+Repairing capture after the campaign closes creates a new evaluator identity;
+no current score is replaced by a late proof or a post-repair attempt.

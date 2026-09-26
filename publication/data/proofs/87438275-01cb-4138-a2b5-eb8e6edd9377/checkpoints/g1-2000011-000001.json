@@ -1,0 +1,68 @@
+[
+  {
+    "line_number": 4,
+    "formula": "~~~Q v ~~~Q",
+    "justification": "Simp 1",
+    "depth": 0
+  },
+  {
+    "line_number": 5,
+    "formula": "~~~Q",
+    "justification": "Taut 4",
+    "depth": 0
+  },
+  {
+    "line_number": 6,
+    "formula": "~Q",
+    "justification": "DN 5",
+    "depth": 0
+  },
+  {
+    "line_number": 7,
+    "formula": "~~P",
+    "justification": "DN 2",
+    "depth": 0
+  },
+  {
+    "line_number": 8,
+    "formula": "P",
+    "justification": "DN 7",
+    "depth": 0
+  },
+  {
+    "line_number": 9,
+    "formula": "P v P",
+    "justification": "Taut 8",
+    "depth": 0
+  },
+  {
+    "line_number": 10,
+    "formula": "(P v P) > Q",
+    "justification": "Assumption",
+    "depth": 1
+  },
+  {
+    "line_number": 11,
+    "formula": "Q",
+    "justification": "MP 10,9",
+    "depth": 1
+  },
+  {
+    "line_number": 12,
+    "formula": "Q v {[(P v P) . (~Q <> ~Q)] . {(R . ~Q) . {~{(P v P) . {~[S v (~Q <> ~Q)]}}}}}",
+    "justification": "Add 11",
+    "depth": 1
+  },
+  {
+    "line_number": 13,
+    "formula": "{[(P v P) . (~Q <> ~Q)] . {(R . ~Q) . {~{(P v P) . {~[S v (~Q <> ~Q)]}}}}}",
+    "justification": "DS 12,6",
+    "depth": 1
+  },
+  {
+    "line_number": 14,
+    "formula": "[(P v P) > Q] > {[(P v P) . (~Q <> ~Q)] . {(R . ~Q) . {~{(P v P) . {~[S v (~Q <> ~Q)]}}}}}",
+    "justification": "CP 10-13",
+    "depth": 0
+  }
+]

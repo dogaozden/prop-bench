@@ -23,7 +23,12 @@ jobs:
       - run: npm run test:campaign
       - run: npm run test:server
       - run: npm run test:publication
-      - run: npm run publication:verify
+      - run: npm run publication:verify -- --report publication/data/verification.json
+      - run: |
+          for results in publication/pilots/*/data/results.json; do
+            [ -f "$results" ] || continue
+            npm run publication:verify -- --data "$results"
+          done
       - run: python3 scripts/package-publication.py --allow-partial
       - uses: actions/upload-artifact@v4
         with:

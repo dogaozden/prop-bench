@@ -1,0 +1,62 @@
+[
+  {
+    "line_number": 4,
+    "formula": "~~~Q ∨ ~~~Q",
+    "justification": "Simp 1",
+    "depth": 0
+  },
+  {
+    "line_number": 5,
+    "formula": "~~~Q",
+    "justification": "Taut 4",
+    "depth": 0
+  },
+  {
+    "line_number": 6,
+    "formula": "~Q",
+    "justification": "DN 5",
+    "depth": 0
+  },
+  {
+    "line_number": 7,
+    "formula": "(P ∨ P) ⊃ Q",
+    "justification": "Assumption (CP)",
+    "depth": 1
+  },
+  {
+    "line_number": 8,
+    "formula": "P ⊃ Q",
+    "justification": "Taut 7",
+    "depth": 1
+  },
+  {
+    "line_number": 9,
+    "formula": "~P",
+    "justification": "MT 8,6",
+    "depth": 1
+  },
+  {
+    "line_number": 10,
+    "formula": "~~~P",
+    "justification": "DN 9",
+    "depth": 1
+  },
+  {
+    "line_number": 11,
+    "formula": "~~~P ∨ (((P ∨ P) · (~Q ≡ ~Q)) · ((R · ~Q) · ~((P ∨ P) · ~(S ∨ (~Q ≡ ~Q)))))",
+    "justification": "Add 10",
+    "depth": 1
+  },
+  {
+    "line_number": 12,
+    "formula": "((P ∨ P) · (~Q ≡ ~Q)) · ((R · ~Q) · ~((P ∨ P) · ~(S ∨ (~Q ≡ ~Q))))",
+    "justification": "DS 11,2",
+    "depth": 1
+  },
+  {
+    "line_number": 13,
+    "formula": "((P ∨ P) ⊃ Q) ⊃ (((P ∨ P) · (~Q ≡ ~Q)) · ((R · ~Q) · ~((P ∨ P) · ~(S ∨ (~Q ≡ ~Q)))))",
+    "justification": "CP 7-12",
+    "depth": 0
+  }
+]

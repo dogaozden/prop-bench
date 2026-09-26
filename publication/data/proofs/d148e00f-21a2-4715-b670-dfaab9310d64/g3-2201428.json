@@ -1,0 +1,68 @@
+[
+  {
+    "line_number": 4,
+    "formula": "~(~S · ~S)",
+    "justification": "Taut 1",
+    "depth": 0
+  },
+  {
+    "line_number": 5,
+    "formula": "~~S",
+    "justification": "Taut 4",
+    "depth": 0
+  },
+  {
+    "line_number": 6,
+    "formula": "~R",
+    "justification": "DN 2",
+    "depth": 0
+  },
+  {
+    "line_number": 7,
+    "formula": "~R · ~~S",
+    "justification": "Conj 6,5",
+    "depth": 0
+  },
+  {
+    "line_number": 8,
+    "formula": "~(~Q ≡ P) ∨ (~R · ~~S)",
+    "justification": "Add 7",
+    "depth": 0
+  },
+  {
+    "line_number": 9,
+    "formula": "(~Q ≡ P) ⊃ (~R · ~~S)",
+    "justification": "Impl 8",
+    "depth": 0
+  },
+  {
+    "line_number": 10,
+    "formula": "((~Q ≡ P) ⊃ (~R · ~~S)) ∨ Q",
+    "justification": "Add 9",
+    "depth": 0
+  },
+  {
+    "line_number": 11,
+    "formula": "~~~P",
+    "justification": "Taut 3",
+    "depth": 0
+  },
+  {
+    "line_number": 12,
+    "formula": "~P",
+    "justification": "DN 11",
+    "depth": 0
+  },
+  {
+    "line_number": 13,
+    "formula": "(Q ∨ (R ⊃ (Q ∨ ((~S ⊃ (~S · (~P ∨ ~S))) ∨ P)))) ∨ ~P",
+    "justification": "Add 12",
+    "depth": 0
+  },
+  {
+    "line_number": 14,
+    "formula": "(((~Q ≡ P) ⊃ (~R · ~~S)) ∨ Q) · ((Q ∨ (R ⊃ (Q ∨ ((~S ⊃ (~S · (~P ∨ ~S))) ∨ P)))) ∨ ~P)",
+    "justification": "Conj 10,13",
+    "depth": 0
+  }
+]

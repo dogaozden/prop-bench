@@ -1,0 +1,62 @@
+[
+  {
+    "line_number": 2,
+    "formula": "~Q",
+    "justification": "Taut 1",
+    "depth": 0
+  },
+  {
+    "line_number": 3,
+    "formula": "~~~Q",
+    "justification": "DN 2",
+    "depth": 0
+  },
+  {
+    "line_number": 4,
+    "formula": "~~~~~Q",
+    "justification": "DN 3",
+    "depth": 0
+  },
+  {
+    "line_number": 5,
+    "formula": "~~~~~Q v ~~~~Q",
+    "justification": "Add 4",
+    "depth": 0
+  },
+  {
+    "line_number": 6,
+    "formula": "~(~~~~Q . ~~~Q)",
+    "justification": "DeM 5",
+    "depth": 0
+  },
+  {
+    "line_number": 7,
+    "formula": "~~~Q . ~(~~~~Q . ~~~Q)",
+    "justification": "Conj 3,6",
+    "depth": 0
+  },
+  {
+    "line_number": 8,
+    "formula": "(~~~Q . ~(~~~~Q . ~~~Q)) v P",
+    "justification": "Add 7",
+    "depth": 0
+  },
+  {
+    "line_number": 9,
+    "formula": "(~~~Q . ~(~~~~Q . ~~~Q)) . ((~~~Q . ~(~~~~Q . ~~~Q)) v P)",
+    "justification": "Conj 7,8",
+    "depth": 0
+  },
+  {
+    "line_number": 10,
+    "formula": "~R v ((~~~Q . ~(~~~~Q . ~~~Q)) . ((~~~Q . ~(~~~~Q . ~~~Q)) v P))",
+    "justification": "Add 9",
+    "depth": 0
+  },
+  {
+    "line_number": 11,
+    "formula": "R > ((~~~Q . ~(~~~~Q . ~~~Q)) . ((~~~Q . ~(~~~~Q . ~~~Q)) v P))",
+    "justification": "Impl 10",
+    "depth": 0
+  }
+]

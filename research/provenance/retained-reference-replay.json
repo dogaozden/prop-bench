@@ -1,0 +1,619 @@
+{
+  "schema": "propbench-retained-reference-replay-v1",
+  "started_at_utc": "2026-09-26T05:47:48.820405+00:00",
+  "completed_at_utc": "2026-09-26T05:47:49.191599+00:00",
+  "elapsed_seconds": 0.370972,
+  "source_commit": "64b2026857d0dc9da54497eca50cf7a63534e95f",
+  "validator": {
+    "repository_path": "target/release/propbench",
+    "sha256": "90c4b05d1c1f1a2be9294fe19184276ab20584a28660ea35bfbb954f65891f97",
+    "command": [
+      "propbench",
+      "validate",
+      "--strict-protocol",
+      "--theorem",
+      "golf/set/v2/<id>.json",
+      "--proof",
+      "<retained-reference-key>/<id>.proof.json"
+    ],
+    "source_paths": [
+      "src/validate.rs",
+      "src/replay.rs"
+    ],
+    "source_sha256": {
+      "src/validate.rs": "0bf304a8302b93166c5d3ae18293e889cf13f7ffed4f5ce904bbf04bac982810",
+      "src/replay.rs": "a26165482d3461edf67bd5bdd902a8d26483d3b0e5ecdf158523d4f94f30b93a"
+    },
+    "logic_core_commit": "1f751542095232eefaa3f8fc3d80e81c3ea1c3a0"
+  },
+  "manifest": {
+    "repository_path": "golf/set/v2/manifest.json",
+    "sha256": "a25529897286192ac5291726875721e688a9b1044f1a9dd1953eac79a21e9f2c",
+    "bytes": 3619
+  },
+  "key_location_provenance": {
+    "source_id": "task-15-report",
+    "source_line": 124,
+    "published_path": "<retained-reference-key>",
+    "contents_published": false
+  },
+  "method": "Read the retained key at the exact location recorded in task-15-report line124; invoke the existing current owner validator once per manifest item, serially. Hash original bytes before replay and require unchanged bytes afterward. No regeneration, proof search, inference, binary build, contestant-root writes, or proof-byte publication. A second serial pass used the unchanged Tracks validateCandidate wrapper, including its bounded JSON shape gate and owner-only temporary validation files; all 24 passed.",
+  "summary": {
+    "items": 24,
+    "strict_valid": 24,
+    "exact_par_matches": 24,
+    "theorem_hash_matches": 24,
+    "all_stderr_empty": true,
+    "reference_lines_total": 475
+  },
+  "limits": [
+    "Current replay attests validity and attained reference lengths; it does not reproduce historical freeze search or prove minimality.",
+    "Reference proof bytes remain private; public hashes identify the inspected bytes but do not permit independent replay without those bytes.",
+    "Historical source-file hashes identify the current local snapshots; they do not authenticate authorship or prove when the files were written."
+  ],
+  "items": [
+    {
+      "id": "g1-2000001",
+      "par": 13,
+      "theorem_sha256": "e63c58d4a60129c6744f6d9947d0def90194c9d9648559a5711a916cb2665217",
+      "theorem_bytes": 175,
+      "reference_proof_sha256": "465c7c0f66c36b68e467cbd76207fe6039beb72576c8870800a3d2a49ecf6296",
+      "reference_proof_bytes": 1447,
+      "submitted_array_lines": 13,
+      "strict_verdict": {
+        "valid": true,
+        "line_count": 13,
+        "errors": []
+      },
+      "exit_code": 0,
+      "stdout_sha256": "c4e51817aae29d17c9ede9c4011a4958fd3b9870353174f24f4efaab0c46d7cc",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_bytes": 0,
+      "owner_wrapper_verdict": {
+        "status": "valid",
+        "line_count": 13,
+        "errors": []
+      }
+    },
+    {
+      "id": "g1-2000011",
+      "par": 19,
+      "theorem_sha256": "1c015b049bb919ee8d69346bfb1a8ab3027ea0f84f29f120a0b1c2b336f8059e",
+      "theorem_bytes": 294,
+      "reference_proof_sha256": "6a9942fe069bb8f73e0c8707fe3a81c729b8769a9206cbc46e99ef893cda24f4",
+      "reference_proof_bytes": 2436,
+      "submitted_array_lines": 19,
+      "strict_verdict": {
+        "valid": true,
+        "line_count": 19,
+        "errors": []
+      },
+      "exit_code": 0,
+      "stdout_sha256": "39091fc68b79fd82ab03aeddb9a05f8e12ed53fa1f4876c82544217c9827c62c",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_bytes": 0,
+      "owner_wrapper_verdict": {
+        "status": "valid",
+        "line_count": 19,
+        "errors": []
+      }
+    },
+    {
+      "id": "g1-2000013",
+      "par": 13,
+      "theorem_sha256": "483f8cb84fd1dba8595eb010dca151c9fbffd95f46694fba8a8ccf0ffe775068",
+      "theorem_bytes": 210,
+      "reference_proof_sha256": "ffb8cb45b3ffe5739217abc12f050ef6f6ff29a85a4dc0e5fcc32461cc5d686d",
+      "reference_proof_bytes": 1638,
+      "submitted_array_lines": 13,
+      "strict_verdict": {
+        "valid": true,
+        "line_count": 13,
+        "errors": []
+      },
+      "exit_code": 0,
+      "stdout_sha256": "c4e51817aae29d17c9ede9c4011a4958fd3b9870353174f24f4efaab0c46d7cc",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_bytes": 0,
+      "owner_wrapper_verdict": {
+        "status": "valid",
+        "line_count": 13,
+        "errors": []
+      }
+    },
+    {
+      "id": "g1-2000021",
+      "par": 11,
+      "theorem_sha256": "c6e5fa764487c95c68e771dfdd18f32d2d3a510ef6e041a0cae573087ceacdb5",
+      "theorem_bytes": 233,
+      "reference_proof_sha256": "974fe54819104234430151650a00d07b6426352bd6cfc500ea537567f2ba05c4",
+      "reference_proof_bytes": 1324,
+      "submitted_array_lines": 11,
+      "strict_verdict": {
+        "valid": true,
+        "line_count": 11,
+        "errors": []
+      },
+      "exit_code": 0,
+      "stdout_sha256": "54261cf0216f6ca40d1391cc304e95596846224167a6e9a7632639cecc66847f",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_bytes": 0,
+      "owner_wrapper_verdict": {
+        "status": "valid",
+        "line_count": 11,
+        "errors": []
+      }
+    },
+    {
+      "id": "g1-2000025",
+      "par": 16,
+      "theorem_sha256": "fb0f2e4f503deafbf1371b74f1ac3e4890476e71a6f6305f93d2850c411b1d88",
+      "theorem_bytes": 228,
+      "reference_proof_sha256": "fc4988030b61910acdecaae19b69d9983e90eac3f265e12b178ec5249900dba0",
+      "reference_proof_bytes": 1936,
+      "submitted_array_lines": 16,
+      "strict_verdict": {
+        "valid": true,
+        "line_count": 16,
+        "errors": []
+      },
+      "exit_code": 0,
+      "stdout_sha256": "af423fcaac5b096bae958a9ed68936c1f817e0baf7487fda8391ac9e6c07c5a6",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_bytes": 0,
+      "owner_wrapper_verdict": {
+        "status": "valid",
+        "line_count": 16,
+        "errors": []
+      }
+    },
+    {
+      "id": "g1-2000031",
+      "par": 13,
+      "theorem_sha256": "3e78a2de0ee78a961f6a5351f398e754abcccfff2d15bd201b42915d18a41df2",
+      "theorem_bytes": 255,
+      "reference_proof_sha256": "7737cfe0358532e6a02bb2f8c5583c71511bd3fcc7a8eef10c339feda95b8efe",
+      "reference_proof_bytes": 1561,
+      "submitted_array_lines": 13,
+      "strict_verdict": {
+        "valid": true,
+        "line_count": 13,
+        "errors": []
+      },
+      "exit_code": 0,
+      "stdout_sha256": "c4e51817aae29d17c9ede9c4011a4958fd3b9870353174f24f4efaab0c46d7cc",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_bytes": 0,
+      "owner_wrapper_verdict": {
+        "status": "valid",
+        "line_count": 13,
+        "errors": []
+      }
+    },
+    {
+      "id": "g1-2000034",
+      "par": 15,
+      "theorem_sha256": "4a2994c2d0a3b107819c554973b485cbc2073c5c941271ebb4c5e781a1b0f49a",
+      "theorem_bytes": 244,
+      "reference_proof_sha256": "a73ae1da9b0349eab799ccb396b08e9c816de703bdecbd4f585913bb6536bedf",
+      "reference_proof_bytes": 1850,
+      "submitted_array_lines": 15,
+      "strict_verdict": {
+        "valid": true,
+        "line_count": 15,
+        "errors": []
+      },
+      "exit_code": 0,
+      "stdout_sha256": "aade34b104afb91bacad7a92314f070eebd95d485d394e42f9a4871423cd8c0a",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_bytes": 0,
+      "owner_wrapper_verdict": {
+        "status": "valid",
+        "line_count": 15,
+        "errors": []
+      }
+    },
+    {
+      "id": "g1-2000035",
+      "par": 18,
+      "theorem_sha256": "f656074cdd72a2c5445e1d54a502a5f8b7f4ae0348de6ffca089f45791b5534b",
+      "theorem_bytes": 265,
+      "reference_proof_sha256": "94bad007933e14b7bd724b6f303922199498a41e3971d708a0a220a3291b6c0b",
+      "reference_proof_bytes": 2224,
+      "submitted_array_lines": 18,
+      "strict_verdict": {
+        "valid": true,
+        "line_count": 18,
+        "errors": []
+      },
+      "exit_code": 0,
+      "stdout_sha256": "c47f56691e9405a94357b9cf93fdf8dd5a5ffcfe7ab77be93d6b26666017d836",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_bytes": 0,
+      "owner_wrapper_verdict": {
+        "status": "valid",
+        "line_count": 18,
+        "errors": []
+      }
+    },
+    {
+      "id": "g2-2100023",
+      "par": 23,
+      "theorem_sha256": "27b475a521f7096a77048a0da330bcd3984daf7c821b624896971d53602c0ce2",
+      "theorem_bytes": 257,
+      "reference_proof_sha256": "37a7cf0864f80838cbaac0e85c14bf02e554b663d6dfab849f994624a08027b0",
+      "reference_proof_bytes": 2919,
+      "submitted_array_lines": 23,
+      "strict_verdict": {
+        "valid": true,
+        "line_count": 23,
+        "errors": []
+      },
+      "exit_code": 0,
+      "stdout_sha256": "68f5f8518a39618d23c3dc31d9b5cd15d7f87eee86b15cab62a286f102c77174",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_bytes": 0,
+      "owner_wrapper_verdict": {
+        "status": "valid",
+        "line_count": 23,
+        "errors": []
+      }
+    },
+    {
+      "id": "g2-2100030",
+      "par": 17,
+      "theorem_sha256": "1ec90f6fbcc58a8315da15305c096a205287879102ad762ba84fc26168f718e5",
+      "theorem_bytes": 228,
+      "reference_proof_sha256": "c875e85e71ab05f88947218d5f2733ec5fe168668f6d360b4c218a75f82eafcf",
+      "reference_proof_bytes": 2229,
+      "submitted_array_lines": 17,
+      "strict_verdict": {
+        "valid": true,
+        "line_count": 17,
+        "errors": []
+      },
+      "exit_code": 0,
+      "stdout_sha256": "07f3a02d787572075cd9cb59d6327da2f76c28c670997d2c0fb80dca51211400",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_bytes": 0,
+      "owner_wrapper_verdict": {
+        "status": "valid",
+        "line_count": 17,
+        "errors": []
+      }
+    },
+    {
+      "id": "g2-2100067",
+      "par": 20,
+      "theorem_sha256": "4ad872412c973d061aca7cf6ce9f956217cd230c664d1b8d4b81bdad36375e2c",
+      "theorem_bytes": 230,
+      "reference_proof_sha256": "da78b9c54a631404fa69c280352884770fa09d5c7a100353da6fe3423f337c70",
+      "reference_proof_bytes": 2493,
+      "submitted_array_lines": 20,
+      "strict_verdict": {
+        "valid": true,
+        "line_count": 20,
+        "errors": []
+      },
+      "exit_code": 0,
+      "stdout_sha256": "701802b98ea8f8cb733036b4f8f127c03d31275be87b20081f3b7ac8fe9b8084",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_bytes": 0,
+      "owner_wrapper_verdict": {
+        "status": "valid",
+        "line_count": 20,
+        "errors": []
+      }
+    },
+    {
+      "id": "g2-2100087",
+      "par": 17,
+      "theorem_sha256": "bb9121101ef1e902ad0dad471194f6a13a484580d67095476ec807f2d470d5e8",
+      "theorem_bytes": 228,
+      "reference_proof_sha256": "1a55697eaab67e1771c8e3280ec33a58c5d81810f4e02ab84b545e5c76014099",
+      "reference_proof_bytes": 2112,
+      "submitted_array_lines": 17,
+      "strict_verdict": {
+        "valid": true,
+        "line_count": 17,
+        "errors": []
+      },
+      "exit_code": 0,
+      "stdout_sha256": "07f3a02d787572075cd9cb59d6327da2f76c28c670997d2c0fb80dca51211400",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_bytes": 0,
+      "owner_wrapper_verdict": {
+        "status": "valid",
+        "line_count": 17,
+        "errors": []
+      }
+    },
+    {
+      "id": "g2-2100100",
+      "par": 18,
+      "theorem_sha256": "288c21e90d0512f96a5d7b0e6858cf9af30bb569b45f4f1d6d697d44e86f0c39",
+      "theorem_bytes": 247,
+      "reference_proof_sha256": "e1ef04c3bd92da58fce5c25a98aaf5cea62bb491e15c9d21e6ac78266ec8f8bc",
+      "reference_proof_bytes": 2257,
+      "submitted_array_lines": 18,
+      "strict_verdict": {
+        "valid": true,
+        "line_count": 18,
+        "errors": []
+      },
+      "exit_code": 0,
+      "stdout_sha256": "c47f56691e9405a94357b9cf93fdf8dd5a5ffcfe7ab77be93d6b26666017d836",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_bytes": 0,
+      "owner_wrapper_verdict": {
+        "status": "valid",
+        "line_count": 18,
+        "errors": []
+      }
+    },
+    {
+      "id": "g2-2100122",
+      "par": 21,
+      "theorem_sha256": "3361553a9918cbfd3a5b10fcbc88fb0e2b7797de8e85f5556c5330214977aae9",
+      "theorem_bytes": 240,
+      "reference_proof_sha256": "69126bbc3b71febd93114965aada9b7e6030735decb11d87e9d1206a208c45ab",
+      "reference_proof_bytes": 2521,
+      "submitted_array_lines": 21,
+      "strict_verdict": {
+        "valid": true,
+        "line_count": 21,
+        "errors": []
+      },
+      "exit_code": 0,
+      "stdout_sha256": "693d029323aedbd720477a57a5966a9f4a6ab34609cc8ce969ffb3fe4d937ad8",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_bytes": 0,
+      "owner_wrapper_verdict": {
+        "status": "valid",
+        "line_count": 21,
+        "errors": []
+      }
+    },
+    {
+      "id": "g2-2100153",
+      "par": 18,
+      "theorem_sha256": "537c313dbd8ff5497d6b36cf7b8afa4311119ea0560447d06bca4cd0b9d69b9c",
+      "theorem_bytes": 233,
+      "reference_proof_sha256": "cc2742e47cbe6fbc30def135adc99a131e2ecdc90cde80003a68c0e9ede0c858",
+      "reference_proof_bytes": 2309,
+      "submitted_array_lines": 18,
+      "strict_verdict": {
+        "valid": true,
+        "line_count": 18,
+        "errors": []
+      },
+      "exit_code": 0,
+      "stdout_sha256": "c47f56691e9405a94357b9cf93fdf8dd5a5ffcfe7ab77be93d6b26666017d836",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_bytes": 0,
+      "owner_wrapper_verdict": {
+        "status": "valid",
+        "line_count": 18,
+        "errors": []
+      }
+    },
+    {
+      "id": "g2-2100178",
+      "par": 20,
+      "theorem_sha256": "db083a371fc00c697cf75feea5f7cb0d4b91c91a76847f43d1106f2dba886086",
+      "theorem_bytes": 257,
+      "reference_proof_sha256": "659b124e98703dc0e1896a16c314e464bb05d5aeae4abc61e7ef20c623c80829",
+      "reference_proof_bytes": 2585,
+      "submitted_array_lines": 20,
+      "strict_verdict": {
+        "valid": true,
+        "line_count": 20,
+        "errors": []
+      },
+      "exit_code": 0,
+      "stdout_sha256": "701802b98ea8f8cb733036b4f8f127c03d31275be87b20081f3b7ac8fe9b8084",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_bytes": 0,
+      "owner_wrapper_verdict": {
+        "status": "valid",
+        "line_count": 20,
+        "errors": []
+      }
+    },
+    {
+      "id": "g3-2200607",
+      "par": 25,
+      "theorem_sha256": "7d2107136530c0c66e7552a97895fbd17ecc84acecfe4e725a1ac244530d9570",
+      "theorem_bytes": 283,
+      "reference_proof_sha256": "14d16136c1b40e7d3a4a511ba3d7e056ad5462a6d3cd7934aaab66c60a1384e3",
+      "reference_proof_bytes": 3013,
+      "submitted_array_lines": 25,
+      "strict_verdict": {
+        "valid": true,
+        "line_count": 25,
+        "errors": []
+      },
+      "exit_code": 0,
+      "stdout_sha256": "4cf1f223e349a7975fb14d52c97ff7fbc0c064e4914a11d474b21cf992c23022",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_bytes": 0,
+      "owner_wrapper_verdict": {
+        "status": "valid",
+        "line_count": 25,
+        "errors": []
+      }
+    },
+    {
+      "id": "g3-2200683",
+      "par": 25,
+      "theorem_sha256": "0784f02bafcd4a0fa28c0169033b1c981040c19bb688a3b7262fb5c7336af32c",
+      "theorem_bytes": 240,
+      "reference_proof_sha256": "d59f92b6cc171af5f731488e4f3380bce86f40a8bd24567b4fc03be9a7a0ea86",
+      "reference_proof_bytes": 3168,
+      "submitted_array_lines": 25,
+      "strict_verdict": {
+        "valid": true,
+        "line_count": 25,
+        "errors": []
+      },
+      "exit_code": 0,
+      "stdout_sha256": "4cf1f223e349a7975fb14d52c97ff7fbc0c064e4914a11d474b21cf992c23022",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_bytes": 0,
+      "owner_wrapper_verdict": {
+        "status": "valid",
+        "line_count": 25,
+        "errors": []
+      }
+    },
+    {
+      "id": "g3-2200923",
+      "par": 26,
+      "theorem_sha256": "9122a38deb4829db822a416be562ac01cda1c11b44f0bdc341c1c9df434e5d62",
+      "theorem_bytes": 285,
+      "reference_proof_sha256": "951b528550b62620bbf15841c2a4e3606507e11edfb818aad5bade847748458d",
+      "reference_proof_bytes": 3019,
+      "submitted_array_lines": 26,
+      "strict_verdict": {
+        "valid": true,
+        "line_count": 26,
+        "errors": []
+      },
+      "exit_code": 0,
+      "stdout_sha256": "0fbfa3c4d253e133f73e31cfb3f0107a9aeffb5bb0ed1f89353d1d822e02a260",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_bytes": 0,
+      "owner_wrapper_verdict": {
+        "status": "valid",
+        "line_count": 26,
+        "errors": []
+      }
+    },
+    {
+      "id": "g3-2201428",
+      "par": 29,
+      "theorem_sha256": "f05be8c623824f74209546646ce0498ec35fb039f401be6a0e9a241272689f55",
+      "theorem_bytes": 270,
+      "reference_proof_sha256": "82022c11f75f09abb785ff5d59b5c5ea8e2d9b4f4c32c3c068ccb79cca2ba69e",
+      "reference_proof_bytes": 3606,
+      "submitted_array_lines": 29,
+      "strict_verdict": {
+        "valid": true,
+        "line_count": 29,
+        "errors": []
+      },
+      "exit_code": 0,
+      "stdout_sha256": "0d54e69ecd86131a0c97103569f64f1dbf05618bd168959854a44dcc76d93805",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_bytes": 0,
+      "owner_wrapper_verdict": {
+        "status": "valid",
+        "line_count": 29,
+        "errors": []
+      }
+    },
+    {
+      "id": "g3-2201955",
+      "par": 23,
+      "theorem_sha256": "8ac4f2e966298e3d8fe2e30507bc0db286704be7faba68d3afa147630d36d7fc",
+      "theorem_bytes": 236,
+      "reference_proof_sha256": "a34a2a3ea4a66b8d7535c35771e286240340c59508ca88cf71acc621f718883d",
+      "reference_proof_bytes": 2747,
+      "submitted_array_lines": 23,
+      "strict_verdict": {
+        "valid": true,
+        "line_count": 23,
+        "errors": []
+      },
+      "exit_code": 0,
+      "stdout_sha256": "68f5f8518a39618d23c3dc31d9b5cd15d7f87eee86b15cab62a286f102c77174",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_bytes": 0,
+      "owner_wrapper_verdict": {
+        "status": "valid",
+        "line_count": 23,
+        "errors": []
+      }
+    },
+    {
+      "id": "g3-2202121",
+      "par": 23,
+      "theorem_sha256": "1f50db7f63b7ccebdaf899d82eafa755d9b7f85caa7aaac41d997b9c797d0bd2",
+      "theorem_bytes": 222,
+      "reference_proof_sha256": "26eff0bd36b2c8244caeb1494a50e148da3e8f21bf978a255b07be062c0b23f4",
+      "reference_proof_bytes": 3132,
+      "submitted_array_lines": 23,
+      "strict_verdict": {
+        "valid": true,
+        "line_count": 23,
+        "errors": []
+      },
+      "exit_code": 0,
+      "stdout_sha256": "68f5f8518a39618d23c3dc31d9b5cd15d7f87eee86b15cab62a286f102c77174",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_bytes": 0,
+      "owner_wrapper_verdict": {
+        "status": "valid",
+        "line_count": 23,
+        "errors": []
+      }
+    },
+    {
+      "id": "g3-2204890",
+      "par": 25,
+      "theorem_sha256": "f7a22e02e8f9ea68803ecd7321b392ffc22d270a819a4a0eeeff0b588ab5617d",
+      "theorem_bytes": 270,
+      "reference_proof_sha256": "bc5d64440f179caa306fc0378f7dc07d627f95d2d4c4caecb89c056834650e1e",
+      "reference_proof_bytes": 3213,
+      "submitted_array_lines": 25,
+      "strict_verdict": {
+        "valid": true,
+        "line_count": 25,
+        "errors": []
+      },
+      "exit_code": 0,
+      "stdout_sha256": "4cf1f223e349a7975fb14d52c97ff7fbc0c064e4914a11d474b21cf992c23022",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_bytes": 0,
+      "owner_wrapper_verdict": {
+        "status": "valid",
+        "line_count": 25,
+        "errors": []
+      }
+    },
+    {
+      "id": "g3-2205032",
+      "par": 27,
+      "theorem_sha256": "a36ff05744802300568b002ad21fdcf0def68f1d13301cbaecbbec8e38f58187",
+      "theorem_bytes": 252,
+      "reference_proof_sha256": "6cc57f8d7e2dc6074f37e9afa063ab0390e9035a370e2805280dd9739360fb93",
+      "reference_proof_bytes": 3236,
+      "submitted_array_lines": 27,
+      "strict_verdict": {
+        "valid": true,
+        "line_count": 27,
+        "errors": []
+      },
+      "exit_code": 0,
+      "stdout_sha256": "d494f1637a849d7d5e38f7f3c3feca62205c726381386fcfb1a4426c6f606648",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_bytes": 0,
+      "owner_wrapper_verdict": {
+        "status": "valid",
+        "line_count": 27,
+        "errors": []
+      }
+    }
+  ],
+  "owner_wrapper_check": {
+    "source_path": "tracks/core.ts",
+    "source_sha256": "5a0f373662586b43404d32fb958de989a69cb294153be1bc10cc0dab60a995ac",
+    "function": "validateCandidate",
+    "includes": "parseProof JSON shape gate followed by strict CLI replay",
+    "started_at_utc": "2026-09-26T05:48:57.019Z",
+    "completed_at_utc": "2026-09-26T05:48:57.357Z",
+    "items": 24,
+    "valid": 24,
+    "exact_par_matches": 24
+  }
+}

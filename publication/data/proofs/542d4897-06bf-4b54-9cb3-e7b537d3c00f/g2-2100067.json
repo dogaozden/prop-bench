@@ -1,0 +1,92 @@
+[
+  {
+    "line_number": 2,
+    "formula": "Q . Q",
+    "justification": "Simp 1",
+    "depth": 0
+  },
+  {
+    "line_number": 3,
+    "formula": "Q",
+    "justification": "Simp 2",
+    "depth": 0
+  },
+  {
+    "line_number": 4,
+    "formula": "~~Q",
+    "justification": "DN 3",
+    "depth": 0
+  },
+  {
+    "line_number": 5,
+    "formula": "~~Q v ~R",
+    "justification": "Add 4",
+    "depth": 0
+  },
+  {
+    "line_number": 6,
+    "formula": "(~~Q v ~R) v (~~Q v ~R)",
+    "justification": "Taut 5",
+    "depth": 0
+  },
+  {
+    "line_number": 7,
+    "formula": "R v ((~~Q v ~R) v (~~Q v ~R))",
+    "justification": "Add 6",
+    "depth": 0
+  },
+  {
+    "line_number": 8,
+    "formula": "~P v (R v ((~~Q v ~R) v (~~Q v ~R)))",
+    "justification": "Add 7",
+    "depth": 0
+  },
+  {
+    "line_number": 9,
+    "formula": "Q . ~~Q",
+    "justification": "Conj 3,4",
+    "depth": 0
+  },
+  {
+    "line_number": 10,
+    "formula": "~S",
+    "justification": "Assumption (CP)",
+    "depth": 1
+  },
+  {
+    "line_number": 11,
+    "formula": "~S . (Q . ~~Q)",
+    "justification": "Conj 10,9",
+    "depth": 1
+  },
+  {
+    "line_number": 12,
+    "formula": "~S > (~S . (Q . ~~Q))",
+    "justification": "CP 10-11",
+    "depth": 0
+  },
+  {
+    "line_number": 13,
+    "formula": "(~P v (R v ((~~Q v ~R) v (~~Q v ~R)))) . (~S > (~S . (Q . ~~Q)))",
+    "justification": "Conj 8,12",
+    "depth": 0
+  },
+  {
+    "line_number": 14,
+    "formula": "~(R <> P) v ((~P v (R v ((~~Q v ~R) v (~~Q v ~R)))) . (~S > (~S . (Q . ~~Q))))",
+    "justification": "Add 13",
+    "depth": 0
+  },
+  {
+    "line_number": 15,
+    "formula": "(R <> P) > ((~P v (R v ((~~Q v ~R) v (~~Q v ~R)))) . (~S > (~S . (Q . ~~Q))))",
+    "justification": "Impl 14",
+    "depth": 0
+  },
+  {
+    "line_number": 16,
+    "formula": "Q . ((R <> P) > ((~P v (R v ((~~Q v ~R) v (~~Q v ~R)))) . (~S > (~S . (Q . ~~Q)))))",
+    "justification": "Conj 3,15",
+    "depth": 0
+  }
+]

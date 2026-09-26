@@ -1,10 +1,13 @@
-import { parsePublication, groupRuns } from "./data.js";
+import { parsePublication, groupRuns, matchedLedger, summarizeMatchedEvidence, editorialLimitation } from "./data.js";
 
 const workspace = document.querySelector("#results-workspace");
 const stamp = document.querySelector("#data-stamp");
 const provenance = document.querySelector("#footer-provenance");
 const resources = document.querySelector("#resource-links");
 const campaignSummary = document.querySelector("#campaign-summary");
+const editorial = document.querySelector("#editorial-limitation");
+const snapshot = document.querySelector("#evidence-snapshot");
+const matched = document.querySelector("#matched-ledger");
 const datasetDisclosure = document.querySelector("#dataset-disclosure");
 const datasetView = document.querySelector("#dataset-view");
 const datasetCount = document.querySelector("#dataset-count");
@@ -33,6 +36,8 @@ function renderResources() {
   if (state.data.campaign) {
     links.push(resource("Download job ledger CSV ↗", "./data/jobs.csv"));
     links.push(resource("Summary JSON ↗", "./data/summary.json"));
+    links.push(resource("Replay receipt ↗", "./data/verification.json"));
+    links.push(resource("Campaign notes ↗", "./data/README.md"));
   }
   links.push(resource("Retained engineering pilot ↗", "./pilots/20260925/"));
   const commit = state.data.campaign?.source_commit;
@@ -54,13 +59,106 @@ function renderCampaignSummary() {
     counts[bucket]++;
   }
   const heading = el("div", "campaign-summary-heading");
-  append(heading, el("span", "micro-label", "CAMPAIGN SNAPSHOT"), el("span", "", `Exported ${date(state.data.generated_at)}`));
+  const lifecycle = campaign.status === "complete" ? "COMPLETED CENSUS" : campaign.status === "interrupted" ? "STOPPED CAMPAIGN · PARTIAL EVIDENCE" : "CAMPAIGN IN PROGRESS · SNAPSHOT";
+  append(heading, el("span", "micro-label", lifecycle), el("span", "", `Exported ${date(state.data.generated_at)}`));
   const pairedPlan = campaign.jobs.length === state.data.items.length * 4 &&
     ["unaided-1", "unaided-2", "frontier-fresh", "frontier-cumulative"].every(condition => campaign.jobs.filter(job => job.condition === condition).length === state.data.items.length);
   const progress = el("p", "", `${campaign.planned_jobs} planned jobs · ${counts.complete} complete · ${counts.interrupted} interrupted · ${counts.active} active · ${counts.pending} pending. ${pairedPlan ? "Each theorem has two separate Unaided attempts and a fresh Frontier run paired with its own cumulative continuation. " : ""}This static export records one point in the campaign.`);
   const facts = el("div", "campaign-summary-facts");
   append(facts, fact("CAMPAIGN", campaign.id), fact("REQUESTED MODEL", campaign.model), fact("EFFORT", campaign.effort), fact("NATIVE CLIENT", campaign.client?.version || "Not recorded"));
   campaignSummary.replaceChildren(heading, progress, facts);
+}
+function renderEditorialLimitation() {
+  const note = editorialLimitation(state.data.campaign);
+  editorial.hidden = !note;
+  if (!note) return;
+  editorial.replaceChildren(el("span", "micro-label", note.title), el("p", "", note.body),
+    resource("Read the forensic note ↗", note.href, true));
+}
+function renderEvidenceSnapshot() {
+  const summary = summarizeMatchedEvidence(matchedLedger(state.data, state.groups));
+  snapshot.hidden = !summary;
+  if (!summary) return;
+  const heading = el("div", "snapshot-heading");
+  const title = el("h3", "", "What is comparable now"); title.id = "snapshot-title";
+  append(heading, el("span", "micro-label", "EVIDENCE AT THIS EXPORT"), title);
+  const fresh = el("div", "snapshot-part");
+  append(fresh,
+    el("span", "micro-label", "FRESH FRONTIER / BOTH UNAIDED TRIALS"),
+    el("p", "snapshot-count", `${summary.fresh.matched} / ${summary.total}`),
+    el("p", "snapshot-description", `Completed valid three-way sets. Fresh Frontier was shorter than both Unaided lengths on ${summary.fresh.shorterThanBoth}, between or tied with them on ${summary.fresh.withinUnaidedRange}, and longer than both on ${summary.fresh.longerThanBoth}. ${summary.fresh.unavailable} theorems lack a completed valid three-way set.`));
+  const cumulative = el("div", "snapshot-part");
+  append(cumulative,
+    el("span", "micro-label", "CUMULATIVE FRONTIER / PAIRED FRESH RUN"),
+    el("p", "snapshot-count", `${summary.cumulative.matched} / ${summary.total}`),
+    el("p", "snapshot-description", `Completed valid fresh–cumulative pairs. Cumulative was shorter on ${summary.cumulative.shorter}, the same length on ${summary.cumulative.tied}, and longer on ${summary.cumulative.longer}. ${summary.cumulative.unavailable} theorems lack a completed valid pair. Cumulative receives a separate additional allowance.`));
+  const grid = append(el("div", "snapshot-grid"), fresh, cumulative);
+  snapshot.replaceChildren(heading, grid,
+    el("p", "snapshot-boundary", "These are observed proof lengths in different tool conditions, not a superiority or causal claim. Completed missing or invalid outcomes keep loss 1 in condition means; they are excluded from these valid-length comparisons."));
+}
+function renderMatchedLedger() {
+  const ledger = matchedLedger(state.data, state.groups);
+  matched.hidden = !ledger;
+  if (!ledger) return;
+  const title = el("h3", "", "Compare proof lengths");
+  title.id = "matched-title";
+  const head = el("div", "matched-head");
+  append(head, append(el("div"), el("span", "micro-label", `${ledger.rows.length} FROZEN QUESTIONS / FOUR CONDITIONS`), title),
+    el("p", "matched-deck", "Verified line counts link to proof records. Completed missing or invalid outcomes retain loss 1; active, pending, and interrupted cells have no completed scored result."));
+  const cue = el("p", "matched-scroll-cue", "Scroll sideways to see every condition →");
+  const wrap = el("div", "matched-scroll");
+  wrap.tabIndex = 0;
+  wrap.setAttribute("aria-label", "Matched theorem results; scroll horizontally for all four conditions");
+  const table = el("table", "matched-table");
+  append(table, el("caption", "sr-only", "Verified proof lengths and job states for every frozen theorem across the four planned conditions"));
+  const thead = el("thead");
+  const header = el("tr");
+  const headings = ["THEOREM", "PAR", "UNAIDED 1", "UNAIDED 2", "FRONTIER FRESH", "FRONTIER CUMULATIVE"];
+  for (const [index, label] of headings.entries()) {
+    const th = el("th"); th.scope = "col";
+    append(th, el("span", "", label));
+    if (index >= 2) {
+      const column = ledger.columns[index - 2];
+      append(th, el("small", "", column.planned ? `${column.completed}/${column.planned} verdicts` : "Not planned"));
+      if (index === 5) append(th, el("small", "matched-allowance", "+ separate allowance"));
+    }
+    append(header, th);
+  }
+  append(thead, header);
+  const tbody = el("tbody");
+  for (const row of ledger.rows) {
+    const tr = el("tr");
+    const itemHeader = el("th", "matched-item", row.item.id); itemHeader.scope = "row";
+    append(tr, itemHeader, el("td", "matched-par", String(row.item.par)));
+    for (const [index, cell] of row.cells.entries()) {
+      const td = el("td", `matched-cell matched-${cell.kind}`);
+      const label = headings[index + 2];
+      if (cell.record) {
+        const button = el("button", "matched-record"); button.type = "button";
+        button.setAttribute("aria-label", `${row.item.id}, ${label}: ${cell.label}${cell.kind === "interrupted" ? ", excluded from completed results" : ""}. Open proof record.`);
+        append(button, el("span", "", cell.label), el("span", "matched-open", "↗"));
+        button.addEventListener("click", () => {
+          state.filter = "all";
+          state.groupKey = cell.group.key;
+          state.recordKey = recordKey(cell.record);
+          render();
+          const heading = workspace.querySelector(".proof-panel h4");
+          if (heading) {
+            heading.tabIndex = -1;
+            heading.focus({ preventScroll: true });
+            heading.scrollIntoView({ behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "start" });
+          }
+        });
+        append(td, button);
+      } else append(td, el("span", "matched-state", cell.label));
+      append(tr, td);
+    }
+    append(tbody, tr);
+  }
+  append(table, thead, tbody);
+  append(wrap, table);
+  matched.replaceChildren(head, cue, wrap,
+    el("p", "matched-note", "Columns are distinct protocols, not a single leaderboard. Par is a known achievable length, not a minimum. Frontier cumulative starts from its fresh run’s saved workspace and receives an additional run allowance."));
 }
 function renderDataset() {
   const items = state.data.items;
@@ -76,8 +174,9 @@ function renderDataset() {
     for (const button of buttons) button.setAttribute("aria-pressed", String(button.dataset.itemId === item.id));
     const box = el("div", "dataset-formulas");
     append(box, el("span", "meta-label", "PREMISES"));
-    if (item.theorem.premises.length) for (const premise of item.theorem.premises) append(box, el("code", "", premise));
+    if (item.theorem.premises.length) append(box, premiseList(item.theorem.premises));
     else append(box, el("code", "", "None"));
+    append(box, el("span", "premise-note", item.theorem.premises.length ? "Supplied as numbered lines; not counted toward submitted length." : "No premise lines are supplied."));
     append(box, el("span", "meta-label", "CONCLUSION"), el("code", "", item.theorem.conclusion));
     const provenance = el("div", "dataset-provenance");
     append(provenance, el("span", "", `Theorem SHA-256: ${pretty(item.theorem_sha256)}`), resource("Open exact theorem JSON ↗", `./data/theorems/${encodeURIComponent(item.id)}.json`));
@@ -214,14 +313,20 @@ function itemButton(record, group) {
 function proofPanel(record, group) {
   const { result, item, run } = record;
   const panel = el("article", "proof-panel");
-  append(panel, el("span", "run-kicker", `${item.id} / ${item.theorem.difficulty || "THEOREM"}`), el("h4", "", "Theorem and proof record"));
+  const proofHeading = el("h4", "", "Theorem and proof record");
+  proofHeading.setAttribute("aria-label", `${item.id} theorem and proof record`);
+  append(panel, el("span", "run-kicker", `${item.id} / ${item.theorem.difficulty || "THEOREM"}`), proofHeading);
   const included = group.scoredRecords.includes(record);
   if (!included) append(panel, el("p", "exclusion-note", run.evidence === "fixture" ?
     "Fixture evidence. This result is inspectable but does not enter the official campaign summary." :
     "Interrupted or incomplete run. Its verdict and verified lines are inspectable, but its loss and validity do not enter the completed campaign summary."));
   const theorem = el("div", "theorem-box");
   const definition = el("dl");
-  append(definition, el("dt", "", "PREMISES"), el("dd", "", item.theorem.premises.length ? item.theorem.premises.join(" · ") : "None"), el("dt", "", "CONCLUSION"), el("dd", "", item.theorem.conclusion));
+  const premiseValue = el("dd");
+  if (item.theorem.premises.length) append(premiseValue, premiseList(item.theorem.premises));
+  else append(premiseValue, el("span", "", "None"));
+  append(premiseValue, el("span", "premise-note", item.theorem.premises.length ? "Supplied as numbered lines; not counted toward submitted length." : "No premise lines are supplied."));
+  append(definition, el("dt", "", "PREMISES"), premiseValue, el("dt", "", "CONCLUSION"), el("dd", "", item.theorem.conclusion));
   append(theorem, definition);
   const summary = el("div", "proof-summary");
   append(summary, summaryPart("VERDICT", title(result.status)), summaryPart("VERIFIED LENGTH", result.line_count == null ? "—" : String(result.line_count)), summaryPart("REFERENCE PAR", String(item.par)), summaryPart(included ? "ITEM LOSS" : "ITEM LOSS, EXCLUDED", number(result.loss, 3)));
@@ -232,6 +337,15 @@ function proofPanel(record, group) {
   const progress = run.track === "frontier" ? verifiedProgress(run, item.id) : null;
   if (progress) append(panel, progress);
   if (result.proof && result.status === "valid") {
+    const readingGuide = el("details", "proof-reading-guide");
+    append(readingGuide, el("summary", "", "How to read this proof"));
+    const guideBody = el("div", "proof-reading-guide-body");
+    append(guideBody,
+      el("p", "", "Notation: ~ means not; . or · means and; v or ∨ means or; > or ⊃ means if…then; <> or ≡ means if and only if; # marks a contradiction. Brackets group formulas."),
+      el("p", "", "Theorem premises occupy the first numbered lines without counting toward verified length. Each submitted assumption, derived line, and CP/IP closing line counts once."),
+      el("p", "", "A justification names a rule and cites earlier lines (for example, MP 1,2). CP/IP citations such as CP 3-7 name a subproof range. Depth records nested scope. Ordinary rules cannot reuse lines from a closed subproof; CP/IP close it using the cited range."),
+      resource("Read the frozen rulebook ↗", "./data/rules.md"));
+    append(readingGuide, guideBody);
     const wrap = el("div", "proof-table-wrap");
     const table = el("table", "proof-table");
     table.setAttribute("role", "table");
@@ -252,7 +366,7 @@ function proofPanel(record, group) {
     }
     append(table, caption, thead, tbody);
     append(wrap, table);
-    append(panel, wrap, el("p", "proof-note", "The table shows submitted lines. Premises are supplied by the theorem and do not count toward length."));
+    append(panel, readingGuide, wrap);
   } else {
     append(panel, el("div", "proof-unavailable", result.status === "valid" ? "The proof passed verification, but its line-by-line public export is unavailable." : "No verified proof is available for this outcome."));
   }
@@ -319,6 +433,11 @@ function verifiedProgress(run, itemId) {
     el("p", "checkpoint-caveat", "Only accepted checkpoints are shown. Times are recorded capture offsets; no result is inferred between them. A shorter proof is not a claim of optimality."));
 }
 function summaryPart(label, value) { const node = el("span"); append(node, el("strong", "", value), document.createTextNode(` ${label.toLowerCase()}`)); return node; }
+function premiseList(premises) {
+  const list = el("ol", "premise-list");
+  for (const premise of premises) append(list, append(el("li"), el("code", "", premise)));
+  return list;
+}
 function receiptRow(label, value) { const node = el("div", "receipt-row"); append(node, el("span", "meta-label", label), el("code", "", value)); return node; }
 
 function render() {
@@ -342,6 +461,9 @@ async function start() {
     state.groups = groupRuns(state.data);
     renderResources();
     renderCampaignSummary();
+    renderEditorialLimitation();
+    renderEvidenceSnapshot();
+    renderMatchedLedger();
     renderDataset();
     provenance.textContent = `Exported ${date(state.data.generated_at)} · Set ${state.data.set.version} · ${state.data.evaluator.scorer_version}`;
     render();

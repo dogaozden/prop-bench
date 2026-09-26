@@ -126,6 +126,7 @@ interface ControlledCheckpoint {
   capture_elapsed_ms: number;
   capture_remaining_ms: number;
   submissions: Array<{ id: string; proof_sha256: string; proof_bytes_base64: string }>;
+  ignored_proof_drafts?: string[];
   contestant_rejection?: string;
   artifact_snapshot?: string;
   artifact_rejection?: string;
@@ -452,6 +453,9 @@ function buildGoal(ctx: RunContext, bundleSnapshot: string | null, validatorCopi
     "This directory is a public contestant bundle for one fixed Frontier run.",
     "The controller grades only proof JSON submitted in proofs/<theorem-id>.json.",
     ...(ctx.config.execution_protocol === "frontier-subscription-v2" ? [
+      "Checkpoint capture accepts only proofs/<selected-theorem-id>.json for the selected theorems listed below. Put scratch proofs and alternate JSON drafts in tools/.",
+      "Save a valid baseline proof early, then try to shorten it. Keep improvements at the canonical filename; the owner can capture them only after an exec finishes before the shared deadline.",
+      "Other safe regular JSON files in proofs/ are ignored as submissions and recorded only in private checkpoint diagnostics; unsafe files still reject a checkpoint.",
       "After each exec stops, the owner captures proofs, tools, and journals before the shared deadline and retains each shortest independently valid proof.",
       "Snapshot capture and owner checking use the shared wall-clock allowance. Checks of already captured bytes may finish after cutoff; no later files are accepted.",
       "Checkpoint verdicts are not returned to you. Use ./validator for your own checks. Final cumulative archives inherit only the latest timely tools and journals.",
@@ -769,6 +773,42 @@ function readSubmissionEntries(proofsDir: string, selectedIds: Set<string>): Arr
   return entries;
 }
 
+/** Subscription checkpoints capture selected proofs independently of regular JSON drafts. */
+function readCheckpointSubmissionEntries(
+  proofsDir: string,
+  selectedIds: Set<string>,
+): { entries: Array<{ id: string; bytes: Buffer }>; ignoredDrafts: string[] } {
+  assertDirectory(proofsDir, "Proofs directory");
+  const entries: Array<{ id: string; bytes: Buffer }> = [];
+  const ignoredDrafts: string[] = [];
+  let totalBytes = 0;
+  const names = fsSync.readdirSync(proofsDir).sort();
+  if (names.length > MAX_SNAPSHOT_ENTRIES) throw new Error("Proofs directory has too many entries");
+  for (const name of names) {
+    const source = path.join(proofsDir, name);
+    const stat = lstatNoSymlink(source);
+    if (name === ".gitkeep") {
+      if (!stat.isFile()) throw new Error("Proofs .gitkeep must be a regular file");
+      continue;
+    }
+    if (!stat.isFile() || !name.endsWith(".json")) {
+      throw new Error(`Proofs directory may contain only theorem JSON files: ${name}`);
+    }
+    // Read all regular JSON safely so ignored drafts retain the same link,
+    // per-file, total-byte, and traversal gates as selected submissions.
+    const bytes = readSafeFile(source, MAX_PROOF_BYTES).bytes;
+    totalBytes += bytes.length;
+    if (totalBytes > MAX_SNAPSHOT_TOTAL_BYTES) throw new Error("Proofs directory exceeds total size cap");
+    const id = name.slice(0, -5);
+    if (!ID.test(id) || !selectedIds.has(id)) {
+      ignoredDrafts.push(name);
+      continue;
+    }
+    entries.push({ id, bytes });
+  }
+  return { entries, ignoredDrafts };
+}
+
 function installSubmission(runDir: string, id: string, bytes: Buffer): void {
   const submissions = path.join(runDir, "submissions");
   assertDirectory(submissions, "Owner submissions");
@@ -904,6 +944,7 @@ export function createControlledFrontierCheckpoints(
       busy = true;
       try {
         let captured: Array<{ id: string; bytes: Buffer }> = [];
+        let ignoredDrafts: string[] = [];
         let rejection: string | undefined;
         let bundleSafe = false;
         try {
@@ -913,7 +954,7 @@ export function createControlledFrontierCheckpoints(
             throw new Error("Proofs directory bundle ancestry changed during execution");
           }
           bundleSafe = true;
-          captured = readSubmissionEntries(proofsDir, selectedIds);
+          ({ entries: captured, ignoredDrafts } = readCheckpointSubmissionEntries(proofsDir, selectedIds));
         } catch (error) {
           if (!knownContestantSubmissionError(error)) throw error;
           rejection = error instanceof Error ? error.message : String(error);
@@ -941,6 +982,7 @@ export function createControlledFrontierCheckpoints(
           capture_elapsed_ms: ctx.config.budget.wall_seconds * 1000 - (deadline - capturedTime),
           capture_remaining_ms: deadline - capturedTime,
           submissions: captured.map(entry => ({ id: entry.id, proof_sha256: sha256(entry.bytes), proof_bytes_base64: entry.bytes.toString("base64") })),
+          ...(ignoredDrafts.length ? { ignored_proof_drafts: ignoredDrafts } : {}),
           ...(rejection ? { contestant_rejection: rejection } : {}),
           ...(artifactSnapshot ? { artifact_snapshot: artifactSnapshot } : {}),
           ...(artifactRejection ? { artifact_rejection: artifactRejection } : {}),

@@ -1,0 +1,11 @@
+{
+  "schema_version": "propbench-owner-stop-v1",
+  "campaign_id": "f5718b6e-dc3e-4219-b823-cd62cb98023c",
+  "recorded_at": "2026-09-26T06:24:14.847789+00:00",
+  "action": "SIGTERM to verified owner campaign process: stop new dispatch; active jobs finish",
+  "reason": "Confirmed whole-directory capture defect excluded a timed valid canonical proof in both fresh and dependent cumulative g2-2100030 runs. Stop expanding the affected experiment; preserve official outcomes, repair after all jobs finish, then verify the corrected path.",
+  "decision_kind": "owner methodology amendment after observed harness failure",
+  "state_sha256_before_signal": "260b66f157d7874f2e814fec3fe37cee167aa131fa35183ffa06f5dcf9706adc",
+  "started_jobs_before_signal": 43,
+  "active_jobs_before_signal": 6
+}

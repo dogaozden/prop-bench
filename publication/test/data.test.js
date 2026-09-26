@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { parsePublication, groupRuns } from "../data.js";
+import { parsePublication, groupRuns, matchedLedger, summarizeMatchedEvidence, editorialLimitation } from "../data.js";
 
 function publication() {
   return {
@@ -214,4 +214,76 @@ test("an Unaided run cannot claim Frontier checkpoint progress", () => {
   raw.runs[0].track = "unaided";
   raw.runs[0].mode = "unaided";
   assert.throws(() => parsePublication(raw), /Frontier checkpoints on another track/);
+});
+
+test("matched ledger preserves planned denominators and explicit pending, active, and awaiting states", () => {
+  const raw = publication();
+  const frontier = structuredClone(raw.runs[0]);
+  frontier.id = "frontier-interrupted";
+  frontier.track = "frontier";
+  frontier.mode = "fresh";
+  frontier.campaign_condition = "frontier-fresh";
+  frontier.execution_protocol = "frontier-subscription-v2";
+  frontier.subscription.max_tool_calls = 128;
+  frontier.evaluation_status = "interrupted";
+  frontier.outcome = "interrupted";
+  raw.runs.push(frontier);
+  const job = (item_id, condition, status, run_id = null) => ({ key: `${item_id}--${condition}`, item_id, condition, status,
+    wall_seconds: 900, max_tool_calls: condition.startsWith("frontier") ? 128 : 0, run_id });
+  raw.campaign = { id: "campaign", model: "example-model", effort: "high", status: "active", planned_jobs: 8,
+    jobs: [job("t1", "unaided-1", "complete", "r1"), job("t2", "unaided-1", "complete", "r2"),
+      job("t1", "unaided-2", "running"), job("t2", "unaided-2", "pending"),
+      job("t1", "frontier-fresh", "interrupted", "frontier-interrupted"), job("t2", "frontier-fresh", "complete"),
+      job("t1", "frontier-cumulative", "queued"), job("t2", "frontier-cumulative", "queued")] };
+  const data = parsePublication(raw);
+  const ledger = matchedLedger(data, groupRuns(data));
+  assert.deepEqual(ledger.columns.map(column => [column.completed, column.planned]), [[2, 2], [0, 2], [0, 2], [0, 2]]);
+  assert.deepEqual(ledger.rows[0].cells.map(cell => [cell.kind, cell.label]),
+    [["valid", "1 line"], ["active", "Active"], ["interrupted", "Interrupted"], ["pending", "Pending"]]);
+  assert.equal(ledger.rows[0].cells[2].record.result.line_count, 1);
+  assert.deepEqual(ledger.rows[1].cells.map(cell => [cell.kind, cell.label]),
+    [["nonvalid", "missing"], ["pending", "Pending"], ["awaiting", "Awaiting export"], ["pending", "Pending"]]);
+  assert.ok(ledger.rows.flatMap(row => row.cells).every(cell => cell.label.length));
+  const summary = summarizeMatchedEvidence(ledger);
+  assert.equal(summary.fresh.matched, 0);
+  assert.equal(summary.fresh.unavailable, 2);
+  assert.equal(summary.cumulative.matched, 0);
+  assert.equal(summary.cumulative.unavailable, 2);
+});
+
+test("matched ledger is absent for an unplanned historical export", () => {
+  const data = parsePublication(publication());
+  assert.equal(matchedLedger(data, groupRuns(data)), null);
+  assert.equal(summarizeMatchedEvidence(null), null);
+});
+
+test("evidence readout compares only completed valid matches and keeps missing denominators", () => {
+  const valid = line_count => ({ kind: "valid", record: { result: { line_count } } });
+  const missing = { kind: "nonvalid", label: "missing" };
+  const pending = { kind: "pending", label: "Pending" };
+  const ledger = { rows: [
+    { cells: [valid(8), valid(7), valid(5), valid(4)] },
+    { cells: [valid(6), valid(7), valid(6), valid(6)] },
+    { cells: [valid(4), valid(3), valid(5), valid(3)] },
+    { cells: [valid(4), missing, valid(2), pending] }
+  ] };
+  const summary = summarizeMatchedEvidence(ledger);
+  assert.equal(summary.total, 4);
+  assert.deepEqual(summary.fresh, { matched: 3, unavailable: 1, shorterThanBoth: 1, withinUnaidedRange: 1, longerThanBoth: 1 });
+  assert.deepEqual(summary.cumulative, { matched: 3, unavailable: 1, shorter: 2, tied: 1, longer: 0 });
+});
+
+test("submission-capture editorial note is limited to its campaign and never edits verdicts", () => {
+  const raw = publication();
+  raw.campaign = { id: "f5718b6e-dc3e-4219-b823-cd62cb98023c", model: "example-model", effort: "high", status: "running", planned_jobs: 0, jobs: [] };
+  const data = parsePublication(raw);
+  const before = JSON.stringify(data.runs);
+  const note = editorialLimitation(data.campaign);
+  assert.match(note.body, /remain missing \(loss 1\)/);
+  assert.match(note.body, /not evidence that the model could not construct a valid proof/);
+  assert.equal(note.href, "https://github.com/dogaozden/prop-bench/blob/master/research/SUBMISSION-FAILURE.md");
+  assert.equal(JSON.stringify(data.runs), before);
+  assert.equal(editorialLimitation({ id: "another-campaign" }), null);
+  assert.equal(editorialLimitation({ id: "__proto__" }), null);
+  assert.equal(editorialLimitation(null), null);
 });
