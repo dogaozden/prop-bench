@@ -1,0 +1,14 @@
+**
+!Cargo.toml
+!Cargo.lock
+!src/
+src/**
+!src/lib.rs
+!src/replay.rs
+!src/validate.rs
+!src/bin/
+src/bin/**
+!src/bin/propbench-validate.rs
+!tracks/
+tracks/**
+!tracks/Dockerfile

@@ -29,6 +29,12 @@ p ∨ q
 p ⊃ r
 q ⊃ s  /∴  r ∨ s
 
+Negation Elimination (NegE):
+p
+~p  /∴  #
+Here # denotes contradiction. This is a ninth inference rule; the historical
+numbering of the eighteen forms below is retained for reference.
+
 ⸻
 
 Valid Equivalence Forms (Rule of Replacement)
@@ -72,3 +78,18 @@ Indirect Proof
 (Assume ~ p … derive q · ~ q)
 AP  /∴  p
 ∴ p  IP
+
+The verifier also accepts assuming p and deriving a contradiction to conclude
+~p. A contradiction can be # or a conjunction A · ~A. CP/IP scopes may be
+nested; a line inside a closed scope cannot be cited outside it. CP can close
+an assumption immediately (the same start and end line) to derive p ⊃ p.
+
+All equivalence rules are bidirectional. The pinned v0.3.4 engine selects a
+structural subformula at any depth and replaces all identical occurrences of
+that subformula together. For example, DN can transform P · P into ~~P · ~~P
+in one line. Inference rules apply to complete cited lines.
+Premises are numbered automatically and do not count toward proof length.
+Every submitted assumption, derivation, and CP/IP closing line counts once.
+In the new track protocol, depth and the cited CP/IP ranges must match the
+scope derived by the verifier. The legacy replay command ignored these claimed
+scope fields; new tracks use the strict protocol without changing old results.

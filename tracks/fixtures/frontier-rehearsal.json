@@ -1,0 +1,90 @@
+[
+  {
+    "model": "frontier-fixture",
+    "choices": [
+      {
+        "message": {
+          "role": "assistant",
+          "content": null,
+          "tool_calls": [
+            {
+              "id": "delegate-r1",
+              "type": "function",
+              "function": {
+                "name": "delegate",
+                "arguments": "{\"task\": \"Write and validate the rehearsal proof; retain a short methodology and debrief.\"}"
+              }
+            }
+          ]
+        },
+        "finish_reason": "tool_calls"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 20,
+      "completion_tokens": 30,
+      "total_tokens": 50
+    }
+  },
+  {
+    "model": "frontier-fixture",
+    "choices": [
+      {
+        "message": {
+          "role": "assistant",
+          "content": null,
+          "tool_calls": [
+            {
+              "id": "exec-r1",
+              "type": "function",
+              "function": {
+                "name": "exec",
+                "arguments": "{\"command\":[\"/bin/sh\",\"-c\",\"printf '%s\\\\n' '[{\\\"line_number\\\":3,\\\"formula\\\":\\\"Q\\\",\\\"justification\\\":\\\"MP 1,2\\\",\\\"depth\\\":0}]' > proofs/r1.json\\nprintf '%s\\\\n' 'Deterministic integration fixture: delegated a one-line MP proof.' > METHODS.md\\nprintf '%s\\\\n' 'Validated with the shared Rust replay engine.' > LOG.md\\nprintf '%s\\\\n' 'Fixture only; no live model performance claim.' > DEBRIEF.md\\n./validator validate --strict-protocol --theorem set/r1.json --proof proofs/r1.json\"]}"
+              }
+            }
+          ]
+        },
+        "finish_reason": "tool_calls"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 20,
+      "completion_tokens": 30,
+      "total_tokens": 50
+    }
+  },
+  {
+    "model": "frontier-fixture",
+    "choices": [
+      {
+        "message": {
+          "role": "assistant",
+          "content": "The rehearsal proof is saved and validated."
+        },
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 20,
+      "completion_tokens": 30,
+      "total_tokens": 50
+    }
+  },
+  {
+    "model": "frontier-fixture",
+    "choices": [
+      {
+        "message": {
+          "role": "assistant",
+          "content": "Finished; import the proof and methodology."
+        },
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 20,
+      "completion_tokens": 30,
+      "total_tokens": 50
+    }
+  }
+]

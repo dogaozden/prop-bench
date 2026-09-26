@@ -1,173 +1,135 @@
 # PropBench
 
-A saturation-proof reasoning benchmark that measures the ability of AI models to *efficiently* prove propositional logic theorems using Fitch-style natural deduction.
+**How short can a valid formal proof get—and how does tool access change the search?**
 
-## Why PropBench?
+PropBench evaluates propositional-logic proof construction with a strict Rust
+referee. It records verified proof lengths, validity, the available tools,
+resource allowances, and inherited work. The public site lets readers inspect
+every published proof and the conditions that produced it.
 
-Propbench tests the model not only on its ability to prove incresingly difficult theorems in propositional logic, but also on its ability to do so using the fewest possible lines of proof. True, it is possible to construct an algorithm that would prove *any* propositional logic theorem using these rules--/prover/prover.js is exactly this--but there is no way (that I am aware of) to construct an algorithm that would prove any theorem in *the fewest lines possible*.
+| Track | Contestant capabilities | What is measured |
+|---|---|---|
+| **Unaided** | One fresh session per theorem; no external computation, tools, scripts, or verifier feedback | The final proof constructed by the model |
+| **Frontier** | Isolated shell, scripts, custom solvers, repeated validation, and delegation | The shortest valid proof captured within the allowance |
 
-The elo calculation is such that any valid proof wins over no proof, but if we are comparing two valid proofs, the shorter one wins. 
+Frontier **fresh** starts without prior artifacts. Frontier **cumulative**
+inherits an explicit, hashed snapshot and receives an additional allowance.
+These are separate experimental conditions.
 
-PropBench is saturation proof because (1) it is trivial to generate significantly more difficult theorems by adjusting a few variables once a difficulty level is saturated; (2) even when a difficulty level is "saturated" in the sense that LLMs can reliably prove it, no one knows how many lines the most efficient proof of a difficult theorem would require. As an example, I was able to prove a theorem in 11 lines that took prover.js 246. 
+New live runs use **native Codex subscription authentication only**. There is no
+API-key or Claude fallback. The public website is read-only; it has no model
+access or endpoints for executing commands.
 
+## Read the experiment
 
-I also suspect doing RLVR on this would be fruitful!
+- [Public results explorer](publication/index.html) — portable static website;
+  serve it over HTTP using the instructions below.
+- [Protocol and prespecified campaign](research/PROTOCOL.md)
+- [Dataset construction and semantic audit](research/DATASET.md)
+- [Limitations](research/LIMITATIONS.md)
+- [Reproduction instructions](research/REPRODUCIBILITY.md)
+- [Local runner guide](TRACKS.md) and [publication guide](PUBLISHING.md)
 
-## How It Works
+The frozen **v2** set contains 24 theorems. Its par lengths are known achievable
+references, not certified minima or difficulty guarantees. The semantic audit
+finds redundant premises in 12 items and premise-equivalent conclusions in five;
+these facts limit claims about difficulty. The public set may also be present in
+training data. PropBench does not claim human equivalence or general reasoning
+ability from these results.
 
-1. **Generate theorems** — The Rust CLI produces tautologies at configurable difficulty tiers (Baby → Mind), controlling variables, transformation passes, substitution depth, and bridge atoms.
-2. **Prompt LLMs** — The TypeScript harness sends each theorem to one or more models with the full set of 19 inference/equivalence rules, conditional proof, and indirect proof techniques.
-3. **Parse & validate** — LLM output is parsed into structured proof lines, written to temp files, and validated by the Rust CLI (`propbench validate`).
-4. **Score** — Valid proofs are scored by line count. Models are ranked using an Elo rating system with head-to-head matchups.
+## Score
 
-## Supported Models
+Premises are free. Submitted assumptions, derived lines, and subproof-closing
+lines count. The referee checks rule applications, dependencies, and scope.
+For a valid proof of length **L** against reference par **P**, loss is
+**L / (L + P)**; missing or invalid answers have loss 1. Lower is better.
+Always read the verified lengths and coverage alongside the aggregate.
+Interrupted infrastructure runs remain visible and are excluded from comparative
+ranking. Fixtures are never presented as live model results.
 
-- **Gemini** (direct API) — `gemini-2.5-pro`, `gemini-2.5-flash`, `gemini-3-flash-preview`, `gemini-3-pro-preview`, etc.
-- **OpenRouter** (any model) — `anthropic/claude-sonnet-4.5`, `openai/gpt-4o`, `deepseek/deepseek-r1`, etc.
+## Inspect the public site
 
-## Difficulty Tiers
+The website needs no build step, account, API, or third-party assets:
 
-| Tier | Variables | Passes | Transforms/Pass |
-|------|-----------|--------|-----------------|
-| Baby | 2 | 1 | 2 |
-| Easy | 3 | 1 | 5 |
-| Medium | 4 | 1 | 10 |
-| Hard | 5 | 1 | 15 |
-| Expert | 5 | 2 | 15 |
-| Nightmare | 5 | 3 | 15 |
-| Marathon | 6 | 5 | 20 |
-| Absurd | 7 | 10 | 20 |
-| Cosmic | 7 | 20 | 24 |
-| Mind | 7 | 50 | 50 |
-
-## Setup
-
-### Prerequisites
-
-- **Rust** — [rustup.rs](https://rustup.rs) (stable toolchain)
-- **Node.js 20+** and **npm**
-- At least one API key: `GEMINI_API_KEY` (Gemini direct) and/or `OPENROUTER_API_KEY` (all other models)
-
-### 1. Build the Rust binary
-
-```bash
-cargo build --release
+```sh
+python3 -m http.server 8769 --directory publication
 ```
 
-This produces `target/release/propbench`, which both the CLI harness and the GUI server depend on.
+Open `http://localhost:8769/`. Copy the contents of `publication/` to a static
+website directory, including all files in `data/`. Relative URLs support hosting
+under a subpath. See [PUBLISHING.md](PUBLISHING.md) before publishing an export.
 
-### 2. Install Node dependencies
+## Run locally
 
-```bash
-# Root (harness + shared tooling)
-npm install
+Requirements: Rust stable, Node 22 or later, and native Codex signed in through
+ChatGPT. Use the same Node version to install and run native dependencies.
+Frontier additionally requires Docker. The current native execution adapter is
+audited for a specific macOS Codex build; unsupported clients fail closed until
+their tool controls have been audited. See [TRACKS.md](TRACKS.md) for that boundary.
 
-# GUI (React + Express dev server)
-cd gui && npm install && cd ..
+```sh
+npm ci
+npm ci --prefix gui
+cargo build --release --locked
+codex login
+
+docker build -t propbench-frontier:2 -f tracks/Dockerfile .
+npm run tracks -- sets
+npm run tracks -- prepare --track unaided --set v2 --ids g1-2000001 --provider codex-subscription --model gpt-6-astra --effort xhigh --seconds 900
+npm run tracks -- run-unaided --run '/path/printed/by/prepare'
 ```
 
-### 3. Configure API keys
+The contestant image contains a **validation-only** executable. It excludes the
+theorem generator and planted-proof reconstruction code. Frontier v2 captures
+proofs and reusable artifacts before the deadline, verifies them independently,
+and retains valid improvements even when later working files regress. The
+owner's full CLI remains available for dataset construction and legacy work.
 
-```bash
-cp .env.example .env
+The local control panel runs with `npm run dev --prefix gui` at
+`http://localhost:3000/tracks`. It is a loopback-only owner console. Publish the
+static website, never this server.
+
+## Reproduce the campaign
+
+The September 25 design has four conditions over the same 24 items: two
+independent Unaided repetitions, fresh Frontier, and cumulative Frontier from
+each item's own fresh archive. Each singleton run gets 900 seconds; Frontier
+gets 128 tool calls. The manifest pins model, effort, client binary, evaluator,
+rulebook, referee, exact item selection, and dispatch order.
+
+```sh
+npm run campaign -- --dry-run
+npm run campaign -- --root track-runs/my-campaign --bundles ../propbench-contestants/my-campaign
+npm run publication:export -- track-runs/my-campaign publication/data/results.json
 ```
 
-Edit `.env` and fill in your keys:
+The controller stops new dispatch on infrastructure or quota failure and never
+silently repeats an uncertain attempt. `--resume` continues queued work under
+the original identities; it does not repair or rerun interrupted jobs. Export
+independently replays proofs and excludes private sessions and account data.
+Only recorded campaign artifacts establish what actually ran.
 
-```
-GEMINI_API_KEY=...
-OPENROUTER_API_KEY=...
-```
+## Checks
 
-### 4. Run the GUI
-
-```bash
-cd gui && npm run dev
-```
-
-Opens a web UI at `localhost:3000` with:
-
-- **Dashboard** — Elo rankings, difficulty breakdown, head-to-head matrix, latency comparison, failure analysis
-- **Benchmark Runner** — Configure models, theorem sets, token budgets, parallelism, cost limits; watch live progress via SSE
-- **Theorem Explorer** — Browse theorems by difficulty, view side-by-side proof comparisons across models
-
-## Project Structure
-
-```
-prop-bench/
-├── src/main.rs          # Rust CLI: generate theorems & validate proofs
-├── harness.ts           # Main orchestrator: LLM calls → parse → validate → score
-├── parser.ts            # LLM output → structured proof lines
-├── prompt.ts            # Prompt builder (rules, techniques, format spec)
-├── scorer.ts            # Elo rating system
-├── config.ts            # Shared types & difficulty tiers
-├── db.ts                # SQLite storage layer (results saved to propbench.db)
-├── models/              # LLM adapters (Gemini direct, OpenRouter)
-├── gui/                 # React + Express web interface
-└── benchmarks/          # User-generated theorem sets
+```sh
+npm run typecheck
+npm run test:tracks
+npm run test:campaign
+npm run test:server
+npm run test:publication
+npm run build --prefix gui
+cargo test --locked
 ```
 
-The proof engine itself — formula parsing, the natural-deduction rule set,
-verification, and theorem generation — lives in
-[logic-core](https://github.com/dogaozden/logic-core), a separate crate shared
-with the [Logic Proof Trainer](https://github.com/dogaozden/logic-proof-trainer)
-app. Cargo fetches it automatically, so `git clone` followed by `cargo build`
-is all you need.
-## Theorem Generation Algorithm Simplified
+Physical sandbox tests require the built image and Docker. Native client
+compatibility additionally requires a real logged-in subscription canary;
+fixtures do not establish live tool isolation.
 
-(1) Pick a base argument form using one of the inference forms (1-8 in rules.md).
+## Source and license
 
-Looks like: 
-p ⊃ q
-p  /∴  q
-
-(2) Wrap it as a tautology.
-
-Looks like:
-[(p ⊃ q) . p] ⊃ q
-
-(3) Substitute atoms with compound formulas (if substitution_depth > 0).      
-                                                                                
-Replace each simple atom with a formula built from fresh atoms:               
-  p  →  (R . T)                                                                 
-  q  →  (S ∨ ~T) 
-
-Now it looks like:
-{[(R . T) ⊃ (S ∨ ~T)] · (R . T)} ⊃ (S ∨ ~T)
-
-(4) Apply equivalence rules (9-18 in rules.md) at random positions, in random directions, repeatedly. 
- Equivalence rules are selected randomly with weighted probability. Distribution is down-weighted (0.2) to keep theorem size more predictable. Tautology expansion is blocked entirely because it bloats formula size without adding much in terms of difficulty. 
-
-For example, apply Implication (rule 15) to the inner ⊃:
-(R . T) ⊃ (S ∨ ~T)  →  ~(R . T) ∨ (S ∨ ~T)
-Then DeMorgan (rule 10) on ~(R . T):
-  ~(R . T)  →  (~R ∨ ~T)
-
-Then Commutation (rule 11), Association (rule 12), more Implication,
-Contraposition... dozens of times across multiple passes.
-
-The formula becomes unrecognizable, but it's still the same tautology—every equivalence rule preserves truth by definition!
-
-(5) Output: A single formula the LLM must prove is a tautology, using the same 18 rules + CP/IP that were used to obfuscate it.
-
-See *generation_algorithm.md* for more details.
-
-## Hierarchy of brackets
-1. (P v Q)
-2. [(P v Q) . R]
-3. {[(P v Q) . R] ⊃ S}
-4. {{[(P v Q) . R] ⊃ S} . T} ⊃ A 
-  
-  And so on. Curly brackets are stacked on top of each other after we run out of parentheses and square brackets.
-
-### Screenshots
-
-Theorem Generation Screen:
-
-
-![PropBench Theorem Generation Algo Settings](./assets/gui_screenshot.png)
-
-Example Theorems:
-
-
-![Example Theorems](./assets/example_theorems.png)
+The [logic-core](https://github.com/dogaozden/logic-core) crate supplies formula
+parsing and natural-deduction rules and is pinned in Cargo. This repository is
+[MIT licensed](LICENSE); see [dataset provenance](research/DATASET.md) and
+[CITATION.cff](CITATION.cff). Historical Elo/API results use different protocols
+and remain separate; their overview is retained in
+[the legacy documentation](docs/legacy-harness.md).

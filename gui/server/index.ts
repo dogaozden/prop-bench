@@ -7,8 +7,8 @@ const __dirname2 = path.dirname(fileURLToPath(import.meta.url));
 dotenv.config({ path: path.resolve(__dirname2, "..", "..", ".env"), override: true });
 
 import express from "express";
-import cors from "cors";
 import { createRequire } from "node:module";
+import { assertLocalHost, localAccess } from "./local-access";
 
 // Ensure DB schema exists on server startup
 const require_ = createRequire(import.meta.url);
@@ -21,12 +21,15 @@ import theoremSetRoutes from "./routes/theoremSets";
 import benchmarkRoutes from "./routes/benchmark";
 import resultsRoutes from "./routes/results";
 import tierPresetsRoutes from "./routes/tierPresets";
+import tracksRoutes from "./routes/tracks";
 
 const app = express();
 const PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 3001;
+const HOST = process.env.HOST ?? "127.0.0.1";
+assertLocalHost(HOST);
 
 // Middleware
-app.use(cors());
+app.use(localAccess(PORT, Number(process.env.WEB_PORT ?? 3000)));
 app.use(express.json({ limit: "10mb" }));
 
 // Routes
@@ -36,12 +39,13 @@ app.use("/api/theorem-sets", theoremSetRoutes);
 app.use("/api/benchmark", benchmarkRoutes);
 app.use("/api/runs", resultsRoutes);
 app.use("/api/tier-presets", tierPresetsRoutes);
+app.use("/api/tracks", tracksRoutes);
 
 // Health check
 app.get("/api/health", (_req, res) => {
   res.json({ status: "ok" });
 });
 
-app.listen(PORT, () => {
-  console.log(`PropBench API server listening on http://localhost:${PORT}`);
+app.listen(PORT, HOST, () => {
+  console.log(`PropBench API server listening on http://${HOST}:${PORT}`);
 });

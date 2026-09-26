@@ -1,0 +1,16 @@
+{
+  "schema_version": "propbench-publication-v1",
+  "generated_at": "2026-09-26T04:57:56.113012Z",
+  "set": {
+    "version": "pending",
+    "hash": "pending",
+    "core_tag": "pending"
+  },
+  "evaluator": {
+    "scorer_version": "efficiency-v2",
+    "rulebook_sha256": null,
+    "validator_sha256": null
+  },
+  "items": [],
+  "runs": []
+}

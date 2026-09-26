@@ -1,5 +1,7 @@
 pub mod replay;
+#[cfg(feature = "owner-tools")]
 pub mod golf;
+pub mod validate;
 
 use logic_core::models::theorem::{DifficultySpec, Theorem};
 use logic_core::services::ServeAnalysis;

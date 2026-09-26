@@ -59,7 +59,10 @@ export interface TheoremRow {
 // Database path & singleton
 // ---------------------------------------------------------------------------
 
-export const DB_PATH = path.join(__dirname, "propbench.db");
+// Keep tests and isolated previews away from paid historical benchmark data.
+export const DB_PATH = process.env.PROPBENCH_DB_PATH
+  ? path.resolve(process.env.PROPBENCH_DB_PATH)
+  : path.join(__dirname, "propbench.db");
 
 let _db: Database.Database | null = null;
 

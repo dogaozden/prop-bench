@@ -8,6 +8,9 @@ dist/
 !**/prover.js
 *.js.map
 *.d.ts
+*.tsbuildinfo
+!publication/**/*.js
+!publication/**/*.mjs
 
 # Data
 benchmarks/
@@ -28,3 +31,5 @@ todo.md
 
 .cargo/
 
+# Versioned track run records (owner-side, never contestant input)
+track-runs/

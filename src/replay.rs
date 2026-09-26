@@ -27,6 +27,14 @@ pub enum ReplayError {
     InvalidLine { line_number: usize, message: String },
     PremiseInInput { line_number: usize },
     BadNumbering { line_number: usize, expected: usize },
+    BadDepth { line_number: usize, depth: usize, expected: usize },
+    BadSubproofRange {
+        line_number: usize,
+        start: usize,
+        end: usize,
+        expected_start: usize,
+        expected_end: usize,
+    },
     Incomplete,
 }
 
@@ -46,6 +54,18 @@ impl std::fmt::Display for ReplayError {
                 f,
                 "Line {}: input declared line {} but the next engine-assigned line number is {}",
                 line_number, line_number, expected
+            ),
+            ReplayError::BadDepth { line_number, depth, expected } => write!(
+                f,
+                "Line {}: input declared depth {} but the engine-derived depth is {}",
+                line_number, depth, expected
+            ),
+            ReplayError::BadSubproofRange {
+                line_number, start, end, expected_start, expected_end,
+            } => write!(
+                f,
+                "Line {}: input declared subproof range {}-{} but the engine-derived range is {}-{}",
+                line_number, start, end, expected_start, expected_end
             ),
             ReplayError::Incomplete => write!(
                 f,
@@ -67,6 +87,21 @@ impl std::fmt::Display for ReplayError {
 /// Fails fast: the first invalid/malformed line stops replay and is returned
 /// as the error.
 pub fn replay_proof(theorem: &Theorem, lines: &[ValidateInput]) -> Result<ReplayOk, ReplayError> {
+    replay_proof_with_protocol(theorem, lines, false)
+}
+
+/// Replay a proof while requiring submitted scope annotations to match scope
+/// derived by the proof engine. Legacy replay remains available above because
+/// historical scores accepted unverified `depth` and CP/IP range metadata.
+pub fn replay_proof_strict(theorem: &Theorem, lines: &[ValidateInput]) -> Result<ReplayOk, ReplayError> {
+    replay_proof_with_protocol(theorem, lines, true)
+}
+
+fn replay_proof_with_protocol(
+    theorem: &Theorem,
+    lines: &[ValidateInput],
+    strict_protocol: bool,
+) -> Result<ReplayOk, ReplayError> {
     let mut proof = Proof::new(theorem.clone());
 
     for input_line in lines {
@@ -101,11 +136,28 @@ pub fn replay_proof(theorem: &Theorem, lines: &[ValidateInput]) -> Result<Replay
             Justification::Assumption { technique } => {
                 proof.open_subproof(formula, *technique);
             }
-            Justification::SubproofConclusion { technique, .. } => {
+            Justification::SubproofConclusion { technique, subproof_start, subproof_end } => {
                 let closed = proof.close_subproof(formula.clone(), *technique).is_some();
                 if closed {
                     let last_idx = proof.lines.len() - 1;
                     let line = &proof.lines[last_idx];
+                    if strict_protocol {
+                        if let Justification::SubproofConclusion {
+                            subproof_start: expected_start,
+                            subproof_end: expected_end,
+                            ..
+                        } = &line.justification {
+                            if subproof_start != expected_start || subproof_end != expected_end {
+                                return Err(ReplayError::BadSubproofRange {
+                                    line_number: input_line.line_number,
+                                    start: *subproof_start,
+                                    end: *subproof_end,
+                                    expected_start: *expected_start,
+                                    expected_end: *expected_end,
+                                });
+                            }
+                        }
+                    }
                     let result = ProofVerifier::verify_line(line, &proof);
                     proof.lines[last_idx].is_valid = result.is_valid;
                     proof.lines[last_idx].validation_message = result.message.clone();
@@ -135,6 +187,18 @@ pub fn replay_proof(theorem: &Theorem, lines: &[ValidateInput]) -> Result<Replay
                         message: result.message.unwrap_or_else(|| "Invalid".to_string()),
                     });
                 }
+            }
+        }
+
+        if strict_protocol {
+            let engine_line = proof.get_line(input_line.line_number)
+                .expect("the replay operation just inserted this line");
+            if input_line.depth != engine_line.depth {
+                return Err(ReplayError::BadDepth {
+                    line_number: input_line.line_number,
+                    depth: input_line.depth,
+                    expected: engine_line.depth,
+                });
             }
         }
     }

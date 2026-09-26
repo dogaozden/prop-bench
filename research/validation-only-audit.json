@@ -1,0 +1,69 @@
+{
+  "schema": "propbench-validation-only-audit-v1",
+  "audited_at_utc": "2026-09-26T04:56:12.078123+00:00",
+  "scope": "independent host debug executable check; Docker release checked separately",
+  "binary_sha256": "0730caefe4c38baf6cea860593b5939e225f7ed6efeda2fdb82861355d3028b4",
+  "owner_binary_sha256": "4dd40a42e4e9033827720ebc1612e1c645ecd329f8831598496ecd66cea2544a",
+  "checks": [
+    {
+      "case": "valid_mp",
+      "owner_exit": 0,
+      "restricted_exit": 0,
+      "exact_parity": true,
+      "stdout": "{\n  \"valid\": true,\n  \"line_count\": 1,\n  \"errors\": []\n}"
+    },
+    {
+      "case": "invalid_formula",
+      "owner_exit": 0,
+      "restricted_exit": 0,
+      "exact_parity": true,
+      "stdout": "{\n  \"valid\": false,\n  \"line_count\": 0,\n  \"errors\": [\n    \"Line 3: The formula does not follow from the given premises using Modus Ponens\"\n  ]\n}"
+    },
+    {
+      "case": "wrong_depth",
+      "owner_exit": 0,
+      "restricted_exit": 0,
+      "exact_parity": true,
+      "stdout": "{\n  \"valid\": false,\n  \"line_count\": 0,\n  \"errors\": [\n    \"Line 3: input declared depth 1 but the engine-derived depth is 0\"\n  ]\n}"
+    },
+    {
+      "case": "wrong_number",
+      "owner_exit": 1,
+      "restricted_exit": 1,
+      "exact_parity": true,
+      "stdout": ""
+    },
+    {
+      "case": "missing_proof",
+      "owner_exit": 0,
+      "restricted_exit": 0,
+      "exact_parity": true,
+      "stdout": "{\n  \"valid\": false,\n  \"line_count\": 0,\n  \"errors\": [\n    \"Proof incomplete: conclusion not established at depth 0, or a subproof scope remains open\"\n  ]\n}"
+    },
+    {
+      "command": [
+        "golf",
+        "plant",
+        "--help"
+      ],
+      "exit_code": 2,
+      "rejected": true
+    },
+    {
+      "command": [
+        "generate",
+        "--help"
+      ],
+      "exit_code": 2,
+      "rejected": true
+    },
+    {
+      "command": [
+        "analyze",
+        "--help"
+      ],
+      "exit_code": 2,
+      "rejected": true
+    }
+  ]
+}

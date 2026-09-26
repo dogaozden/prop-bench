@@ -7,6 +7,7 @@ import { ThemeToggle } from "./components/ThemeToggle";
 const TheoremExplorer = React.lazy(() => import("./pages/TheoremExplorer"));
 const BenchmarkRunner = React.lazy(() => import("./pages/BenchmarkRunner"));
 const Leaderboard = React.lazy(() => import("./pages/Leaderboard"));
+const Tracks = React.lazy(() => import("./pages/Tracks"));
 
 function App() {
   return (
@@ -19,7 +20,7 @@ function App() {
           </div>
           <ul className="sidebar-nav">
             <li>
-              <NavLink to="/leaderboard">Leaderboard</NavLink>
+              <NavLink to="/tracks">Tracks</NavLink>
             </li>
             <li>
               <NavLink to="/" end>
@@ -30,7 +31,10 @@ function App() {
               <NavLink to="/theorems">Theorems</NavLink>
             </li>
             <li>
-              <NavLink to="/runner">Runner</NavLink>
+              <NavLink to="/runner">Legacy Runner</NavLink>
+            </li>
+            <li>
+              <NavLink to="/leaderboard">Legacy Leaderboard</NavLink>
             </li>
           </ul>
           <div className="sidebar-footer">
@@ -41,6 +45,7 @@ function App() {
           <Suspense fallback={<div className="loading">Loading...</div>}>
             <Routes>
               <Route path="/" element={<Dashboard />} />
+              <Route path="/tracks" element={<Tracks />} />
               <Route path="/theorems" element={<TheoremExplorer />} />
               <Route path="/runner" element={<BenchmarkRunner />} />
               <Route path="/leaderboard" element={<Leaderboard />} />

@@ -6,7 +6,24 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: dtolnay/rust-toolchain@stable
-      - run: cargo test
+      - run: cargo test --release --locked
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            gui/package-lock.json
+      - run: npm ci
+      - run: npm ci --prefix gui
+      - run: cargo build --release --locked
+      - run: docker build -t propbench-frontier:2 -f tracks/Dockerfile .
+      - run: npm run typecheck
+      - run: npm run test:tracks
+      - run: npm run test:campaign
+      - run: npm run test:server
+      - run: npm run test:publication
+      - run: npm run build --prefix gui
       - run: bash golf/tests/referee-e2e.sh
         env:
           GOLF_ALLOW_NET: "1"

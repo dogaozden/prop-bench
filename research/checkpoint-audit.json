@@ -1,0 +1,36 @@
+{
+  "schema": "propbench-checkpoint-independent-audit-v1",
+  "audited_at_utc": "2026-09-26T05:01:59.285924+00:00",
+  "scope": "source review and focused owner/fixture tests; not a live model or Docker canary",
+  "command": [
+    "node",
+    "--require",
+    "ts-node/register",
+    "--test",
+    "--test-name-pattern=subscription checkpoints retain|owner checkpoint verification failures|checkpoints require an active controller|cumulative checkpoints begin",
+    "tracks/frontier.test.ts",
+    "tracks/subscription-runner.test.ts"
+  ],
+  "test_summary": {
+    "tests": 4,
+    "passed": 4,
+    "failed": 0,
+    "skipped": 0
+  },
+  "accepted_findings": [
+    "shortest valid owner incumbent survives overwritten or deleted contestant proof",
+    "tool and journal inheritance uses latest safe pre-deadline owner snapshot",
+    "capture timing records positive remaining shared allowance",
+    "controller capability requires active lock and completed exec",
+    "late mutable proofs excluded",
+    "verifier failure forces interruption even if client catches tool error"
+  ],
+  "files": {
+    "tracks/frontier.ts": "04b58aa39968486fc2820237149d75e65e9f66a3f77e76bf7f6a185618f3346e",
+    "tracks/subscription-runner.ts": "1bfa2b4f0cf43dafacfcfa18a76f807af6367ce29cb09338bbd7c30cd03227eb",
+    "tracks/bridge.ts": "2c844faf175a616a13c1bddf450bb0d1824ec7f3d0deb761ff6a90ecedd09d5c",
+    "tracks/sandbox.ts": "e4a2192c982b406ff4b4c46d6913155f87f0c7f6f67803a1435b3e8aa819d5fc",
+    "tracks/frontier.test.ts": "33d729a39429592971d8ab965d6af97205dddc86fd98c83532a822bbb4ddd841",
+    "tracks/subscription-runner.test.ts": "17f36d08619234dca7a5b00171a82f54fedfacbb0453d4c786ba19064ab7ee99"
+  }
+}

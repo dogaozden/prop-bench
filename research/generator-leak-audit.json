@@ -1,0 +1,36 @@
+{
+  "schema": "propbench-generator-leak-audit-v1",
+  "item_id": "g1-2000001",
+  "validator_sha256": "4dd40a42e4e9033827720ebc1612e1c645ecd329f8831598496ecd66cea2544a",
+  "command": [
+    "propbench",
+    "golf",
+    "plant",
+    "--count",
+    "1",
+    "--seed",
+    "2000001",
+    "--band",
+    "1",
+    "--subproofs",
+    "1",
+    "--passes",
+    "2",
+    "--max-seeds",
+    "1",
+    "--out-set",
+    "TEMP/set",
+    "--out-key",
+    "TEMP/key"
+  ],
+  "returncode": 0,
+  "theorem_regenerated": true,
+  "proof_regenerated": true,
+  "theorem_byte_identical": true,
+  "strict_verdict": {
+    "valid": true,
+    "line_count": 13,
+    "errors": []
+  },
+  "elapsed_seconds": 138.07487062500002
+}

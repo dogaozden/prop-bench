@@ -15,5 +15,5 @@
     "sourceMap": true
   },
   "include": ["./**/*.ts"],
-  "exclude": ["node_modules", "dist", "gui"]
+  "exclude": ["node_modules", "dist", "gui", "track-runs"]
 }

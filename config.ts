@@ -150,6 +150,8 @@ export function difficultyRange(
   difficulty: Difficulty
 ): { min: number; max: number } {
   switch (difficulty) {
+    case "Baby":
+      return { min: 1, max: 1 };
     case "Easy":
       return { min: 1, max: 25 };
     case "Medium":

@@ -1,0 +1,69 @@
+{
+  "schema": "propbench-validation-runtime-independent-audit-v1",
+  "audited_at_utc": "2026-09-26T05:03:19.889137+00:00",
+  "image_id": "sha256:711a221ecfe9e27b8d52f6f278a85dcbde9bea80a8bf2eb9d17d419e4d013a5e",
+  "architecture": "arm64",
+  "scope": "direct immutable Docker image execution; no model calls",
+  "checks": [
+    {
+      "case": "valid_mp",
+      "owner_exit": 0,
+      "image_exit": 0,
+      "exact_parity": true
+    },
+    {
+      "case": "invalid_formula",
+      "owner_exit": 0,
+      "image_exit": 0,
+      "exact_parity": true
+    },
+    {
+      "case": "wrong_depth",
+      "owner_exit": 0,
+      "image_exit": 0,
+      "exact_parity": true
+    },
+    {
+      "case": "wrong_number",
+      "owner_exit": 1,
+      "image_exit": 1,
+      "exact_parity": true
+    },
+    {
+      "case": "missing_proof",
+      "owner_exit": 0,
+      "image_exit": 0,
+      "exact_parity": true
+    },
+    {
+      "direct_command": [
+        "/opt/propbench/validator",
+        "golf",
+        "plant",
+        "--help"
+      ],
+      "exit_code": 2,
+      "rejected": true
+    },
+    {
+      "direct_command": [
+        "/opt/propbench/validator",
+        "generate",
+        "--help"
+      ],
+      "exit_code": 2,
+      "rejected": true
+    },
+    {
+      "direct_command": [
+        "/opt/propbench/validator",
+        "analyze",
+        "--help"
+      ],
+      "exit_code": 2,
+      "rejected": true
+    }
+  ],
+  "root_source_absence_and_binary_hash": "ABSENT /build\nABSENT /usr/local/cargo\nABSENT /root/.cargo\n929c320a0f029b5794f9a6ec94b6084ef70bdc65b998469cb3952318de99bee6  /opt/propbench/validator",
+  "forbidden_generator_string_matches": []
+}
