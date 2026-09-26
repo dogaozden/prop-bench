@@ -1,7 +1,7 @@
 //! File and JSON adapter shared by the owner CLI and the contestant validator.
 //! Proof validity and line counts remain exclusively defined by `replay`.
 
-use crate::replay::{replay_proof, replay_proof_strict, ReplayError, ValidateInput};
+use crate::replay::{replay_proof, replay_proof_strict, reject_multibyte_formula_whitespace, ReplayError, ValidateInput};
 use crate::BenchTheorem;
 use logic_core::models::{theorem::{Difficulty, Theorem}, Formula};
 use serde::Serialize;
@@ -20,6 +20,16 @@ pub fn cmd_validate(theorem_path: &PathBuf, proof_path: &PathBuf, strict_protoco
         .map_err(|e| format!("Failed to read theorem file: {}", e))?;
     let bench_theorem: BenchTheorem = serde_json::from_str(&theorem_json)
         .map_err(|e| format!("Failed to parse theorem JSON: {}", e))?;
+
+    // Theorems are parsed before replay, so guard that input boundary too.
+    if strict_protocol {
+        for (index, premise) in bench_theorem.premises.iter().enumerate() {
+            reject_multibyte_formula_whitespace(premise)
+                .map_err(|error| format!("Invalid premise {}: {}", index + 1, error))?;
+        }
+        reject_multibyte_formula_whitespace(&bench_theorem.conclusion)
+            .map_err(|error| format!("Invalid conclusion: {}", error))?;
+    }
 
     // Parse theorem formulas
     let premises: Vec<Formula> = bench_theorem.premises.iter()

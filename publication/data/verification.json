@@ -1,0 +1,40 @@
+{
+  "schema_version": "propbench-publication-verification-v1",
+  "verified": true,
+  "results_sha256": "f2415cf98ee232df23ce50e4426b25ba55816074ffafa78019f39f6b3977b7f9",
+  "externally_pinned_results": false,
+  "campaign_id": "5b02fde5-91a6-4c8d-923b-956fee47bc57",
+  "campaign_status": "interrupted",
+  "census_complete": false,
+  "planned_jobs": 96,
+  "recorded_runs": 11,
+  "completed_runs": 8,
+  "interrupted_runs": 3,
+  "independently_replayed_proofs": 17,
+  "independently_replayed_incumbents": 11,
+  "independently_replayed_checkpoint_proofs": 6,
+  "frontier_runs_with_improvement_sequences": 5,
+  "frontier_runs_without_improvement_sequences": 0,
+  "job_counts": {
+    "pending": 0,
+    "queued": 84,
+    "preparing": 0,
+    "prepared": 0,
+    "running": 0,
+    "complete": 8,
+    "interrupted": 4
+  },
+  "referee": {
+    "local_sha256": "6ccb396ba673eb2adb960c26745a8b60d744e6851a116073ba92d8a1974fd421",
+    "original_sha256": "a1970b5d5f467f68d17efff48be407938f6dd027833eaa1e4a01a1e97c81a806",
+    "exact_binary_match": false,
+    "comparison": "strict proof replay with a different binary; platform/build identity is not claimed"
+  },
+  "limitations": [
+    "Checks public metadata consistency and proof validity; it does not authenticate provider execution or hidden tool isolation.",
+    "Snapshot inventories bind lineage metadata; unpublished tool/journal bytes are not independently verified.",
+    "Checkpoint times and execution order are checked as owner-recorded metadata, not authenticated measurements.",
+    "Without an externally trusted results hash, a consistently rewritten bundle is not cryptographically authenticated.",
+    "The campaign is incomplete; verified partial evidence is not a completed census."
+  ]
+}

@@ -10,6 +10,7 @@ import * as sandbox from "./sandbox";
 import * as core from "./core";
 import { runSubscription } from "./subscription-runner";
 import type { SubscriptionSessionResult } from "./subscription-types";
+import { CodexProcessCleanupError } from "./codex-process";
 
 const validator = path.join(PROJECT_ROOT, "target/release/propbench");
 const proof = JSON.stringify([{ line_number: 3, formula: "Q", justification: "MP 1,2", depth: 0 }]);
@@ -271,4 +272,57 @@ test("finalization drains a delegated execution and rejects queued work after th
     assert.equal(fs.existsSync(path.join(ctx.dir, "execution.lock")), false);
     assert.equal(readJson<any>(path.join(ctx.dir, "tool-events/000003.json")).error, "Subscription run is closed");
   } finally { fs.rmSync(root, { recursive: true, force: true }); }
+});
+
+test("owner rejection receipts charge the shared allowance without execution or delegation",async t=>{
+  const {root,options}=newRun();
+  try {
+    const bundle=path.join(root,"bundle");
+    const ctx=prepareFrontier({...options,root:path.join(root,"runs"),track:"frontier",mode:"fresh",subscription:{effort:"xhigh",max_tool_calls:4}},bundle);
+    t.mock.method(sandbox,"inspectRuntime",async()=>({backend:"docker",image_id:"sha256:"+"a".repeat(64),architecture:"arm64"}));
+    let executions=0,sessions=0;
+    t.mock.method(bridge,"executeForRun",async()=>{executions++;return {stdout:"READY",stderr:"",exitCode:0};});
+    const report=await runSubscription(ctx,{validator,sessionClient:async session=>{
+      sessions++;
+      assert.ok(session.tools?.reject);
+      const malformed=[
+        {tool:"exec" as const,arguments:{command:["echo","READY"],timeout:10},native_call_id:"extra-timeout"},
+        {tool:"delegate" as const,arguments:{task:5},native_call_id:"invalid-task"},
+        {tool:"exec" as const,arguments:null,native_call_id:"nonobject"},
+      ];
+      for(const input of malformed){const rejected:any=await session.tools.reject(input);assert.equal(rejected.error.code,"invalid_tool_arguments");assert.ok(rejected.error.message.length<200);}
+      assert.equal(executions,0);assert.equal(sessions,1);
+      await session.tools.exec(["echo","READY"]);
+      await assert.rejects(session.tools.reject(malformed[0]),/tool allowance exhausted/);
+      return result;
+    }});
+    assert.equal(report.evaluation_status,"complete");assert.equal(executions,1);assert.equal(sessions,1);
+    assert.equal(readJson<any>(path.join(ctx.dir,"subscription.json")).tool_calls,4);
+    const files=fs.readdirSync(path.join(ctx.dir,"tool-events")).sort();assert.equal(files.length,4);
+    const receipt=readJson<any>(path.join(ctx.dir,"tool-events",files[0]));
+    assert.equal(receipt.outcome,"input_rejected");assert.equal(receipt.native_call_id,"extra-timeout");
+    assert.deepEqual(receipt.input,{command:["echo","READY"],timeout:10});assert.equal(receipt.result.error.code,"invalid_tool_arguments");
+    assert.ok(receipt.completed_at);assert.equal(readJson<any>(path.join(ctx.dir,"tool-events",files[1])).tool,"delegate");
+    assert.equal(readJson<any>(path.join(ctx.dir,"tool-events",files[2])).input,null);
+  } finally {fs.rmSync(root,{recursive:true,force:true});}
+});
+
+test("delegated native cleanup failure overrides a root budget outcome during tool drain",async t=>{
+  const {root,options}=newRun();
+  try {
+    const ctx=prepareFrontier({...options,root:path.join(root,"runs"),track:"frontier",mode:"fresh",subscription:{effort:"xhigh",max_tool_calls:4}},path.join(root,"bundle"));
+    t.mock.method(sandbox,"inspectRuntime",async()=>({backend:"docker",image_id:"sha256:"+"a".repeat(64),architecture:"arm64"}));
+    const report=await runSubscription(ctx,{validator,sessionClient:async session=>{
+      if(session.prompt==="child") {
+        await new Promise(resolve=>setTimeout(resolve,20));
+        throw new CodexProcessCleanupError("Codex process cleanup failed: termination of native process/group 4242 is unconfirmed");
+      }
+      void session.tools!.delegate("child").catch(()=>undefined);
+      throw new Error("Codex session wall-clock timeout");
+    }});
+    assert.equal(report.evaluation_status,"interrupted");
+    const state=readJson<any>(path.join(ctx.dir,"subscription.json"));
+    assert.equal(state.finished_reason,"owner_error");assert.match(state.error,/cleanup failed.*unconfirmed/);
+    assert.equal(readJson<any>(path.join(ctx.dir,"sessions/000002.json")).dispatch_state,"uncertain");
+  } finally {fs.rmSync(root,{recursive:true,force:true});}
 });

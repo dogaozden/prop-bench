@@ -18,7 +18,7 @@ RUN test ! -e src/main.rs && test ! -e src/golf.rs \
 
 FROM debian:bookworm-slim@sha256:3783cc01769c7b2b1b83a5c5ad96c815348e28ed7da68e2e3687004faa906251
 
-LABEL org.propbench.frontier-runtime="2"
+LABEL org.propbench.frontier-runtime="3"
 
 # The owner builds this image explicitly. Runtime execution always uses
 # --pull=never and the immutable image ID obtained from local inspection.

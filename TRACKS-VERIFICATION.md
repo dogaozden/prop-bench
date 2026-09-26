@@ -224,3 +224,28 @@ items in four conditions, matched 900-second allowances, requested Astra xhigh,
 128 Frontier tool calls, with exact source/runtime identities in the campaign
 manifest. Completion and outcomes must come from that manifest/state and the
 independently replayed publication export, not from this pre-campaign acceptance.
+
+## September 25: repaired runtime and retained pilot
+
+The first 96-job campaign stopped after eight completions and four interruptions;
+84 jobs were never dispatched. Three malformed allowed-tool calls were treated
+as fatal protocol violations, and a deadline cleanup signal raised an unhandled
+EPERM error. The pilot, original artifacts and explicit recovery receipts are
+preserved; it is not a completed census. The public archive contains 17
+independently replayed final or checkpoint proof artifacts.
+
+Allowed-tool argument errors now return a charged owner rejection without
+execution. Capability and session violations remain fatal. Cleanup requires
+confirmed process-group absence and stream closure, preserves infrastructure
+errors and uses bounded termination. Two live native canaries verified recovery
+from malformed exec input and deadline cleanup with two native sessions and a
+Docker execution. Neither left owned processes or containers behind. EPERM
+itself was covered by a simulated denied-signal regression, not reproduced
+in the physical canary. See the sanitized native repair audit.
+
+Post-repair checks: 110 track tests with real runtime-3 Docker, 51 script tests,
+four server tests and 15 public-site tests passed with no failures or skips.
+The full Rust release suite passed all 33 integration tests. Root typecheck and
+GUI production build passed. Linux Cargo hardlink handling and the Node 22
+legacy test fixture were separately repaired after the initial CI failure.
+The new full campaign remains pending at this acceptance point.

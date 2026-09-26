@@ -75,6 +75,17 @@ impl std::fmt::Display for ReplayError {
     }
 }
 
+/// The pinned logic-core parser advances whitespace by one byte. Multibyte
+/// whitespace can therefore panic at a UTF-8 boundary instead of returning a
+/// parse error. Guard strict inputs until that dependency is safely upgraded;
+/// Unicode logical operators remain supported, and no formula is normalized.
+pub(crate) fn reject_multibyte_formula_whitespace(input: &str) -> Result<(), String> {
+    if input.chars().any(|c| c.is_whitespace() && !c.is_ascii()) {
+        return Err("Non-ASCII whitespace is not supported in strict formulas; use ASCII spaces".to_string());
+    }
+    Ok(())
+}
+
 // ─── Replay ──────────────────────────────────────────────────────────────────
 
 /// Replay a proof's input lines against `theorem` and report validity + the
@@ -105,6 +116,11 @@ fn replay_proof_with_protocol(
     let mut proof = Proof::new(theorem.clone());
 
     for input_line in lines {
+        if strict_protocol {
+            reject_multibyte_formula_whitespace(&input_line.formula).map_err(|message| {
+                ReplayError::Parse(format!("Line {}: {}", input_line.line_number, message))
+            })?;
+        }
         let formula = Formula::parse(&input_line.formula).map_err(|e| {
             ReplayError::Parse(format!(
                 "Line {}: Invalid formula '{}': {}",

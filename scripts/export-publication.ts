@@ -10,6 +10,31 @@ const safeId = (value: unknown): string => {
   return value;
 };
 
+function publicSnapshot(runDir: string, final: boolean): Json | null {
+  const root=path.join(runDir,"archives");
+  if(!fs.existsSync(root))return null;
+  const names=fs.readdirSync(root).filter(name=>/^\d{6}$/.test(name)).sort();
+  if(!names.length || (final && names.length<2))return null;
+  const receipt=readJson<Json>(path.join(root,final?names[names.length-1]:names[0],"RECEIPT.json"));
+  if(receipt.trigger!==(final?"import":"initial"))throw new Error("Unexpected archive trigger");
+  const snapshot=receipt.snapshot;
+  const entries=snapshot.entries.map((entry:Json)=>{
+    if(typeof entry.path!=="string" || entry.path.includes("\\") || entry.path.split("/").some((part:string)=>!part || part==="." || part==="..") ||
+      !/^(?:proofs(?:\/.*)?|tools(?:\/.*)?|METHODS\.md|LOG\.md|DEBRIEF\.md)$/.test(entry.path) ||
+      !["file","directory"].includes(entry.kind) || !Number.isSafeInteger(entry.mode))throw new Error("Unsafe public snapshot entry");
+    if(entry.kind==="file" && (!Number.isSafeInteger(entry.bytes) || entry.bytes<0 || !digest(entry.sha256)))throw new Error("Invalid snapshot file identity");
+    return {path:entry.path,kind:entry.kind,mode:entry.mode,...(entry.kind==="file"?{bytes:entry.bytes,sha256:entry.sha256}:{})};
+  });
+  const clean={schema_version:"propbench-frontier-snapshot-v1",entries};
+  if(snapshot.schema_version!==clean.schema_version || sha256(canonical(clean))!==snapshot.digest)throw new Error("Snapshot inventory hash differs");
+  return {...clean,digest:snapshot.digest};
+}
+
+function publicBytes(file:string, bytes:Buffer):void {
+  fs.mkdirSync(path.dirname(file),{recursive:true,mode:0o755});
+  fs.writeFileSync(file,bytes,{mode:0o644});fs.chmodSync(file,0o644);
+}
+
 /** Deliberate allowlist: never serialize native events, prompts, paths or account data. */
 export async function publicRun(runDir: string, campaign: {id: string; condition: string; seedRunId?: string}): Promise<Json> {
   const ctx=loadRun(runDir);
@@ -22,13 +47,37 @@ export async function publicRun(runDir: string, campaign: {id: string; condition
   for(const item of report.items) {
     const record:Json={id:safeId(item.id),status:item.status,line_count:item.line_count,par:item.par,loss:item.loss};
     if(item.status==="valid") {
-      const proof=parseProof(readRegularFile(path.join(ctx.dir,"submissions",item.id+".json")).toString("utf8"));
+      const bytes=readRegularFile(path.join(ctx.dir,"submissions",item.id+".json"));
+      const proof=parseProof(bytes.toString("utf8"));
       const theorem=ctx.set.items.find(candidate=>candidate.id===item.id)!.theorem;
       const verdict=await validateCandidate(path.join(ctx.dir,"referee/validator"),theorem,proof);
       if(verdict.status!=="valid" || verdict.line_count!==item.line_count)throw new Error("Independent publication replay disagrees");
       record.proof=proof;record.proof_sha256=sha256(canonical(proof));record.independently_replayed=true;
+      record.proof_file=`proofs/${safeId(ctx.config.run_id)}/${safeId(item.id)}.json`;record.proof_bytes_sha256=sha256(bytes);
     }
     items.push(record);
+  }
+  const improvements:Json[]=[];
+  if(ctx.config.track==="frontier")for(const item of ctx.set.items) {
+    const receipts=path.join(ctx.dir,"candidate-receipts",item.id);
+    if(!fs.existsSync(receipts))continue;
+    for(const name of fs.readdirSync(receipts).filter(name=>/^\d{6}\.json$/.test(name)).sort()) {
+      const receipt=readJson<Json>(path.join(receipts,name));
+      if(!receipt.accepted)continue;
+      if(receipt.theorem_id!==item.id || receipt.import_id+".json"!==name || !/^\d{6}$/.test(receipt.checkpoint?.checkpoint_id))throw new Error("Invalid accepted checkpoint identity");
+      const checkpoint=readJson<Json>(path.join(ctx.dir,"checkpoints",receipt.checkpoint.checkpoint_id+".json"));
+      const elapsed=checkpoint.capture_elapsed_ms/1000;
+      if(!Number.isFinite(elapsed) || elapsed<0 || elapsed>ctx.config.budget.wall_seconds || checkpoint.execution_command!==receipt.checkpoint.execution_command)throw new Error("Checkpoint capture falls outside its allowance");
+      const bytes=Buffer.from(receipt.proof_bytes_base64,"base64"),proof=parseProof(bytes.toString("utf8"));
+      if(sha256(bytes)!==receipt.proof_sha256)throw new Error("Accepted checkpoint byte hash differs");
+      const verdict=await validateCandidate(path.join(ctx.dir,"referee/validator"),item.theorem,proof);
+      if(verdict.status!=="valid" || verdict.line_count!==receipt.verdict.line_count)throw new Error("Accepted checkpoint fails independent replay");
+      improvements.push({item_id:item.id,import_id:receipt.import_id,checkpoint_id:receipt.checkpoint.checkpoint_id,
+        execution_command:checkpoint.execution_command,captured_elapsed_seconds:elapsed,line_count:verdict.line_count,
+        previous_line_count:receipt.incumbent_before.status==="valid"?receipt.incumbent_before.line_count:null,
+        proof,proof_sha256:sha256(canonical(proof)),proof_bytes_sha256:sha256(bytes),independently_replayed:true,
+        proof_file:`proofs/${safeId(ctx.config.run_id)}/checkpoints/${safeId(item.id)}-${receipt.import_id}.json`});
+    }
   }
   const toolCounts:Record<string,number>={};
   const toolsDir=path.join(ctx.dir,"tool-events");
@@ -48,6 +97,8 @@ export async function publicRun(runDir: string, campaign: {id: string; condition
     client_sessions:report.client_sessions,elapsed_seconds:report.elapsed_seconds,tool_counts:toolCounts,
     evaluator_hash:digest(c.evaluator_hash),regraded_by:digest(report.regraded_by),validator_sha256:digest(c.validator_sha256),
     rulebook_sha256:digest(c.rulebook_sha256),set_hash:digest(c.set_hash),starting_snapshot:digest(c.starting_snapshot),
+    set_version:c.set_version,core_tag:c.core_tag,
+    ...(c.track==="frontier"?{initial_snapshot:publicSnapshot(ctx.dir,false),final_snapshot:publicSnapshot(ctx.dir,true),improvements}:{}),
     runtime:report.runtime,items,
     outcome:state.status==="complete" ? "completed" : "interrupted; excluded from comparative ranking",
   };
@@ -71,7 +122,9 @@ export async function exportPublication(campaignRoot: string, outputFile: string
       max_tool_calls:job.max_tool_calls,status:progress?.status??"pending"};
     if(progress?.run_id)plan.run_id=safeId(progress.run_id);
     planned.push(plan);
-    if(!progress?.run_dir || !fs.existsSync(path.join(progress.run_dir,"subscription.json")))continue;
+    // Read one coherent state snapshot: a subscription may finish just after
+    // it was captured, but its run must wait for a terminal campaign receipt.
+    if(!["complete","interrupted"].includes(progress?.status) || !progress?.run_dir || !fs.existsSync(path.join(progress.run_dir,"subscription.json")))continue;
     const subscription=readJson<Json>(path.join(progress.run_dir,"subscription.json"));
     if(!subscription.completed_at || subscription.status==="running")continue;
     const seed=progress.inherited_from ? state.jobs[progress.inherited_from]?.run_id : undefined;
@@ -80,10 +133,21 @@ export async function exportPublication(campaignRoot: string, outputFile: string
       record.model!==manifest.model || record.subscription?.effort!==manifest.effort || record.subscription?.max_tool_calls!==job.max_tool_calls ||
       record.evaluator_hash!==manifest.identity.evaluator_hash || record.validator_sha256!==manifest.identity.validator_sha256 || record.rulebook_sha256!==manifest.identity.rulebook_sha256)throw new Error("Campaign job differs from sealed run");
     runs.push(record);
+    for(const item of record.items)if(item.status==="valid") {
+      const bytes=readRegularFile(path.join(progress.run_dir,"submissions",item.id+".json"));
+      if(sha256(bytes)!==item.proof_bytes_sha256)throw new Error("Proof changed during publication export");
+      publicBytes(path.join(path.dirname(outputFile),item.proof_file),bytes);
+    }
+    for(const event of record.improvements??[]) {
+      const receipt=readJson<Json>(path.join(progress.run_dir,"candidate-receipts",event.item_id,event.import_id+".json"));
+      const bytes=Buffer.from(receipt.proof_bytes_base64,"base64");
+      if(sha256(bytes)!==event.proof_bytes_sha256)throw new Error("Checkpoint changed during publication export");
+      publicBytes(path.join(path.dirname(outputFile),event.proof_file),bytes);
+    }
   }
   const output={
     schema_version:"propbench-publication-v1",generated_at:new Date().toISOString(),
-    set:{version:set.version,hash:set.hash,core_tag:set.core_tag},
+    set:{version:set.version,hash:set.hash,core_tag:set.core_tag,manifest_sha256:manifest.identity.set_manifest_sha256},
     evaluator:{scorer_version:"efficiency-v2",rulebook_sha256:digest(manifest.identity.rulebook_sha256),validator_sha256:digest(manifest.identity.validator_sha256)},
     campaign:{id:campaignId,created_at:manifest.created_at,model:safeId(manifest.model),effort:manifest.effort,
       client:{version:manifest.identity.runtime.version,sha256:digest(manifest.identity.runtime.sha256)},
@@ -96,12 +160,13 @@ export async function exportPublication(campaignRoot: string, outputFile: string
   };
   fs.mkdirSync(path.dirname(outputFile),{recursive:true});
   const theoremDir=path.join(path.dirname(outputFile),"theorems");fs.mkdirSync(theoremDir,{recursive:true});
-  for(const item of set.items)fs.writeFileSync(path.join(theoremDir,item.id+".json"),readRegularFile(path.join(PROJECT_ROOT,"golf/set/v2",item.id+".json")));
-  fs.writeFileSync(path.join(path.dirname(outputFile),"theorems/manifest.json"),readRegularFile(path.join(PROJECT_ROOT,"golf/set/v2/manifest.json")));
+  for(const item of set.items)publicBytes(path.join(theoremDir,item.id+".json"),readRegularFile(path.join(PROJECT_ROOT,"golf/set/v2",item.id+".json")));
+  publicBytes(path.join(path.dirname(outputFile),"theorems/manifest.json"),readRegularFile(path.join(PROJECT_ROOT,"golf/set/v2/manifest.json")));
   const rules=readRegularFile(path.join(PROJECT_ROOT,"rules.md"));
   if(sha256(rules)!==manifest.identity.rulebook_sha256)throw new Error("Rulebook differs from campaign; preserve its frozen version before export");
-  fs.writeFileSync(path.join(path.dirname(outputFile),"rules.md"),rules);
+  publicBytes(path.join(path.dirname(outputFile),"rules.md"),rules);
   writeJson(outputFile,output);
+  fs.chmodSync(outputFile,0o644);
   return output;
 }
 

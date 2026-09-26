@@ -21,6 +21,14 @@ class FakeChild extends EventEmitter {
   readonly stderr = new PassThrough();
   killed = false;
   closed = false;
+  constructor() {
+    super();
+    // A real ChildProcess keeps the event loop alive until it closes. Model
+    // that handle so the adapter's unref'd deadline can fire under Node 22.
+    // Bound the fake handle too, so a broken fixture cannot hang the suite.
+    const lifetime = setTimeout(() => {}, 10_000);
+    this.once("close", () => clearTimeout(lifetime));
+  }
   kill(): boolean {
     if (this.killed) return false;
     this.killed = true;

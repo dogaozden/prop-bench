@@ -47,6 +47,8 @@ const UUID = /^[a-f0-9]{8}-[a-f0-9]{4}-[1-8][a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-
 const MAX_RUN_GROUPS = 256;
 const MAX_INDEXED_RUNS = 1024;
 const MAX_GROUP_CHILDREN = 16;
+const MAX_CHECKPOINT_RECEIPTS_PER_ITEM = 1024;
+const CHECKPOINT_RECEIPT_NAME = /^\d{6}\.json$/;
 // New owner-console runs use the native Codex subscription. Fixtures remain a
 // deterministic local test path; historical Claude/external reports are read-only.
 const RUN_PROVIDERS = new Set(["codex-subscription", "fixture"]);
@@ -450,6 +452,43 @@ function attemptsProgress(job: TrackJob): { completed: number; generations: numb
   return { completed: Math.min(completed, total), generations, total };
 }
 
+function checkpointProgress(job: TrackJob): AnyRecord | null {
+  const ids: unknown = job.context.config.selected_ids;
+  if (!Array.isArray(ids) || ids.length === 0 || ids.some(id => typeof id !== "string" || !SAFE_ID.test(id))) return null;
+  const receiptRoot = path.join(job.context.dir, "candidate-receipts");
+  if (fs.existsSync(receiptRoot) && !fs.lstatSync(receiptRoot).isDirectory()) {
+    throw new Error("Checkpoint receipt root must be a real directory");
+  }
+  const theorems = ids.map((id: string) => {
+    let bestLines: number | null = null;
+    let acceptedImprovements = 0;
+    const itemDir = path.join(receiptRoot, id);
+    if (fs.existsSync(itemDir)) {
+      // These immutable owner receipts record verifier results. Read only the
+      // accepted checkpoint records; neither candidates nor live submissions
+      // are graded by a status request.
+      if (!fs.lstatSync(itemDir).isDirectory()) throw new Error("Checkpoint receipt path must be a real directory");
+      const entries = fs.readdirSync(itemDir, { withFileTypes: true });
+      if (entries.length > MAX_CHECKPOINT_RECEIPTS_PER_ITEM) throw new Error("Checkpoint receipt directory exceeds its bounded limit");
+      for (const entry of entries) {
+        if (!CHECKPOINT_RECEIPT_NAME.test(entry.name) || !entry.isFile()) continue;
+        let receipt: AnyRecord;
+        try { receipt = readBoundedJson(path.join(itemDir, entry.name)); } catch { continue; }
+        const lines = receipt.verdict?.line_count;
+        if (receipt.schema_version !== "propbench-frontier-candidate-v1" ||
+            receipt.import_id !== entry.name.slice(0, -5) || receipt.theorem_id !== id ||
+            receipt.accepted !== true || receipt.verdict?.status !== "valid" ||
+            !Number.isSafeInteger(lines) || lines <= 0 ||
+            !isRecord(receipt.checkpoint) || !/^\d{6}$/.test(receipt.checkpoint.checkpoint_id)) continue;
+        acceptedImprovements++;
+        bestLines = bestLines === null ? lines : Math.min(bestLines, lines);
+      }
+    }
+    return { id, best_lines: bestLines, accepted_improvements: acceptedImprovements };
+  });
+  return { theorems, accepted_improvements: theorems.reduce((sum, item) => sum + item.accepted_improvements, 0) };
+}
+
 function statusPayload(job: TrackJob): AnyRecord {
   const progress = attemptsProgress(job);
   const completed = job.report && ["complete", "external-unmetered"].includes(job.report.evaluation_status)
@@ -489,6 +528,8 @@ function statusPayload(job: TrackJob): AnyRecord {
     finished_reason: persistedState?.finished_reason ?? null,
     handoff: job.handoff ?? null,
     report: job.report ? publicReport(job.report) : null,
+    checkpoint_progress: job.track === "frontier" && ["preparing", "prepared", "running"].includes(job.state)
+      ? checkpointProgress(job) : null,
   };
 }
 

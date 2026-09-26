@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import "../styles/tracks.css";
 
 type TrackKind = "unaided" | "frontier";
@@ -125,6 +125,11 @@ interface TrackStatus {
   finished_reason?: string | null;
   handoff: Handoff | null;
   report: TrackReport | null;
+  campaign_job?: string;
+  checkpoint_progress?: {
+    theorems: Array<{ id: string; best_lines: number | null; accepted_improvements: number }>;
+    accepted_improvements: number;
+  } | null;
 }
 
 interface LeaderboardEntry {
@@ -404,6 +409,31 @@ function stateLabel(state: TrackStatus["state"]): string {
   }
 }
 
+function activityIdentity(job: TrackStatus): { item: string; condition: string } {
+  const match = job.campaign_job?.match(/^(.*)--(unaided-[12]|frontier-(?:fresh|cumulative))$/);
+  return match
+    ? { item: match[1], condition: match[2].replace(/-/g, " ") }
+    : { item: job.runId.slice(0, 12), condition: `${job.track} · ${job.mode}` };
+}
+
+function activityOutcome(job: TrackStatus): string {
+  if (job.state === "complete") return job.report?.evaluation_status === "complete" ? "Complete · ranked" : "Complete · unranked";
+  if (job.state === "error") return job.campaign_job ? "Interrupted · unranked" : "Failed · unranked";
+  return stateLabel(job.state);
+}
+
+function checkpointSummary(job: TrackStatus): string | null {
+  const progress = job.checkpoint_progress;
+  if (!progress || progress.theorems.length === 0) return null;
+  const improvements = `${progress.accepted_improvements} accepted improvement${progress.accepted_improvements === 1 ? "" : "s"}`;
+  if (progress.theorems.length === 1) {
+    const best = progress.theorems[0].best_lines;
+    return `Best verified: ${best === null ? "pending" : `${best} lines`} · ${improvements}`;
+  }
+  const verified = progress.theorems.filter(item => item.best_lines !== null).length;
+  return `Best verified: ${verified}/${progress.theorems.length} theorems · ${improvements}`;
+}
+
 function errorText(error: unknown): string {
   return error instanceof Error ? error.message : String(error);
 }
@@ -439,6 +469,10 @@ export default function Tracks() {
   const [fixtureResponsesText, setFixtureResponsesText] = useState("");
   const [runId, setRunId] = useState("");
   const [status, setStatus] = useState<TrackStatus | null>(null);
+  const [activeJobs, setActiveJobs] = useState<TrackStatus[]>([]);
+  const [recentFinished, setRecentFinished] = useState<TrackStatus[]>([]);
+  const pendingJobs = useRef(new Map<string, TrackStatus>());
+  const [activityError, setActivityError] = useState("");
   const [selectedReport, setSelectedReport] = useState<TrackReport | null>(null);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
@@ -492,6 +526,8 @@ export default function Tracks() {
           if (typeof bootstrapToolCalls === "number" && Number.isSafeInteger(bootstrapToolCalls) && bootstrapToolCalls >= 0) setFrontierMaxToolCalls(bootstrapToolCalls);
         }
         setFrontierRuns(response.frontierRuns ?? []);
+        pendingJobs.current = new Map(response.active.map((job) => [job.runId, job]));
+        setActiveJobs(response.active);
         setRunId(response.active[0]?.runId ?? "");
         setStatus(response.active[0] ?? null);
         setSetName((current) => response.sets.some((set) => set.name === current) ? current : response.sets[0]?.name ?? "");
@@ -504,6 +540,45 @@ export default function Tracks() {
         if (!cancelled) setLoading(false);
       });
     return () => { cancelled = true; };
+  }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+    let timer: number | undefined;
+    const refreshActivity = async () => {
+      try {
+        const response = await requestJson<Bootstrap>("/api/tracks");
+        if (cancelled) return;
+        const current = new Map(response.active.map((job) => [job.runId, job]));
+        const disappeared = [...pendingJobs.current.values()].filter((job) => !current.has(job.runId));
+        const resolved = await Promise.allSettled(disappeared.map((job) => requestJson<TrackStatus>(`/api/tracks/status/${encodeURIComponent(job.runId)}`)));
+        if (cancelled) return;
+        const finished: TrackStatus[] = [];
+        resolved.forEach((result, index) => {
+          if (result.status === "fulfilled") {
+            const job = result.value;
+            if (job.state === "complete" || job.state === "error") finished.push(job);
+            else current.set(job.runId, job);
+          } else {
+            current.set(disappeared[index].runId, disappeared[index]);
+          }
+        });
+        pendingJobs.current = current;
+        setActiveJobs([...current.values()]);
+        setStatus((previous) => previous ? current.get(previous.runId) ?? finished.find((job) => job.runId === previous.runId) ?? previous : previous);
+        if (finished.length) setRecentFinished((previous) => [...finished, ...previous.filter((job) => !finished.some((newJob) => newJob.runId === job.runId))].slice(0, 12));
+        setReports(response.reports);
+        setLeaderboards(response.leaderboards);
+        setFrontierRuns(response.frontierRuns ?? []);
+        setActivityError("");
+      } catch (reason: unknown) {
+        if (!cancelled) setActivityError(errorText(reason));
+      } finally {
+        if (!cancelled) timer = window.setTimeout(() => { void refreshActivity(); }, 5000);
+      }
+    };
+    timer = window.setTimeout(() => { void refreshActivity(); }, 5000);
+    return () => { cancelled = true; if (timer !== undefined) window.clearTimeout(timer); };
   }, []);
 
   useEffect(() => {
@@ -707,6 +782,8 @@ export default function Tracks() {
   const statusUsesSubscription = !!status && (reportUsesSubscription(status.report) || isSubscriptionProvider(status.provider) || (status.report === null && usingSubscription));
   const activeAction = track === "unaided" ? startUnaided : startFrontier;
   const actionLabel = track === "unaided" ? "Start Unaided" : "Start Frontier";
+  const orderedActiveJobs = [...activeJobs].sort((a, b) => (a.campaign_job ?? a.runId).localeCompare(b.campaign_job ?? b.runId));
+  const runningJobs = activeJobs.filter((job) => job.state === "running").length;
 
   return (
     <div className="tracks-page">
@@ -735,6 +812,30 @@ export default function Tracks() {
           <strong>Status refresh delayed</strong>
           <span>{pollError}</span>
         </div>
+      )}
+
+      {(activeJobs.length > 0 || recentFinished.length > 0 || activityError) && (
+        <section className="activity-panel" aria-label="Live track activity">
+          <div className="section-heading">
+            <div><p className="tracks-eyebrow">Live activity</p><h3>Runs in progress</h3></div>
+            <span className="activity-summary">{runningJobs} running · {activeJobs.length - runningJobs} preparing/prepared · {recentFinished.length} recently finished</span>
+          </div>
+          {activityError && <p className="field-help" role="status">Activity refresh delayed: {activityError}</p>}
+          <div className="activity-list">
+            {[...orderedActiveJobs, ...recentFinished].map((job) => {
+              const identity = activityIdentity(job);
+              const progress = job.total > 0 ? Math.min(100, Math.max(0, (job.completed / job.total) * 100)) : 0;
+              return <button type="button" key={job.runId} className={`activity-row ${runId === job.runId ? "is-selected" : ""}`} onClick={() => { setRunId(job.runId); setStatus(job); }}>
+                <span className="activity-identity"><strong>{identity.item}</strong><small>{identity.condition}</small>{checkpointSummary(job) && <small className="activity-checkpoint">{checkpointSummary(job)}</small>}</span>
+                <span className="activity-progress"><span className="activity-progress-track"><span style={{ width: `${progress}%` }} /></span><small>{job.completed}/{job.total || "?"} items</small></span>
+                <span className="activity-usage"><strong>{typeof job.client_sessions === "number" ? job.client_sessions : "—"}</strong><small>sessions</small></span>
+                <span className="activity-usage"><strong>{typeof job.tool_calls === "number" ? job.tool_calls : "—"}</strong><small>tools</small></span>
+                <span className={`run-state run-state--${job.state}`}>{activityOutcome(job)}</span>
+              </button>;
+            })}
+          </div>
+          {recentFinished.length > 0 && <p className="activity-note">Recently finished rows are retained in this browser session. All available reports appear in History below.</p>}
+        </section>
       )}
 
       <section className="track-choice" aria-label="Choose a track">
@@ -938,6 +1039,7 @@ export default function Tracks() {
               <>
                 <div className="status-progress"><div className="status-progress-bar"><span style={{ width: `${status.total ? Math.min(100, (status.completed / status.total) * 100) : status.state === "complete" ? 100 : 0}%` }} /></div><span>{status.completed}/{status.total || "?"} items</span></div>
                 <div className="status-facts"><span><small>Track</small>{status.track}</span><span><small>Start</small>{status.mode}</span><span><small>{statusUsesSubscription ? "Client sessions used" : "Requests"}</small>{statusUsesSubscription ? formatClientSessions(status.client_sessions ?? status.report?.client_sessions) : formatGenerations(status.generations)}</span>{statusUsesSubscription && <><span><small>Tool calls used</small>{formatToolCalls(status.tool_calls)}</span><span><small>Tool calls allowed</small>{status.subscription?.max_tool_calls ?? "Unknown"}</span><span><small>Native effort</small>{status.subscription?.effort ?? "Unknown"}</span><span><small>Wall limit</small>{typeof status.budget?.wall_seconds === "number" ? `${status.budget.wall_seconds.toLocaleString()}s` : "Unknown"}</span></>}</div>
+                {status.checkpoint_progress && <div className="checkpoint-panel"><strong>Owner-verified checkpoints</strong>{status.checkpoint_progress.theorems.map(item => <span key={item.id}><small>{status.checkpoint_progress!.theorems.length > 1 ? item.id : "Best verified"}</small><b>{item.best_lines === null ? "Pending" : `${item.best_lines} lines`}</b><small>{item.accepted_improvements} accepted improvement{item.accepted_improvements === 1 ? "" : "s"}</small></span>)}</div>}
                 {status.error && <div className="inline-error">{status.error}</div>}
                 {status.handoff && (
                   <div className="handoff-panel">

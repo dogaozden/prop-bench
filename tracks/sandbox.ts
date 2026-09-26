@@ -10,8 +10,8 @@ import { performance } from "node:perf_hooks";
 const MAX_OUTPUT_BYTES = 8 * 1024 * 1024;
 const DEFAULT_TIMEOUT_SECONDS = 30;
 const MAX_TIMEOUT_SECONDS = 60 * 60;
-const DOCKER_IMAGE = "propbench-frontier:2";
-const DOCKER_IMAGE_LABEL = "org.propbench.frontier-runtime=2";
+const DOCKER_IMAGE = "propbench-frontier:3";
+const DOCKER_IMAGE_LABEL = "org.propbench.frontier-runtime=3";
 const IMAGE_ID = /^sha256:[0-9a-f]{64}$/;
 
 export interface SandboxRuntime {

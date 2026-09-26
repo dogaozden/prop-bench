@@ -73,7 +73,7 @@ npm ci --prefix gui
 cargo build --release --locked
 codex login
 
-docker build -t propbench-frontier:2 -f tracks/Dockerfile .
+docker build -t propbench-frontier:3 -f tracks/Dockerfile .
 npm run tracks -- sets
 npm run tracks -- prepare --track unaided --set v2 --ids g1-2000001 --provider codex-subscription --model gpt-6-astra --effort xhigh --seconds 900
 npm run tracks -- run-unaided --run '/path/printed/by/prepare'

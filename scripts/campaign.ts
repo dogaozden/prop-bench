@@ -117,9 +117,15 @@ export function buildManifest(root: string, bundles: string, validator: string, 
   metadata: { campaign_id: string; created_at: string } = { campaign_id: "DRY_RUN_UNASSIGNED", created_at: "DRY_RUN_UNASSIGNED" }): CampaignManifest {
   if (identity.set_version !== "v2" || identity.set_ids.length !== 24 || new Set(identity.set_ids).size !== 24) throw new Error("Expected 24 distinct v2 item IDs");
   const jobs: CampaignJobPlan[] = [];
-  // Fixed two-wave queue: first unaided replicate and fresh Frontier overlap.
-  for (const wave of [0, 1]) for (const item_id of identity.set_ids) {
-    for (const condition of CONDITIONS.slice(wave * 2, wave * 2 + 2)) {
+  const bands = ["g1", "g2", "g3"] as const;
+  const idsByBand = Object.fromEntries(bands.map(band =>
+    [band, identity.set_ids.filter(id => id.startsWith(band + "-"))])) as Record<typeof bands[number], string[]>;
+  if (bands.some(band => idsByBand[band].length !== 8)) throw new Error("Campaign requires eight frozen v2 items in each generation band");
+  // Prespecified round-robin band order; finish each item's four-arm block
+  // before the next item in the manifest. The cumulative job waits for fresh.
+  for (let index = 0; index < 8; index++) for (const band of bands) {
+    const item_id = idsByBand[band][index];
+    for (const condition of CONDITIONS) {
       const key = `${item_id}--${condition}`;
       jobs.push({ key, item_id, condition,
         dependency: condition === "frontier-cumulative" ? `${item_id}--frontier-fresh` : null,
@@ -361,8 +367,8 @@ function parseArgs(argv: string[]): CampaignOptions {
     if (key === "--resume" || key === "--dry-run") opts[key] = "true";
     else { if (!argv[i + 1] || argv[i + 1].startsWith("--")) throw new Error("Missing value for " + key); opts[key] = argv[++i]; }
   }
-  return { root: opts["--root"] ?? path.join(PROJECT_ROOT, "track-runs/publication-20260925"),
-    bundles: opts["--bundles"] ?? path.join(PROJECT_ROOT, "../propbench-contestants/publication-20260925"),
+  return { root: opts["--root"] ?? path.join(PROJECT_ROOT, "track-runs/publication-20260926-v2"),
+    bundles: opts["--bundles"] ?? path.join(PROJECT_ROOT, "../propbench-contestants/publication-20260926-v2"),
     validator: opts["--validator"], setDir: opts["--set"], maxInflight: opts["--max-inflight"] ? Number(opts["--max-inflight"]) : undefined,
     resume: !!opts["--resume"], dryRun: !!opts["--dry-run"] };
 }

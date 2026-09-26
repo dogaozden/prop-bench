@@ -1,0 +1,9 @@
+{
+  "id": "g2-2100087",
+  "premises": [
+    "(~~~S) . (~~~S)"
+  ],
+  "conclusion": "~R v {{(~S v P) . {~~[~S . (~S v P)]}} . {(P > Q) > {~R v {~S v {~~~~[~S . (~S v P)]}}}}}",
+  "difficulty": "Medium",
+  "difficulty_value": 35
+}

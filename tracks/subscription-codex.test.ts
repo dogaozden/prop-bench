@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { constrainedCatalog, restrictedConfig, subscriptionEnvironment, redact, CodexTurnGuard, assertIsolatedThread, assertRestrictedConfig, assertConstrainedCatalog } from "./subscription-codex";
+import { constrainedCatalog, restrictedConfig, subscriptionEnvironment, redact, CodexTurnGuard, assertIsolatedThread, assertRestrictedConfig, assertConstrainedCatalog, handleCodexToolCall } from "./subscription-codex";
 
 test("subscription credentials stay native while API and provider overrides are removed", () => {
   const source = { HOME:"/real/home", CODEX_HOME:"/real/codex", PATH:"/usr/bin", OPENROUTER_API_KEY:"secret", OPENAI_BASE_URL:"https://example.invalid", ANTHROPIC_AUTH_TOKEN:"secret", NODE_OPTIONS:"--import /tmp/inject.js" };
@@ -22,9 +22,9 @@ function guard(frontier=true) { const value = new CodexTurnGuard("thread",fronti
 
 test("native tool callbacks are bound to a unique call in the active thread and turn", () => {
   const valid = guard();
-  assert.deepEqual(valid.request(call),{command:["echo","READY"]});
+  assert.deepEqual(valid.request(call),{accepted:true,input:{command:["echo","READY"]}});
   assert.throws(()=>valid.request(call),/duplicate/);
-  for (const patch of [{threadId:"other"},{turnId:"old"},{turnId:undefined},{callId:undefined},{namespace:"mcp"},{arguments:{command:[1]}},{arguments:{command:["echo"],extra:true}},{tool:"shell"}]) {
+  for (const patch of [{threadId:"other"},{turnId:"old"},{turnId:undefined},{callId:undefined},{namespace:"mcp"},{tool:"shell"}]) {
     assert.throws(()=>guard().request({...call,params:{...call.params,...patch}}),/protocol violation/);
   }
   assert.throws(()=>guard(false).request(call),/protocol violation/);
@@ -122,4 +122,50 @@ test("streamed tool completions match an actual callback even when terminal hist
   for(const patch of [{id:"unobserved"},{id:"call",arguments:{command:["changed"]}},{id:"call",tool:"delegate",arguments:{task:"other"}}]) {
     assert.throws(()=>valid.event({method:"item/completed",params:{threadId:"thread",turnId:"turn",item:{type:"dynamicToolCall",...tool,...patch}}}),/unobserved or mismatched/);
   }
+});
+
+
+test("fake native stream rejects an extra timeout through the owner and continues with a valid exec",async()=>{
+  const g=guard();const receipts:unknown[]=[];const executed:string[][]=[];const calls:string[]=[];
+  const tools={exec:async(command:string[])=>{executed.push(command);return {stdout:"READY",exitCode:0};},delegate:async()=>{throw Error("must not delegate");},reject:async(rejection:unknown)=>{receipts.push(rejection);return {error:{code:"invalid_tool_arguments",message:"Only command is accepted. No command ran."}};}};
+  const invalid={...tool,arguments:{command:["echo","READY"],timeout:20}};
+  const started=(id:string,input:any)=>g.event({method:"item/started",params:{threadId:"thread",turnId:"turn",item:{id,type:"dynamicToolCall",...input}}});
+  const request=(id:string,input:any)=>({method:"item/tool/call",params:{threadId:"thread",turnId:"turn",callId:id,...input}});
+  const completed=(id:string,input:any,reply:any)=>g.event({method:"item/completed",params:{threadId:"thread",turnId:"turn",item:{id,type:"dynamicToolCall",...input,...reply}}});
+  started("bad",invalid);
+  const rejection=await handleCodexToolCall(g,request("bad",invalid),tools,name=>calls.push(name));
+  assert.equal(rejection.success,false);assert.equal(executed.length,0);assert.deepEqual(receipts,[{tool:"exec",arguments:invalid.arguments,native_call_id:"bad"}]);
+  assert.match(rejection.contentItems[0].text,/invalid_tool_arguments/);
+  completed("bad",invalid,rejection);
+  started("good",tool);
+  const success=await handleCodexToolCall(g,request("good",tool),tools,name=>calls.push(name));
+  assert.equal(success.success,true);completed("good",tool,success);
+  g.event({method:"turn/completed",params:{threadId:"thread",turn:{id:"turn",itemsView:"full",items:[{id:"bad",type:"dynamicToolCall",...invalid},{id:"good",type:"dynamicToolCall",...tool},{type:"agentMessage",text:"READY"}]}}});
+  assert.deepEqual(executed,[["echo","READY"]]);assert.deepEqual(calls,["exec","exec"]);
+});
+
+test("invalid allowed-tool arguments are owner-rejected, including delegate and non-object input",async()=>{
+  for(const [name,args] of [["delegate",{task:0}],["delegate",{task:"valid",extra:true}],["exec",null],["exec",[]],["exec","not json"],["exec",{command:[1]}],["exec",{command:[]}]] as const){
+    const g=guard();let rejects=0;let executes=0;
+    const event={...call,params:{...call.params,tool:name,arguments:args}};
+    const tools={exec:async()=>{executes++;},delegate:async()=>{executes++;},reject:async()=>{rejects++;return {error:{code:"invalid_tool_arguments"}};}};
+    const reply=await handleCodexToolCall(g,event,tools,()=>{});
+    assert.equal(reply.success,false);assert.equal(rejects,1);assert.equal(executes,0);
+    g.event({method:"item/completed",params:{threadId:"thread",turnId:"turn",item:{type:"dynamicToolCall",id:"call",namespace:null,tool:name,arguments:args}}});
+  }
+});
+
+test("malformed input cannot weaken identity, namespace, Unaided, or duplicate-call boundaries",async()=>{
+  const invalid={...tool,arguments:{command:["echo"],timeout:1}};let rejected=0;
+  const tools={exec:async()=>{},delegate:async()=>{},reject:async()=>{rejected++;return {error:{code:"invalid_tool_arguments"}};}};
+  for(const patch of [{namespace:"other"},{tool:"shell"},{threadId:"other"},{turnId:"other"}])await assert.rejects(handleCodexToolCall(guard(),{...call,params:{...call.params,...invalid,...patch}},tools,()=>{}),/protocol violation/);
+  await assert.rejects(handleCodexToolCall(guard(false),{...call,params:{...call.params,...invalid}},tools,()=>{}),/protocol violation/);
+  assert.equal(rejected,0);
+  const g=guard();g.event({method:"item/started",params:{threadId:"thread",turnId:"turn",item:{type:"dynamicToolCall",id:"call",...invalid}}});
+  await assert.rejects(handleCodexToolCall(g,call,tools,()=>{}),/mismatched started/);
+  await handleCodexToolCall(g,{...call,params:{...call.params,...invalid}},tools,()=>{});
+  await assert.rejects(handleCodexToolCall(g,{...call,params:{...call.params,...invalid}},tools,()=>{}),/duplicate/);
+  assert.equal(rejected,1);
+  assert.throws(()=>g.event({method:"item/completed",params:{threadId:"thread",turnId:"turn",item:{type:"dynamicToolCall",id:"call",...tool}}}),/mismatched streamed/);
+  assert.throws(()=>g.event({method:"turn/completed",params:{threadId:"thread",turn:{id:"turn",items:[{type:"dynamicToolCall",id:"call",...tool}]}}}),/mismatched terminal/);
 });

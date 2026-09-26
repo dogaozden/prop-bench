@@ -9,6 +9,7 @@ import { inspectRuntime, SandboxUnavailableError } from "./sandbox";
 import { theoremPrompt } from "./unaided";
 import { type AttemptRecord, type RunContext, type RunReport } from "./types";
 import type { SubscriptionSessionOptions, SubscriptionSessionResult, SubscriptionTools } from "./subscription-types";
+import { CodexProcessCleanupError } from "./codex-process";
 
 type SessionClient = (options: SubscriptionSessionOptions) => Promise<SubscriptionSessionResult>;
 interface State {
@@ -101,7 +102,7 @@ export async function runSubscription(ctx: RunContext, options: {
       // The native client never opens the owner's checkout or the contestant bundle.
       // Its only work access is the explicitly supplied Docker tool capability.
       const cwd = fs.mkdtempSync(path.join(os.tmpdir(), "propbench-client-"));
-      const tool = (name: "exec" | "delegate", input: unknown, work: () => Promise<unknown>): Promise<unknown> => {
+      const tool = (name: "exec" | "delegate", input: unknown, work: () => Promise<unknown>, rejection?: { native_call_id: string; outcome: "input_rejected" }): Promise<unknown> => {
         if (cancellation.signal.aborted) return Promise.reject(cancellation.signal.reason);
         if (!acceptingTools) return Promise.reject(new Error("Subscription run is closed"));
         remaining();
@@ -109,7 +110,7 @@ export async function runSubscription(ctx: RunContext, options: {
         const index = ++state.tool_calls;
         save();
         const file = path.join(ctx.dir, "tool-events", String(index).padStart(6, "0") + ".json");
-        const record = { session: number, tool: name, input, started_at: new Date().toISOString() };
+        const record = { session: number, tool: name, input, started_at: new Date().toISOString(), ...rejection };
         writeJsonExclusive(file, record);
         const pending = work().then(result => {
           writeJson(file, { ...record, completed_at: new Date().toISOString(), result });
@@ -123,6 +124,12 @@ export async function runSubscription(ctx: RunContext, options: {
         return pending;
       };
       const tools: SubscriptionTools | undefined = frontier ? {
+        reject: rejected => tool(rejected.tool, rejected.arguments, async () => ({ error: {
+          code: "invalid_tool_arguments",
+          message: rejected.tool === "exec"
+            ? "exec requires exactly {command: argv}, with a nonempty array of strings. Extra fields are not accepted. No command ran."
+            : "delegate requires exactly {task: text}, with nonempty text. Extra fields are not accepted. No session started.",
+        } }), { native_call_id: rejected.native_call_id, outcome: "input_rejected" }),
         exec: command => tool("exec", { command }, async () => {
           if (!Array.isArray(command) || !command.length || command.length > 256 || command.some(v => typeof v !== "string" || v.includes("\0") || v.length > 100000)) throw new Error("Invalid command argument array");
           const operation = execQueue.then(async () => {
@@ -162,6 +169,9 @@ export async function runSubscription(ctx: RunContext, options: {
           dispatch_state: "response_confirmed" });
         return result;
       } catch (error) {
+        // A delegated cleanup can fail after the root has already reached its
+        // budget. Preserve that infrastructure failure through the tool drain.
+        if (error instanceof CodexProcessCleanupError) failOwner(error);
         writeJson(receiptPath, { ...initial, completed_at: new Date().toISOString(), transport_error: message(error), dispatch_state: "uncertain" });
         throw error;
       } finally {

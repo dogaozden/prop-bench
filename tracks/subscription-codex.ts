@@ -4,8 +4,9 @@ import * as os from "node:os";
 import * as crypto from "node:crypto";
 import { spawn, type ChildProcessWithoutNullStreams } from "node:child_process";
 import { performance } from "node:perf_hooks";
-import type { SubscriptionSessionOptions, SubscriptionSessionResult } from "./subscription-types";
+import type { SubscriptionSessionOptions, SubscriptionSessionResult, SubscriptionTools, SubscriptionToolRejection } from "./subscription-types";
 import { assertAuditedCodexRuntime, resolveCodexRuntime } from "./codex-runtime";
+import { terminateCodexProcess } from "./codex-process";
 
 const DISABLED_FEATURES = [
   "apps", "auth_elicitation", "browser_use", "browser_use_external", "browser_use_full_cdp_access",
@@ -50,9 +51,12 @@ export function redact(value: unknown, secrets: readonly string[] = []): unknown
   return value;
 }
 
-/** Validate the native session boundary before executing any callback. */
+type CodexToolDecision = { accepted: true; input: Json } | { accepted: false; rejection: SubscriptionToolRejection };
+
+/** Capability/session violations are fatal; malformed input has no authority. */
 export class CodexTurnGuard {
   private turnId?: string;
+  private starts = new Map<string,string>();
   private calls = new Map<string,string>();
   private completed = false;
   constructor(private threadId: string, private frontier: boolean) {}
@@ -63,27 +67,39 @@ export class CodexTurnGuard {
   private session(params: Json, needsTurn = true) {
     if (params?.threadId !== this.threadId || (needsTurn && (!this.turnId || params.turnId !== this.turnId))) throw new Error("Codex protocol violation: wrong session or turn");
   }
-  private dynamic(call: Json): Json {
-    if (!this.frontier || call.namespace != null) throw new Error("Codex protocol violation: unexpected dynamic tool surface");
-    const input = typeof call.arguments === "string" ? JSON.parse(call.arguments) : call.arguments;
-    if (!input || Array.isArray(input) || typeof input !== "object" || Object.keys(input).length !== 1) throw new Error("Codex protocol violation: invalid tool arguments");
-    if (call.tool === "exec" && Array.isArray(input.command) && input.command.length > 0 && input.command.length <= 256 && input.command.every((arg: unknown) => typeof arg === "string" && !arg.includes("\0") && arg.length <= 100000)) return input;
-    if (call.tool === "delegate" && typeof input.task === "string" && input.task.trim() && input.task.length <= 100000) return input;
-    throw new Error(`Codex protocol violation: invalid dynamic tool ${call.tool}`);
+  private surface(call: Json) {
+    if (!this.frontier || call.namespace != null || !["exec","delegate"].includes(call.tool)) throw new Error("Codex protocol violation: unexpected dynamic tool surface");
+  }
+  private identity(call: Json): string {
+    this.surface(call);
+    // Compare raw inputs even when they are malformed. A later event cannot
+    // silently normalize, add, or remove fields from an already observed call.
+    return JSON.stringify([call.tool,call.arguments]);
+  }
+  private input(call: Json): Json | undefined {
+    let input: unknown = call.arguments;
+    if (typeof input === "string") { try { input = JSON.parse(input); } catch { return undefined; } }
+    if (!input || Array.isArray(input) || typeof input !== "object" || Object.keys(input).length !== 1) return undefined;
+    const args = input as Json;
+    if (call.tool === "exec" && Array.isArray(args.command) && args.command.length > 0 && args.command.length <= 256 && args.command.every((arg: unknown) => typeof arg === "string" && !arg.includes("\0") && arg.length <= 100000)) return args;
+    if (call.tool === "delegate" && typeof args.task === "string" && args.task.trim() && args.task.length <= 100000) return args;
+    return undefined;
   }
   private item(item: Json) {
-    if (item?.type === "dynamicToolCall") this.dynamic(item);
+    if (item?.type === "dynamicToolCall") this.surface(item);
     else if (!["userMessage","reasoning","agentMessage"].includes(item?.type)) throw new Error(`Codex protocol violation: unexpected item ${item?.type}`);
   }
-  request(event: Json): Json {
+  request(event: Json): CodexToolDecision {
     if (this.completed) throw new Error("Codex protocol violation: tool request after terminal event");
     if (event.method !== "item/tool/call") throw new Error(`Codex protocol violation: unexpected request ${event.method}`);
     const call = event.params;
     this.session(call);
-    const input = this.dynamic(call);
+    const identity = this.identity(call);
     if (typeof call.callId !== "string" || !call.callId || this.calls.has(call.callId)) throw new Error("Codex protocol violation: missing or duplicate tool call ID");
-    this.calls.set(call.callId,JSON.stringify([call.tool,input]));
-    return input;
+    if (this.starts.has(call.callId) && this.starts.get(call.callId) !== identity) throw new Error("Codex protocol violation: mismatched started tool call");
+    this.calls.set(call.callId,identity);
+    const input = this.input(call);
+    return input ? {accepted:true,input} : {accepted:false,rejection:{tool:call.tool,arguments:call.arguments,native_call_id:call.callId}};
   }
   event(event: Json) {
     const p = event.params;
@@ -96,7 +112,11 @@ export class CodexTurnGuard {
         this.item(p.item);
         if (p.item.type === "dynamicToolCall") {
           if (typeof p.item.id !== "string" || !p.item.id) throw new Error("Codex protocol violation: missing streamed tool call ID");
-          if (event.method === "item/completed" && this.calls.get(p.item.id) !== JSON.stringify([p.item.tool,this.dynamic(p.item)])) throw new Error("Codex protocol violation: unobserved or mismatched streamed tool call");
+          const identity = this.identity(p.item);
+          if (event.method === "item/started") {
+            if (this.starts.has(p.item.id) || (this.calls.has(p.item.id) && this.calls.get(p.item.id) !== identity)) throw new Error("Codex protocol violation: duplicate or mismatched started tool call");
+            this.starts.set(p.item.id,identity);
+          } else if (this.calls.get(p.item.id) !== identity) throw new Error("Codex protocol violation: unobserved or mismatched streamed tool call");
         }
       }
       else if (!["item/agentMessage/delta","item/reasoning/summaryTextDelta","item/reasoning/summaryPartAdded","item/reasoning/textDelta"].includes(event.method)) throw new Error(`Codex protocol violation: unexpected event ${event.method}`);
@@ -109,27 +129,29 @@ export class CodexTurnGuard {
       if (!Array.isArray(p.turn.items) || (p.turn.itemsView !== undefined && !["full","summary","notLoaded"].includes(p.turn.itemsView))) throw new Error("Codex protocol violation: invalid terminal items view");
       p.turn.items.forEach((item: Json) => this.item(item));
       for (const item of p.turn.items.filter((item: Json)=>item.type === "dynamicToolCall")) {
-        if (this.calls.get(item.id) !== JSON.stringify([item.tool,this.dynamic(item)])) throw new Error("Codex protocol violation: unobserved or mismatched terminal tool call");
+        if (this.calls.get(item.id) !== this.identity(item)) throw new Error("Codex protocol violation: unobserved or mismatched terminal tool call");
       }
       this.completed = true;
     } else if (event.method === "model/rerouted") throw new Error("Codex model rerouted; fallback forbidden");
   }
 }
 
-// Every native spawn is its own process group. Never signal the owner's group.
-function signalGroup(child: {pid?:number}, signal: NodeJS.Signals) {
-  if (!child.pid) return;
-  try { process.kill(-child.pid,signal); } catch (error) { if ((error as NodeJS.ErrnoException).code !== "ESRCH") throw error; }
+/** The production RPC callback, also exercised with fake native event streams. */
+export async function handleCodexToolCall(guard: CodexTurnGuard, event: Json, tools: SubscriptionTools, recordCall: (tool: string) => void) {
+  const decision = guard.request(event);
+  const name = event.params.tool;
+  recordCall(name);
+  let output: unknown;
+  if (!decision.accepted) {
+    if (!tools.reject) throw new Error("Codex owner rejection callback is required for malformed tool input");
+    output = await tools.reject(decision.rejection);
+  } else if (name === "exec") output = await tools.exec(decision.input.command);
+  else output = await tools.delegate(decision.input.task);
+  const text = JSON.stringify(output);
+  if (typeof text !== "string" || Buffer.byteLength(text) > 16 * 1024 * 1024) throw new Error("Codex tool output exceeds limit or is not serializable");
+  return {contentItems:[{type:"inputText",text}],success:decision.accepted};
 }
-async function reapGroup(child: {pid?:number}) {
-  if (!child.pid) return;
-  signalGroup(child,"SIGTERM");
-  for (let i=0;i<20;i++) {
-    try { process.kill(-child.pid,0); } catch (error) { if ((error as NodeJS.ErrnoException).code === "ESRCH") return; throw error; }
-    await new Promise(resolve=>setTimeout(resolve,50));
-  }
-  signalGroup(child,"SIGKILL");
-}
+
 function toml(value: unknown): string {
   if (typeof value === "object" && value && !Array.isArray(value)) return `{${Object.entries(value).map(([k,v]) => `${JSON.stringify(k)}=${toml(v)}`).join(",")}}`;
   return JSON.stringify(value);
@@ -205,13 +227,22 @@ async function command(executable: string, args: string[], cwd: string, env: Nod
   return new Promise((resolve, reject) => {
     const child = spawn(executable, args, { cwd, env, detached:true, stdio: ["ignore", "pipe", "pipe"] });
     let out = "", err = "", failure: Error | undefined;
-    let killTimer: NodeJS.Timeout | undefined;
-    const stop = (error: Error) => { failure ??= error; signalGroup(child,"SIGTERM"); killTimer ??= setTimeout(() => signalGroup(child,"SIGKILL"), 1000); };
+    let cleanup: Promise<void> | undefined;
+    const stop = (error: Error) => {
+      failure ??= error;
+      cleanup ??= terminateCodexProcess(child,()=>{});
+      // Cleanup errors reject this operation, never escape an event callback.
+      void cleanup.catch(error=>{clearTimeout(timer);reject(error);});
+    };
     const timer = setTimeout(() => stop(new Error("Codex initialization wall-clock timeout")), timeoutMs);
     child.stdout.on("data", chunk => { out += chunk; if (out.length > 8_000_000) stop(new Error("Codex initialization output limit")); });
     child.stderr.on("data", chunk => { err = (err + chunk).slice(-16000); });
     child.on("error", error => { failure ??= error; });
-    child.on("close", code => { clearTimeout(timer); clearTimeout(killTimer); void reapGroup(child).then(()=>{ if (failure) reject(failure); else if (code !== 0) reject(new Error(`Codex initialization failed: ${redact(err)}`)); else resolve(out); },reject); });
+    child.on("close", code => {
+      clearTimeout(timer);
+      cleanup ??= terminateCodexProcess(child,()=>{});
+      void cleanup.then(()=>{ if (failure) reject(failure); else if (code !== 0) reject(new Error(`Codex initialization failed: ${redact(err)}`)); else resolve(out); },reject);
+    });
   });
 }
 
@@ -221,8 +252,12 @@ class NativeRpc {
   private pending = new Map<number, { resolve: (value: any) => void; reject: (error: Error) => void }>();
   private buffer = "";
   private closed = false;
+  private readonly closedSignal: Promise<void>;
+  private markClosed!: () => void;
   private failure?: Error;
-  private killTimer?: NodeJS.Timeout;
+  private cleanup?: Promise<void>;
+  private resolveExit!: () => void;
+  private rejectExit!: (error: Error) => void;
   private timer: NodeJS.Timeout;
   readonly exited: Promise<void>;
   onEvent: (event: Json) => void = () => {};
@@ -230,13 +265,21 @@ class NativeRpc {
   onFailure: (error: Error) => void = () => {};
   constructor(executable: string, args: string[], cwd: string, env: NodeJS.ProcessEnv, timeoutMs: number, private record: (event: unknown) => void) {
     this.child = spawn(executable, args, { cwd, env, detached:true, stdio: ["pipe", "pipe", "pipe"] });
+    this.closedSignal = new Promise<void>(resolve=>{this.markClosed=resolve;});
     this.timer = setTimeout(() => this.abort(new Error("Codex session wall-clock timeout")), timeoutMs);
-    this.exited = new Promise(resolve => this.child.on("close", () => {
-      this.closed = true; clearTimeout(this.timer); clearTimeout(this.killTimer);
+    this.exited = new Promise<void>((resolve,reject)=>{this.resolveExit=resolve;this.rejectExit=reject;});
+    void this.exited.catch(()=>{});
+    this.child.on("spawn",()=>{
+      try {this.record({type:"native_process",pid:this.child.pid,process_group:this.child.pid});}
+      catch(error){this.abort(new Error(errorText(error)));}
+    });
+    this.child.on("close", () => {
+      this.closed = true; clearTimeout(this.timer);
+      this.markClosed();
       const error = this.failure ?? new Error("Codex app-server closed");
       for (const pending of this.pending.values()) pending.reject(error);
-      this.pending.clear(); this.onFailure(error); void reapGroup(this.child).catch(error=>this.onFailure(error)).finally(resolve);
-    }));
+      this.pending.clear(); this.onFailure(error); this.stop();
+    });
     this.child.on("error", error => this.abort(error));
     this.child.stdin.on("error", error => { if (!this.closed) this.abort(error); });
     this.child.stderr.on("data", chunk => { try { this.record({ type: "native_stderr", text: String(chunk).slice(0,32000) }); } catch (error) { this.abort(new Error(errorText(error))); } });
@@ -273,12 +316,36 @@ class NativeRpc {
     const id = ++this.sequence;
     return new Promise((resolve,reject) => { this.pending.set(id,{resolve,reject}); this.send({id,method,params}); });
   }
-  abort(error: Error) { this.failure ??= error; this.onFailure(this.failure); this.stop(); }
-  stop() {
-    if (this.closed) return;
-    signalGroup(this.child,"SIGTERM");
-    this.killTimer ??= setTimeout(() => signalGroup(this.child,"SIGKILL"), 1000);
+  abort(error: Error) {
+    this.failure ??= error;
+    for (const pending of this.pending.values()) pending.reject(this.failure);
+    this.pending.clear();
+    this.onFailure(this.failure);
+    this.stop();
   }
+  stop() {
+    if (this.cleanup) return;
+    clearTimeout(this.timer);
+    this.cleanup = terminateCodexProcess(this.child,this.record,undefined,1000,this.closedSignal);
+    void this.cleanup.then(this.resolveExit,error=>{
+      const failure = error instanceof Error ? error : new Error(errorText(error));
+      this.failure = failure;
+      for(const pending of this.pending.values())pending.reject(failure);
+      this.pending.clear();
+      this.onFailure(failure);
+      this.rejectExit(failure);
+    });
+  }
+
+  releaseStreams() {
+    // Only called after the bounded termination/drain result is recorded. A
+    // failed cleanup remains an infrastructure error with its owned PID/group.
+    this.child.stdout.removeAllListeners("data");
+    this.child.stderr.removeAllListeners("data");
+    this.child.stdin.destroy(); this.child.stdout.destroy(); this.child.stderr.destroy();
+    this.child.unref();
+  }
+
 }
 
 export async function runCodexSession(options: SubscriptionSessionOptions): Promise<SubscriptionSessionResult> {
@@ -371,16 +438,7 @@ export async function runCodexSession(options: SubscriptionSessionOptions): Prom
     const guard = new CodexTurnGuard(thread.thread.id,!!options.tools);
     rpc.onRequest = async event => {
       if (event.method !== "item/tool/call" || !options.tools) throw new Error(`Codex protocol violation: unexpected tool/request ${event.method}`);
-      const call = event.params;
-      const input = guard.request(event);
-      result.tool_calls.push(call.tool);
-      let output;
-      if (call.tool === "exec" && Array.isArray(input?.command) && Object.keys(input).length === 1) output = await options.tools.exec(input.command);
-      else if (call.tool === "delegate" && typeof input?.task === "string" && Object.keys(input).length === 1) output = await options.tools.delegate(input.task);
-      else throw new Error(`Codex protocol violation: invalid dynamic tool ${call.tool}`);
-      const text = JSON.stringify(output);
-      if (Buffer.byteLength(text) > 16 * 1024 * 1024) throw new Error("Codex tool output exceeds limit");
-      return {contentItems:[{type:"inputText",text}],success:true};
+      return handleCodexToolCall(guard,event,options.tools,name => result.tool_calls.push(name));
     };
     rpc.onEvent = event => {
       const p = event.params;
@@ -411,7 +469,7 @@ export async function runCodexSession(options: SubscriptionSessionOptions): Prom
     return result;
   } finally {
     options.signal?.removeEventListener("abort",onAbort);
-    if (rpc) { rpc.stop(); await rpc.exited; }
-    fs.closeSync(fd); fs.rmSync(work,{recursive:true,force:true});
+    try { if (rpc) { rpc.stop(); await rpc.exited; } }
+    finally { rpc?.releaseStreams(); fs.closeSync(fd); fs.rmSync(work,{recursive:true,force:true}); }
   }
 }

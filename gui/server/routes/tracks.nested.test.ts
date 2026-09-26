@@ -56,6 +56,36 @@ test("campaign run groups stay live without grading and appear only after comple
     assert.equal((await get("")).body.active.some((job: any) => job.runId === ctx.config.run_id), true);
     assert.equal(fs.existsSync(path.join(ctx.dir, "report.json")), false);
 
+    const frontierGroup = "r1--frontier-fresh";
+    fs.mkdirSync(path.join(runs, frontierGroup));
+    const frontier = prepareRun({ root: path.join(runs, frontierGroup), setDir: path.join(PROJECT_ROOT, "golf/set/rehearsal"), ids: ["r1"],
+      track: "frontier", mode: "fresh", provider: "codex-subscription", model: "gpt-6-astra", temperature: 0.2,
+      budget: { wall_seconds: 900, max_generations: 1, max_output_tokens: 8192, max_thinking_tokens: 8192 },
+      subscription: { effort: "xhigh", max_tool_calls: 128 }, validator: path.join(PROJECT_ROOT, "target/release/propbench") });
+    const receipts = path.join(frontier.dir, "candidate-receipts", "r1");
+    fs.mkdirSync(receipts, { recursive: true });
+    const receipt = (name: string, fields: Record<string, unknown>) => fs.writeFileSync(path.join(receipts, `${name}.json`), JSON.stringify({
+      schema_version: "propbench-frontier-candidate-v1", import_id: name, theorem_id: "r1", accepted: true,
+      verdict: { status: "valid", line_count: 9 }, checkpoint: { checkpoint_id: name, execution_command: 1, captured_at: new Date().toISOString() },
+      ...fields,
+    }));
+    receipt("000001", {});
+    receipt("000002", { verdict: { status: "valid", line_count: 7 } });
+    receipt("000003", { accepted: false, verdict: { status: "valid", line_count: 3 } });
+    receipt("000004", { verdict: { status: "invalid", line_count: 2 } });
+    receipt("000005", { verdict: { status: "valid", line_count: 1 }, checkpoint: undefined });
+    receipt("000006", { theorem_id: "wrong", verdict: { status: "valid", line_count: 1 } });
+    fs.writeFileSync(stateFile, JSON.stringify({ schema_version: "propbench-campaign-state-v1", jobs: {
+      [group]: { status: "running", run_id: ctx.config.run_id, run_dir: ctx.dir, started_at: ctx.config.created_at },
+      [frontierGroup]: { status: "running", run_id: frontier.config.run_id, run_dir: frontier.dir, started_at: frontier.config.created_at },
+    } }));
+    const frontierStatus = await get(`status/${frontier.config.run_id}`);
+    assert.equal(frontierStatus.status, 200);
+    assert.equal(frontierStatus.body.state, "running");
+    assert.deepEqual(frontierStatus.body.checkpoint_progress, { theorems: [{ id: "r1", best_lines: 7, accepted_improvements: 2 }], accepted_improvements: 2 });
+    assert.equal((await get("")).body.active.find((job: any) => job.runId === frontier.config.run_id)?.checkpoint_progress.theorems[0].best_lines, 7);
+    assert.equal(fs.existsSync(path.join(frontier.dir, "report.json")), false, "live checkpoint inspection must never grade a run");
+
     const report = { schema_version: "propbench-report-v1", config: ctx.config, cohort: "test-cohort", score: 1,
       graded_at: new Date().toISOString(), evaluation_status: "complete", evidence: "subscription", client_sessions: 1,
       total: 1, valid_count: 0, valid_rate: 0, total_lines: 0, mean_valid_lines: null, generations: null,

@@ -10,6 +10,10 @@ checks from results. It does not assert that a planned campaign has run.
 - [Publication claims checklist](PUBLICATION-CHECKLIST.md)
 - [Independent semantic audit](SEMANTIC-AUDIT.md)
 - [Pre-campaign methodology audit](PRE-CAMPAIGN-AUDIT.md)
+- [Retained pilot and replacement campaign amendment](CAMPAIGN-AMENDMENT.md)
+- [Strict replay audit and integration](STRICT-REPLAY-AUDIT.md)
+- [Native control repair evidence](native-repair-control-audit.md)
+- [Interrupted pilot control audit](campaign-control-audit.md)
 
 The relevant evidence hierarchy is: independently replayed proof bytes; sealed
 run and runtime identities; complete attempt/session/tool records; then derived

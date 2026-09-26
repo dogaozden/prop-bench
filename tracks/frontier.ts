@@ -538,7 +538,12 @@ function ensureSnapshotMode(
 
 function ensureValidator(options: PrepareOptions): { source: string; mode: number } {
   const source = path.resolve(options.validator);
-  const stat = assertRegular(source, "Validator");
+  // This is trusted owner input: Cargo may hardlink its executable into deps.
+  // prepareRun reads bounded bytes with O_NOFOLLOW, hashes them, and writes a
+  // new exclusive referee file. Keep contestant/snapshot link checks separate.
+  const stat = fsSync.lstatSync(source);
+  if (stat.isSymbolicLink()) throw new Error(`Symlink is not allowed: ${source}`);
+  if (!stat.isFile()) throw new Error(`Validator must be a regular file: ${source}`);
   const mode = stat.mode & 0o7777;
   if ((mode & 0o111) === 0) throw new Error(`Validator must be executable: ${source}`);
   return { source, mode };

@@ -17,12 +17,20 @@ jobs:
       - run: npm ci
       - run: npm ci --prefix gui
       - run: cargo build --release --locked
-      - run: docker build -t propbench-frontier:2 -f tracks/Dockerfile .
+      - run: docker build -t propbench-frontier:3 -f tracks/Dockerfile .
       - run: npm run typecheck
       - run: npm run test:tracks
       - run: npm run test:campaign
       - run: npm run test:server
       - run: npm run test:publication
+      - run: npm run publication:verify
+      - run: python3 scripts/package-publication.py --allow-partial
+      - uses: actions/upload-artifact@v4
+        with:
+          name: propbench-static-publication
+          path: |
+            dist/propbench-publication.zip
+            dist/propbench-publication.zip.sha256
       - run: npm run build --prefix gui
       - run: bash golf/tests/referee-e2e.sh
         env:

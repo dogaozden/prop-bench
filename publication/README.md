@@ -79,6 +79,8 @@ The owner-side export writes `data/results.json`. Only publish a reviewed, indep
           "par": 8,
           "loss": 0.1111111111,
           "proof_sha256": "hash",
+          "proof_bytes_sha256": "hash of exact public proof file bytes",
+          "proof_file": "proofs/public-run-1/theorem-1.json",
           "independently_replayed": true,
           "proof": [
             { "line_number": 3, "formula": "Q", "justification": "MP 1,2", "depth": 0 }
@@ -90,10 +92,14 @@ The owner-side export writes `data/results.json`. Only publish a reviewed, indep
 }
 ```
 
-The example illustrates field names; its numbers and proof are **not benchmark results**. A proof may be omitted (`null`) when no public line-by-line export is available. If present, its array length must equal the referee's `line_count`. The viewer validates structure and renders dynamic text as text nodes. It does not independently verify proofs; that is the exporter's job.
+The example illustrates field names; its numbers and proof are **not benchmark results**. A proof may be omitted (`null`) when no public line-by-line export is available. If present, its array length must equal the referee's `line_count`. The viewer checks each item par and loss against the frozen set and scoring rule, validates structure, and renders dynamic text as text nodes. It does not independently verify proofs; that is the exporter's job. When the exporter includes a public `proof_file`, the site links to those exact submitted bytes and shows their separate byte hash.
+
+Frontier runs may additionally include `improvements`: an array of accepted owner checkpoints. Each entry has `item_id`, six-digit `import_id` and `checkpoint_id`, `execution_command`, `captured_elapsed_seconds`, `line_count`, `previous_line_count` (null for a first accepted proof), `proof`, `proof_sha256`, `proof_bytes_sha256`, `proof_file`, and `independently_replayed`. Checkpoint proof files live at `data/proofs/<run-id>/checkpoints/<item-id>-<import-id>.json`. The viewer checks that each event belongs to the selected theorem, reduces a verified line count, follows the prior accepted checkpoint, falls within the run allowance, and links to its own public proof. It displays these discrete observations as “Verified progress” only when every shown checkpoint carries an independent replay flag. Capture offsets do not imply anything about the path between observations or prove optimality.
 
 The campaign job plan creates all four condition cards before dispatch. Each card shows completed, interrupted, active, and pending jobs. Runs with the same `campaign_id` and `campaign_condition` are grouped while retaining each run's exact ID and cohort in the theorem view. Only completed subscription runs attached to completed campaign jobs enter the valid count and mean loss. Interrupted records remain inspectable but excluded. Fixtures cannot mix into subscription groups or earn an official mean; inconsistent model, budget, protocol, effort, provider, or evidence within a condition is rejected. Historical runs without campaign fields remain separate. Campaign conditions are never presented as one cross-track leaderboard.
 
-The results page links to the public JSON export, frozen rulebook, exact theorem files, source repository, and method document. The frozen files are available after the owner-side export populates `data/`. A campaign source commit, when present, links to that immutable repository tree.
+The results page links to the public JSON export, job ledger CSV, summary JSON, frozen rulebook, exact theorem files, submitted proof files, source repository, and method document. Its theorem browser remains usable before the first result arrives. The frozen files are available after the owner-side export populates `data/`. A campaign source commit, when present, links to that immutable repository tree.
+
+The interrupted 2026-09-25 engineering pilot is retained as a separate static snapshot at `pilots/20260925/`. The current study links to it, and the archived page links back to the current study. The pilot is not pooled with a subsequent repaired campaign.
 
 The publication must contain only allowlisted data. Never include credentials, local paths, owner commands, raw native-client transcripts, personal contact details, or unreviewed proof artifacts. This site deliberately has no endpoint for starting runs or submitting proofs.

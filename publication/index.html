@@ -76,13 +76,18 @@
           <div class="results-head section-grid">
             <div class="section-label"><span class="section-index">02</span><span>THE OBSERVATIONS</span></div>
             <div class="section-body">
-              <div class="results-title-row"><div><h2 id="results-title">The evidence,<br>item by item.</h2><p class="section-lead">Explore published runs, then open a theorem to inspect its verifier outcome and proof.</p></div><span class="data-stamp" id="data-stamp">DATA NOT LOADED</span></div>
+              <div class="results-title-row"><div><h2 id="results-title">The evidence,<br>item by item.</h2><p class="section-lead">Explore the planned conditions and published runs, then open a theorem to inspect its verifier outcome and proof.</p></div><span class="data-stamp" id="data-stamp">DATA NOT LOADED</span></div>
               <div class="resource-links" id="resource-links" aria-label="Research resources"></div>
+              <div class="campaign-summary" id="campaign-summary"></div>
             </div>
           </div>
           <div class="results-workspace" id="results-workspace">
             <div class="loading-state"><span class="loading-glyph" aria-hidden="true">⌁</span><h3>Reading the publication data</h3><p>The results explorer is loading its local data file.</p></div>
           </div>
+          <details class="dataset-disclosure" id="dataset-disclosure" hidden>
+            <summary><span><span class="micro-label">FROZEN QUESTION SET</span><strong>Browse the theorems</strong></span><span class="dataset-summary-end"><span id="dataset-count">0 items</span><span aria-hidden="true">＋</span></span></summary>
+            <div class="dataset-view" id="dataset-view"></div>
+          </details>
         </section>
 
         <section class="method section-grid" id="method" aria-labelledby="method-title">
@@ -94,7 +99,7 @@
               <article><span class="method-index">B / REFEREE</span><h3>Independent replay</h3><p>The Rust verifier checks proof rules and scope. It counts submitted lines, including assumptions and closing lines. Premises supplied with the theorem are free.</p></article>
               <article><span class="method-index">C / SCORE</span><h3>Lengths first</h3><p>For a valid proof, loss is L/(L+P). Invalid or missing proofs have loss 1. Completed runs contribute to the condition mean; interrupted runs remain inspectable and are excluded. Coverage and verified lengths show what the mean conceals.</p></article>
             </div>
-            <div class="interpretation"><span class="interpretation-mark" aria-hidden="true">!</span><p><strong>Interpretation boundary.</strong> Compare runs only when their protocol, selected items, budgets, and starting state align. A result documents observed search under stated conditions, not a general capability claim or proof of mathematical optimality.</p></div>
+            <div class="interpretation"><span class="interpretation-mark" aria-hidden="true">!</span><p><strong>Interpretation boundary.</strong> Compare runs only when their protocol, selected items, budgets, and starting state align. The frozen set is small and may be familiar to models. A result documents observed search under stated conditions, not general reasoning ability, human equivalence, or a proof of mathematical optimality.</p></div>
           </div>
         </section>
       </main>

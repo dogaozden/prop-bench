@@ -4,6 +4,10 @@ const workspace = document.querySelector("#results-workspace");
 const stamp = document.querySelector("#data-stamp");
 const provenance = document.querySelector("#footer-provenance");
 const resources = document.querySelector("#resource-links");
+const campaignSummary = document.querySelector("#campaign-summary");
+const datasetDisclosure = document.querySelector("#dataset-disclosure");
+const datasetView = document.querySelector("#dataset-view");
+const datasetCount = document.querySelector("#dataset-count");
 const state = { data: null, groups: [], filter: "all", groupKey: null, recordKey: null };
 
 function el(tag, className, content) {
@@ -26,12 +30,72 @@ function renderResources() {
     links.push(resource("Read frozen rulebook ↗", "./data/rules.md"));
     links.push(resource("Dataset manifest ↗", "./data/theorems/manifest.json"));
   }
+  if (state.data.campaign) {
+    links.push(resource("Download job ledger CSV ↗", "./data/jobs.csv"));
+    links.push(resource("Summary JSON ↗", "./data/summary.json"));
+  }
+  links.push(resource("Retained engineering pilot ↗", "./pilots/20260925/"));
   const commit = state.data.campaign?.source_commit;
   const repository = "https://github.com/dogaozden/prop-bench";
-  links.push(resource("Method and protocol ↗", `${repository}/blob/master/TRACKS.md`, true));
-  links.push(resource(commit && /^[a-f0-9]{40}$/.test(commit) ? "Source at campaign commit ↗" : "Source repository ↗",
-    commit && /^[a-f0-9]{40}$/.test(commit) ? `${repository}/tree/${commit}` : repository, true));
+  const pinned = commit && /^[a-f0-9]{40}$/.test(commit);
+  links.push(resource("Method and protocol ↗", `${repository}/blob/${pinned ? commit : "master"}/TRACKS.md`, true));
+  links.push(resource(pinned ? "Source at campaign commit ↗" : "Source repository ↗",
+    pinned ? `${repository}/tree/${commit}` : repository, true));
   resources.replaceChildren(...links);
+}
+function renderCampaignSummary() {
+  const campaign = state.data.campaign;
+  campaignSummary.hidden = !campaign;
+  if (!campaign) return;
+  const counts = { complete: 0, interrupted: 0, active: 0, pending: 0 };
+  for (const job of campaign.jobs) {
+    const bucket = job.status === "complete" ? "complete" : job.status === "interrupted" ? "interrupted" :
+      ["running", "preparing", "prepared"].includes(job.status) ? "active" : "pending";
+    counts[bucket]++;
+  }
+  const heading = el("div", "campaign-summary-heading");
+  append(heading, el("span", "micro-label", "CAMPAIGN SNAPSHOT"), el("span", "", `Exported ${date(state.data.generated_at)}`));
+  const pairedPlan = campaign.jobs.length === state.data.items.length * 4 &&
+    ["unaided-1", "unaided-2", "frontier-fresh", "frontier-cumulative"].every(condition => campaign.jobs.filter(job => job.condition === condition).length === state.data.items.length);
+  const progress = el("p", "", `${campaign.planned_jobs} planned jobs · ${counts.complete} complete · ${counts.interrupted} interrupted · ${counts.active} active · ${counts.pending} pending. ${pairedPlan ? "Each theorem has two separate Unaided attempts and a fresh Frontier run paired with its own cumulative continuation. " : ""}This static export records one point in the campaign.`);
+  const facts = el("div", "campaign-summary-facts");
+  append(facts, fact("CAMPAIGN", campaign.id), fact("REQUESTED MODEL", campaign.model), fact("EFFORT", campaign.effort), fact("NATIVE CLIENT", campaign.client?.version || "Not recorded"));
+  campaignSummary.replaceChildren(heading, progress, facts);
+}
+function renderDataset() {
+  const items = state.data.items;
+  datasetDisclosure.hidden = !items.length;
+  if (!items.length) return;
+  datasetCount.textContent = `${items.length} item${items.length === 1 ? "" : "s"}`;
+  const list = el("div", "dataset-list");
+  list.setAttribute("role", "group");
+  list.setAttribute("aria-label", "Frozen theorem list");
+  const detail = el("article", "dataset-detail");
+  const buttons = [];
+  function select(item) {
+    for (const button of buttons) button.setAttribute("aria-pressed", String(button.dataset.itemId === item.id));
+    const box = el("div", "dataset-formulas");
+    append(box, el("span", "meta-label", "PREMISES"));
+    if (item.theorem.premises.length) for (const premise of item.theorem.premises) append(box, el("code", "", premise));
+    else append(box, el("code", "", "None"));
+    append(box, el("span", "meta-label", "CONCLUSION"), el("code", "", item.theorem.conclusion));
+    const provenance = el("div", "dataset-provenance");
+    append(provenance, el("span", "", `Theorem SHA-256: ${pretty(item.theorem_sha256)}`), resource("Open exact theorem JSON ↗", `./data/theorems/${encodeURIComponent(item.id)}.json`));
+    detail.replaceChildren(el("span", "run-kicker", `${item.id} / ${item.theorem.difficulty || "THEOREM"}`),
+      el("h4", "", "The question"), el("p", "dataset-par", `Reference par ${item.par} · a known achievable length, not a certified minimum`), box, provenance);
+  }
+  for (const item of items) {
+    const button = el("button", "dataset-item");
+    button.type = "button";
+    button.dataset.itemId = item.id;
+    button.setAttribute("aria-label", `View theorem ${item.id}, reference par ${item.par}`);
+    append(button, el("span", "", item.id), el("span", "", `PAR ${item.par}`));
+    button.addEventListener("click", () => select(item));
+    append(list, button);
+    buttons.push(button);
+  }
+  datasetView.replaceChildren(list, detail);
+  select(items[0]);
 }
 
 function renderEmpty() {
@@ -111,11 +175,15 @@ function detail(group) {
     group.meanCompletedLoss == null ? "No completed subscription verdicts have a comparable score." :
       `Mean completed loss ${number(group.meanCompletedLoss, 3)} across ${group.scoredRecords.length} completed item verdict${group.scoredRecords.length === 1 ? "" : "s"}.`;
   const completion = group.scoredRecords.length < group.target ? " This is a partial census, not a full-set score." : " The complete census is available below.";
-  append(intro, el("h4", "", "ITEM RECORD"), el("p", "", aggregate + (group.official ? completion : "") + ` ${group.observed} item verdict${group.observed === 1 ? " is" : "s are"} inspectable, including interrupted records.`));
+  const availability = group.observed === 0 ? " No item verdicts have been published for this condition." :
+    ` ${group.observed} item verdict${group.observed === 1 ? " is" : "s are"} inspectable${group.records.some(record => !group.scoredRecords.includes(record)) ? ", including excluded records" : ""}.`;
+  append(intro, el("h4", "", "ITEM RECORD"), el("p", "", aggregate + (group.official ? completion : "") + availability));
   const browser = el("div", "item-browser");
   const list = el("div", "item-list");
+  list.setAttribute("role", "group");
   list.setAttribute("aria-label", "Theorem results");
   const sortedRecords = [...group.records].sort((a, b) => a.result.id.localeCompare(b.result.id) || a.run.id.localeCompare(b.run.id));
+  if (!sortedRecords.length) browser.classList.add("is-empty");
   const selected = sortedRecords.find(record => recordKey(record) === state.recordKey) || sortedRecords[0];
   if (selected) state.recordKey = recordKey(selected);
   if (!sortedRecords.length) append(list, el("div", "proof-unavailable", "No item verdicts have been published for this condition yet."));
@@ -157,18 +225,29 @@ function proofPanel(record, group) {
   append(theorem, definition);
   const summary = el("div", "proof-summary");
   append(summary, summaryPart("VERDICT", title(result.status)), summaryPart("VERIFIED LENGTH", result.line_count == null ? "—" : String(result.line_count)), summaryPart("REFERENCE PAR", String(item.par)), summaryPart(included ? "ITEM LOSS" : "ITEM LOSS, EXCLUDED", number(result.loss, 3)));
-  append(panel, theorem, summary, resource("Open exact theorem JSON ↗", `./data/theorems/${encodeURIComponent(item.id)}.json`));
+  const sourceLinks = el("div", "proof-source-links");
+  append(sourceLinks, resource("Open exact theorem JSON ↗", `./data/theorems/${encodeURIComponent(item.id)}.json`));
+  if (result.proof_file) append(sourceLinks, resource("Open submitted proof JSON ↗", `./data/${result.proof_file}`));
+  append(panel, theorem, summary, sourceLinks);
+  const progress = run.track === "frontier" ? verifiedProgress(run, item.id) : null;
+  if (progress) append(panel, progress);
   if (result.proof && result.status === "valid") {
     const wrap = el("div", "proof-table-wrap");
     const table = el("table", "proof-table");
+    table.setAttribute("role", "table");
     const caption = el("caption", "sr-only", `Verified submitted proof lines for ${item.id}`);
-    const thead = el("thead"); const headings = el("tr");
-    for (const heading of ["LINE", "FORMULA", "JUSTIFICATION", "DEPTH"]) append(headings, el("th", "", heading));
+    const thead = el("thead"); thead.setAttribute("role", "rowgroup");
+    const headings = el("tr"); headings.setAttribute("role", "row");
+    for (const heading of ["LINE", "FORMULA", "JUSTIFICATION", "DEPTH"]) {
+      const cell = el("th", "", heading); cell.setAttribute("role", "columnheader"); append(headings, cell);
+    }
     append(thead, headings);
-    const tbody = el("tbody");
+    const tbody = el("tbody"); tbody.setAttribute("role", "rowgroup");
     for (const line of result.proof) {
-      const row = el("tr");
-      append(row, el("td", "proof-step", String(line.line_number).padStart(2, "0")), el("td", "", line.formula), el("td", "", line.justification), el("td", "", String(line.depth)));
+      const row = el("tr"); row.setAttribute("role", "row");
+      for (const [index, value] of [String(line.line_number).padStart(2, "0"), line.formula, line.justification, String(line.depth)].entries()) {
+        const cell = el("td", index === 0 ? "proof-step" : "", value); cell.setAttribute("role", "cell"); append(row, cell);
+      }
       append(tbody, row);
     }
     append(table, caption, thead, tbody);
@@ -189,6 +268,8 @@ function proofPanel(record, group) {
     receiptRow("OBSERVED MODELS", run.observed_models.length ? run.observed_models.join(", ") : "Not recorded"),
     receiptRow("BUDGET / EFFORT", `${run.budget.wall_seconds}s · ${run.subscription?.max_tool_calls == null ? "tool allowance not recorded" : run.subscription.max_tool_calls + " tool calls"} · ${run.subscription?.effort || "effort not recorded"}`),
     receiptRow("CLIENT SESSIONS", run.client_sessions == null ? "Not recorded" : String(run.client_sessions)),
+    receiptRow("TOOL EVENTS", run.tool_counts ? `exec ${run.tool_counts.exec} · delegate ${run.tool_counts.delegate}` : "Not recorded"),
+    receiptRow("ISOLATED RUNTIME", run.runtime ? [run.runtime.backend, run.runtime.architecture, run.runtime.image_id].filter(Boolean).join(" · ") : "Not applicable"),
     receiptRow("ELAPSED", run.elapsed_seconds == null ? "Not recorded" : `${number(run.elapsed_seconds, 1)} seconds`),
     receiptRow("USAGE COVERAGE", run.usage_coverage == null ? "Not recorded" : `${run.usage_coverage.attempts_with_usage}/${run.usage_coverage.attempts} attempts have usage`),
     receiptRow("SELECTED IDS", run.selected_ids.join(", ")),
@@ -198,12 +279,44 @@ function proofPanel(record, group) {
     receiptRow("SET HASH", state.data.set.hash),
     receiptRow("THEOREM SHA-256", pretty(item.theorem_sha256)),
     receiptRow("PROOF SHA-256", pretty(result.proof_sha256)),
+    receiptRow("PROOF FILE BYTES SHA-256", pretty(result.proof_bytes_sha256)),
     receiptRow("INDEPENDENT REPLAY", result.independently_replayed ? "Confirmed in public export" : "Not recorded"),
     receiptRow("EVALUATOR HASH", pretty(run.evaluator_hash)),
+    receiptRow("REGRADE HASH", pretty(run.regraded_by)),
     receiptRow("VALIDATOR SHA-256", pretty(run.validator_sha256)),
     receiptRow("RULEBOOK SHA-256", pretty(run.rulebook_sha256)));
   append(panel, receipt);
   return panel;
+}
+function verifiedProgress(run, itemId) {
+  const events = run.improvements.filter(event => event.item_id === itemId);
+  if (!events.length) return null;
+  const replayed = events.every(event => event.independently_replayed);
+  const section = el("section", "checkpoint-section");
+  section.setAttribute("aria-label", `${itemId} accepted proof checkpoints`);
+  const heading = el("div", "checkpoint-heading");
+  append(heading, el("span", "micro-label", "FRONTIER / ACCEPTED CHECKPOINTS"),
+    el("h5", "", replayed ? "Verified progress" : "Recorded progress"));
+  const description = el("p", "checkpoint-intro", replayed
+    ? "Each checkpoint was accepted during the run and independently replayed for this public export."
+    : "These accepted checkpoints are recorded in the public export; independent replay is not recorded for every checkpoint.");
+  const list = el("ol", "checkpoint-list");
+  for (const event of events) {
+    const row = el("li", "checkpoint-event");
+    const metrics = el("div", "checkpoint-metrics");
+    const length = el("strong", "checkpoint-length");
+    if (event.previous_line_count !== null) append(length, el("span", "checkpoint-previous", String(event.previous_line_count)),
+      el("span", "checkpoint-arrow", "→"));
+    append(length, document.createTextNode(String(event.line_count)), el("small", "", "lines"));
+    append(metrics, length, el("span", "checkpoint-time", `at ${number(event.captured_elapsed_seconds, 2)} s`));
+    const context = el("div", "checkpoint-context");
+    append(context, el("span", "", event.previous_line_count === null ? "First accepted proof" : "Shorter accepted proof"),
+      el("span", "", `checkpoint ${event.checkpoint_id} · command ${event.execution_command}`));
+    append(row, metrics, context, resource("Open checkpoint proof JSON ↗", `./data/${event.proof_file}`));
+    append(list, row);
+  }
+  return append(section, heading, description, list,
+    el("p", "checkpoint-caveat", "Only accepted checkpoints are shown. Times are recorded capture offsets; no result is inferred between them. A shorter proof is not a claim of optimality."));
 }
 function summaryPart(label, value) { const node = el("span"); append(node, el("strong", "", value), document.createTextNode(` ${label.toLowerCase()}`)); return node; }
 function receiptRow(label, value) { const node = el("div", "receipt-row"); append(node, el("span", "meta-label", label), el("code", "", value)); return node; }
@@ -228,6 +341,8 @@ async function start() {
     state.data = parsePublication(await response.json());
     state.groups = groupRuns(state.data);
     renderResources();
+    renderCampaignSummary();
+    renderDataset();
     provenance.textContent = `Exported ${date(state.data.generated_at)} · Set ${state.data.set.version} · ${state.data.evaluator.scorer_version}`;
     render();
   } catch (error) { renderError(error); }

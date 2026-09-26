@@ -69,6 +69,7 @@ test("historical runs stay separate from campaign groups", () => {
 test("a campaign cannot silently count the same theorem twice", () => {
   const raw = publication();
   raw.runs[1].items[0].id = "t1";
+  raw.runs[1].items[0].par = 3;
   assert.throws(() => groupRuns(parsePublication(raw)), /repeats a theorem/);
 });
 
@@ -115,4 +116,102 @@ test("mismatched protocol or budget cannot pool in one condition", () => {
   raw.runs[1].execution_protocol = raw.runs[0].execution_protocol;
   raw.runs[1].budget.wall_seconds = 300;
   assert.throws(() => groupRuns(parsePublication(raw)), /mixes models, budgets, protocols, or evidence/);
+});
+
+test("a planned campaign rejects fixture evidence or a non-subscription protocol", () => {
+  const raw = publication();
+  raw.runs.pop();
+  raw.campaign = { id: "campaign", model: "example-model", effort: "high", status: "complete", planned_jobs: 1,
+    jobs: [{ key: "t1--unaided-1", item_id: "t1", condition: "unaided-1", status: "complete", wall_seconds: 900, max_tool_calls: 0, run_id: "r1" }] };
+  raw.runs[0].evidence = "fixture";
+  assert.throws(() => groupRuns(parsePublication(raw)), /non-subscription evidence or protocol/);
+  raw.runs[0].evidence = "subscription";
+  raw.runs[0].execution_protocol = "external-mcp-v1";
+  assert.throws(() => groupRuns(parsePublication(raw)), /non-subscription evidence or protocol/);
+});
+
+test("public proof links cannot escape the publication data directory", () => {
+  const raw = publication();
+  raw.runs[0].items[0].proof_file = "../owner-run/secrets.json";
+  assert.throws(() => parsePublication(raw), /unsafe public proof path/);
+  raw.runs[0].items[0].proof_file = "proofs/public-run-1/t1.json";
+  assert.equal(parsePublication(raw).runs[0].items[0].proof_file, "proofs/public-run-1/t1.json");
+});
+
+test("frozen par and efficiency loss are checked before rendering", () => {
+  const raw = publication();
+  raw.runs[0].items[0].par = 9;
+  assert.throws(() => parsePublication(raw), /par inconsistent/);
+  raw.runs[0].items[0].par = 3;
+  raw.runs[0].items[0].loss = 0.9;
+  assert.throws(() => parsePublication(raw), /loss inconsistent/);
+});
+
+function frontierCheckpoints() {
+  const raw = publication();
+  raw.runs.pop();
+  const frontier = raw.runs[0];
+  frontier.id = "frontier-example";
+  frontier.track = "frontier";
+  frontier.mode = "fresh";
+  frontier.campaign_condition = "frontier-fresh";
+  frontier.execution_protocol = "frontier-subscription-v2";
+  frontier.subscription.max_tool_calls = 128;
+  const lines = count => Array.from({ length: count }, (_, index) => ({ line_number: index + 1, formula: `synthetic-${index}`, justification: "example", depth: 0 }));
+  frontier.items[0].line_count = 2;
+  frontier.items[0].loss = .4;
+  frontier.items[0].proof = lines(2);
+  frontier.improvements = [
+    { item_id: "t1", import_id: "000001", checkpoint_id: "000002", execution_command: 2,
+      captured_elapsed_seconds: 168.21, line_count: 3, previous_line_count: null, proof: lines(3),
+      proof_sha256: "example", proof_bytes_sha256: "example", independently_replayed: true,
+      proof_file: "proofs/frontier-example/checkpoints/t1-000001.json" },
+    { item_id: "t1", import_id: "000003", checkpoint_id: "000004", execution_command: 4,
+      captured_elapsed_seconds: 210.66, line_count: 2, previous_line_count: 3, proof: lines(2),
+      proof_sha256: "example", proof_bytes_sha256: "example", independently_replayed: true,
+      proof_file: "proofs/frontier-example/checkpoints/t1-000003.json" }
+  ];
+  return raw;
+}
+
+test("Frontier accepted checkpoints retain exact observed reductions and public proof links", () => {
+  const [run] = parsePublication(frontierCheckpoints()).runs;
+  assert.deepEqual(run.improvements.map(event => [event.line_count, event.previous_line_count, event.captured_elapsed_seconds]),
+    [[3, null, 168.21], [2, 3, 210.66]]);
+  assert.ok(run.improvements.every(event => event.independently_replayed));
+  assert.equal(run.improvements[1].proof_file, "proofs/frontier-example/checkpoints/t1-000003.json");
+});
+
+test("planned Frontier subscription v2 runs score only when complete and retain checkpoint evidence", () => {
+  const raw = frontierCheckpoints();
+  raw.campaign = { id: "campaign", model: "example-model", effort: "high", status: "complete", planned_jobs: 1,
+    jobs: [{ key: "t1--frontier-fresh", item_id: "t1", condition: "frontier-fresh", status: "complete", wall_seconds: 900, max_tool_calls: 128, run_id: "frontier-example" }] };
+  const [group] = groupRuns(parsePublication(raw));
+  assert.equal(group.scoredRecords.length, 1);
+  assert.equal(group.meanCompletedLoss, .4);
+  assert.equal(group.records[0].run.improvements.length, 2);
+});
+
+test("checkpoint sequence rejects inflated lengths, broken lineage, and unsafe or mismatched proof links", () => {
+  const raw = frontierCheckpoints();
+  raw.runs[0].improvements[1].line_count = 4;
+  assert.throws(() => parsePublication(raw), /not a strict line reduction/);
+  raw.runs[0].improvements[1].line_count = 2;
+  raw.runs[0].improvements[1].previous_line_count = 5;
+  assert.throws(() => parsePublication(raw), /sequence is inconsistent/);
+  raw.runs[0].improvements[1].previous_line_count = 3;
+  raw.runs[0].improvements[1].proof_file = "../private/checkpoint.json";
+  assert.throws(() => parsePublication(raw), /unsafe public proof path/);
+  raw.runs[0].improvements[1].proof_file = "proofs/other-run/checkpoints/t1-000003.json";
+  assert.throws(() => parsePublication(raw), /path disagrees with its identity/);
+  raw.runs[0].improvements[1].proof_file = "proofs/frontier-example/checkpoints/t1-000003.json";
+  raw.runs[0].improvements[1].proof = [];
+  assert.throws(() => parsePublication(raw), /checkpoint proof length disagrees/);
+});
+
+test("an Unaided run cannot claim Frontier checkpoint progress", () => {
+  const raw = frontierCheckpoints();
+  raw.runs[0].track = "unaided";
+  raw.runs[0].mode = "unaided";
+  assert.throws(() => parsePublication(raw), /Frontier checkpoints on another track/);
 });

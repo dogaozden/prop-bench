@@ -161,7 +161,7 @@ and the shared Rust validator. Build the runtime deliberately; evaluation never
 pulls an image or falls back to host execution:
 
 ```sh
-docker build -t propbench-frontier:2 -f tracks/Dockerfile .
+docker build -t propbench-frontier:3 -f tracks/Dockerfile .
 ```
 
 The build context is restricted by `.dockerignore` to the Rust sources and
@@ -178,7 +178,7 @@ default Docker context:
 ```sh
 colima start --profile propbench --activate=false --ssh-config=false
 export PROPBENCH_DOCKER_HOST="unix://$HOME/.colima/propbench/docker.sock"
-docker --host "$PROPBENCH_DOCKER_HOST" build -t propbench-frontier:2 -f tracks/Dockerfile .
+docker --host "$PROPBENCH_DOCKER_HOST" build -t propbench-frontier:3 -f tracks/Dockerfile .
 ```
 
 Run the deterministic rehearsal with a parent agent, one delegated context,

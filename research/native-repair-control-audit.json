@@ -1,0 +1,148 @@
+{
+  "schema_version": "propbench-native-repair-control-audit-v1",
+  "status": "passed",
+  "audited_at": "2026-09-26T05:38:02.194671+00:00",
+  "baseline_source_commit": "6ba4637874fea00475276543545bc7876bff1f2e",
+  "source_identity_note": "Canaries exercised the integrated uncommitted repair and its exact evaluator digest; the subsequent campaign must freeze the final committed source separately.",
+  "tests": {
+    "targeted_passed": 40,
+    "typescript_no_emit": "passed"
+  },
+  "canaries": [
+    {
+      "kind": "arguments",
+      "run_id": "1eebc18e-0925-4be7-abd0-8ad8114bc07b",
+      "unscored": true,
+      "prompt_wrapper": true,
+      "fixture_client_marker": true,
+      "physical_native_sessions": 1,
+      "model": "gpt-6-astra",
+      "effort": "xhigh",
+      "runtime": {
+        "backend": "docker",
+        "image_id": "sha256:b86705d37917c9e9cdcd98c139b4a052bb77cad812e6f80c03f461db0bce9859",
+        "architecture": "arm64"
+      },
+      "status": "complete",
+      "finished_reason": "client_completed",
+      "error": null,
+      "tool_calls": 2,
+      "elapsed_ms": 7555,
+      "termination_confirmed": true,
+      "cleanup_error_codes": [],
+      "native_alive_after": 0,
+      "containers_alive_after": 0,
+      "owner_rejections": 1,
+      "checkpoints": 1,
+      "evaluator_hash": "934a19358db98ad8fa5aa61b4a3048b957230ecb371f08507a24fa5ba2249c83",
+      "client_version": "codex-cli 0.158.0-alpha.2",
+      "client_sha256": "c3e30211bd454da70ceb4d9cbc2e05fe6466812ab05c311c3bbff6addeb14202",
+      "normal_service_tier_enforced": true,
+      "native_subscription_account_type_checked": true,
+      "native_control_audits": 1,
+      "constrained_catalog_sha256": "43d12dd28a2a75b13f141a3f21c848c8451112d8cd719f7b95805ddbd96bfa2e",
+      "normalized_control_configuration_sha256": "043dc426454d4331930e0e736db70042ceac9269f2df76043d80f8a326ab3ad7",
+      "stdio_close_confirmed": true,
+      "available_tools": [
+        "exec",
+        "delegate"
+      ],
+      "completed_native_result_receipts": 1,
+      "complete_usage_receipts": 1,
+      "incomplete_final_usage_sessions": 0,
+      "observed_completed_usage": {
+        "input_tokens": 1117,
+        "output_tokens": 49
+      },
+      "final_response_verified_ready": true,
+      "native_tool_completions": [
+        {
+          "tool": "exec",
+          "success": false,
+          "argument_keys": [
+            "command",
+            "timeout"
+          ]
+        },
+        {
+          "tool": "exec",
+          "success": true,
+          "argument_keys": [
+            "command"
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "deadline",
+      "run_id": "245320ba-5360-49c1-a75d-ba7d18687df6",
+      "unscored": true,
+      "prompt_wrapper": true,
+      "fixture_client_marker": true,
+      "physical_native_sessions": 2,
+      "model": "gpt-6-astra",
+      "effort": "xhigh",
+      "runtime": {
+        "backend": "docker",
+        "image_id": "sha256:b86705d37917c9e9cdcd98c139b4a052bb77cad812e6f80c03f461db0bce9859",
+        "architecture": "arm64"
+      },
+      "status": "complete",
+      "finished_reason": "budget_exhausted",
+      "error": "Codex session wall-clock timeout",
+      "tool_calls": 2,
+      "elapsed_ms": 45102,
+      "termination_confirmed": true,
+      "cleanup_error_codes": [],
+      "native_alive_after": 0,
+      "containers_alive_after": 0,
+      "owner_rejections": 0,
+      "checkpoints": 1,
+      "evaluator_hash": "934a19358db98ad8fa5aa61b4a3048b957230ecb371f08507a24fa5ba2249c83",
+      "client_version": "codex-cli 0.158.0-alpha.2",
+      "client_sha256": "c3e30211bd454da70ceb4d9cbc2e05fe6466812ab05c311c3bbff6addeb14202",
+      "normal_service_tier_enforced": true,
+      "native_subscription_account_type_checked": true,
+      "native_control_audits": 2,
+      "constrained_catalog_sha256": "43d12dd28a2a75b13f141a3f21c848c8451112d8cd719f7b95805ddbd96bfa2e",
+      "normalized_control_configuration_sha256": "043dc426454d4331930e0e736db70042ceac9269f2df76043d80f8a326ab3ad7",
+      "stdio_close_confirmed": true,
+      "available_tools": [
+        "exec",
+        "delegate"
+      ],
+      "completed_native_result_receipts": 0,
+      "complete_usage_receipts": 0,
+      "incomplete_final_usage_sessions": 2,
+      "observed_completed_usage": null,
+      "cutoff_observation": {
+        "sampled_at": "2026-09-26T05:36:49.974Z",
+        "budget_expires_at": "2026-09-26T05:36:50.919Z",
+        "seconds_before_cutoff": 0.945,
+        "native_processes_alive": 2,
+        "owned_containers_running": 1
+      },
+      "execution_timing": [
+        {
+          "started_at": "2026-09-26T05:36:17.266Z",
+          "timeout_seconds": 33,
+          "completed_at": "2026-09-26T05:36:50.407Z",
+          "exit_code": 124
+        }
+      ]
+    }
+  ],
+  "scope": [
+    "Actual native subscription sessions at gpt-6-astra/xhigh with the same pinned native client and isolated exec/delegate controls.",
+    "Argument recovery uses production owner callbacks and receipts: invalid exec arguments are never executed and consume one shared call before valid Docker execution.",
+    "Deadline uses a real delegated native session and isolated Docker sleep command, a sample just before the owner cutoff, bounded process/group termination and stdio draining, and a post-run absence check.",
+    "Simulated EPERM tests cover group-denied/direct-child fallback and unconfirmed cleanup failure; the physical canaries did not reproduce EPERM."
+  ],
+  "limitations": [
+    "Unscored custom-prompt rehearsals use a marked client wrapper that calls the real native adapter; they are excluded from benchmark comparisons.",
+    "Controls and model/usage identity are audited client-reported service provenance, not cryptographic proof of provider internals.",
+    "Deadline observation is a single sample approximately one second before cutoff, not continuous proof that every process remained active at the precise cutoff instant.",
+    "Only completed native-result usage receipts are summarized; the two cutoff sessions have incomplete final usage, not zero usage.",
+    "These narrow rehearsals do not establish that a long campaign cannot encounter additional infrastructure failures."
+  ]
+}

@@ -6,6 +6,94 @@ dispatches new hosted-model sessions under a recorded protocol and will not
 necessarily yield identical proofs. Exact proof replay is a stronger and more
 achievable promise than exact regeneration of a hosted model's behavior.
 
+## Offline verification from a clean checkout
+
+Check out the release containing the public evidence bundle. With Node 22 or
+later and the repository's Rust toolchain available, run:
+
+```sh
+npm ci
+cargo build --locked --release --no-default-features --bin propbench-validate
+npm run publication:verify
+```
+
+Dependency installation and the first build may need network access. The
+verification command itself is offline: it uses only
+`publication/data/results.json`, its public theorem/rule/proof assets, and the
+local strict verifier. It does not use `track-runs/`, a Codex login, native-client
+events, private answer keys, or model inference. The reduced validator has the
+same strict replay implementation as the owner CLI; it excludes generation.
+
+To replay a separately downloaded public bundle, pass its results file:
+
+```sh
+npm run publication:verify -- --data /path/to/data/results.json
+```
+
+The verifier checks the exact frozen v2 manifest/theorem bytes, embedded formulas,
+rulebook hash, exact proof-file bytes, canonical proof hashes, proof protocol,
+and every published valid proof with `validate --strict-protocol`. It recomputes
+losses, singleton set identities and cohort hashes, checks all 96 planned units,
+condition budgets and terminal statuses, and validates cumulative parent links
+and snapshot inventories. It rejects altered bytes, invented scores, omitted
+completed jobs, unsafe asset paths, mismatched cohorts, and invalid proofs even
+when their declared hashes have been recomputed.
+
+When a Frontier run includes an `improvements` sequence, replay also checks every
+accepted checkpoint's exact proof bytes, strict validity, previous-incumbent
+length, decreasing proof length, increasing checkpoint/import/exec order, and
+recorded capture within the 900-second allowance. Its last proof must match the
+final incumbent. Cumulative sequences begin with the same item's inherited
+incumbent. Older exports may omit the sequence; the verification output reports
+how many Frontier runs include or omit it. Canonical ordering explicitly uses
+the campaign machine's `en-US` collation, independent of the reader's locale.
+
+The JSON result explicitly reports `census_complete: false` for a partial
+campaign. An internally consistent partial export may verify successfully;
+that does not assert all planned jobs ran. `job_counts` distinguishes scheduled,
+active, completed, and interrupted units. `independently_replayed_proofs` is the
+number actually passed to the strict referee, including visible proofs from
+interrupted runs; those runs remain excluded from completed-run counts. It
+includes checkpoint proofs and final incumbents separately, even when the last
+checkpoint and final incumbent contain identical bytes. Their counts appear as
+`independently_replayed_checkpoint_proofs` and
+`independently_replayed_incumbents`.
+
+The local validator's SHA is reported separately from the original owner's
+SHA. Another platform, compiler, or the reduced CLI can produce a different
+binary while replaying the same formal proof. The normal command verifies the
+proof semantics under the supplied local build and **does not claim original
+binary identity**. To require that additional identity check when the exact
+original executable is available, use:
+
+```sh
+npm run publication:verify -- --validator /path/to/original/referee \
+  --require-exact-binary
+```
+
+Use the released source and pinned `Cargo.lock` for a source rebuild. Passing
+an arbitrary executable cannot authenticate its implementation. The output
+states the actual local binary hash so independently reproduced verdicts can
+be attributed correctly.
+
+For an authenticated download, obtain the expected `results.json` SHA-256 from
+a separately trusted release record, then pass it as
+`--expected-results-sha256 THE_64_HEX_DIGEST`. This pins the metadata that in turn
+pins the theorem, rule and proof assets. Without that external anchor the tool
+checks internal integrity, not publisher authenticity: a consistently rewritten
+bundle is not a signed execution record. It also cannot prove hosted inference
+or tool isolation from public summaries alone. Snapshot inventories bind
+declared lineage, but unpublished tool/journal bytes are not independently
+replayed or authenticated by this command.
+Checkpoint capture times and execution order are consistency checks on
+owner-recorded metadata; proof replay does not authenticate the owner's clock.
+
+Tamper tests run without provider access:
+
+```sh
+node --require ts-node/register --test scripts/verify-publication.test.ts
+```
+
 ## Freeze before the scored campaign
 
 Create a clean source commit after the isolation, checkpoint, and native-client

@@ -1,0 +1,56 @@
+[
+  {
+    "line_number": 3,
+    "formula": "(~Q v ~Q) > S",
+    "justification": "Taut 2",
+    "depth": 0
+  },
+  {
+    "line_number": 4,
+    "formula": "~Q > S",
+    "justification": "Taut 3",
+    "depth": 0
+  },
+  {
+    "line_number": 5,
+    "formula": "~P",
+    "justification": "Simp 1",
+    "depth": 0
+  },
+  {
+    "line_number": 6,
+    "formula": "~(P v P)",
+    "justification": "Taut 5",
+    "depth": 0
+  },
+  {
+    "line_number": 7,
+    "formula": "~((P v P) . (P v P))",
+    "justification": "Taut 6",
+    "depth": 0
+  },
+  {
+    "line_number": 8,
+    "formula": "~((P v P) . (P v P)) v ~~(~Q > S)",
+    "justification": "Add 7",
+    "depth": 0
+  },
+  {
+    "line_number": 9,
+    "formula": "~(((P v P) . (P v P)) . ~(~Q > S))",
+    "justification": "DeM 8",
+    "depth": 0
+  },
+  {
+    "line_number": 10,
+    "formula": "~((P v P) . (P v P)) . ~(((P v P) . (P v P)) . ~(~Q > S))",
+    "justification": "Conj 7,9",
+    "depth": 0
+  },
+  {
+    "line_number": 11,
+    "formula": "(~Q > S) . (~((P v P) . (P v P)) . ~(((P v P) . (P v P)) . ~(~Q > S)))",
+    "justification": "Conj 4,10",
+    "depth": 0
+  }
+]

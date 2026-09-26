@@ -5,7 +5,7 @@ import * as path from "node:path";
 import { test } from "node:test";
 import { performance } from "node:perf_hooks";
 
-import { PROJECT_ROOT } from "./core";
+import { PROJECT_ROOT, sha256 } from "./core";
 import {
   prepareFrontier,
   submitFrontier,
@@ -58,6 +58,53 @@ function options(root: string, validator: string, provider: "fixture" | "externa
     validator,
   };
 }
+
+test("Frontier accepts hardlinked owner build artifacts and pins independent bytes", () => {
+  const base = makeBase();
+  try {
+    // Cargo exposes Linux binaries through a hardlink into target/.../deps.
+    // Use only temporary copies so this regression never mutates a real build.
+    const source = path.join(base, "owner-validator");
+    const cargoAlias = path.join(base, "cargo-deps-validator");
+    fs.copyFileSync(validatorPath() ?? "/bin/sh", source);
+    fs.chmodSync(source, 0o700);
+    fs.linkSync(source, cargoAlias);
+    const original = fs.readFileSync(source);
+    assert.equal(fs.statSync(source).nlink, 2);
+
+    const ctx = prepareFrontier(options(path.join(base, "owner-runs"), source), path.join(base, "bundle"));
+    const pinned = path.join(ctx.dir, "referee", "validator");
+    assert.equal(fs.statSync(pinned).nlink, 1);
+    assert.notEqual(fs.statSync(pinned).ino, fs.statSync(source).ino);
+    assert.equal(fs.statSync(pinned).mode & 0o777, 0o500);
+    assert.equal(ctx.config.validator_sha256, sha256(original));
+    assert.deepEqual(fs.readFileSync(pinned), original);
+
+    fs.writeFileSync(cargoAlias, "owner build replaced through its other link\n");
+    assert.notDeepEqual(fs.readFileSync(source), original);
+    assert.deepEqual(fs.readFileSync(pinned), original);
+    assert.equal(sha256(fs.readFileSync(pinned)), ctx.config.validator_sha256);
+    assert.equal(fs.statSync(pinned).nlink, 1);
+  } finally { fs.rmSync(base, { recursive: true, force: true }); }
+});
+
+test("Frontier still rejects owner symlinks and inherited snapshot hardlinks", () => {
+  const base = makeBase();
+  try {
+    const validator = validatorPath() ?? "/bin/sh";
+    const linkedValidator = path.join(base, "linked-validator");
+    fs.symlinkSync(validator, linkedValidator);
+    assert.throws(() => prepareFrontier(options(path.join(base, "bad-owner"), linkedValidator), path.join(base, "bad-bundle")), /Symlink/);
+
+    const inherited = path.join(base, "inherited");
+    prepareFrontier(options(path.join(base, "first-owner"), validator), inherited);
+    const outsideTool = path.join(base, "owner-tool.py");
+    fs.writeFileSync(outsideTool, "# owner-only bytes\n");
+    fs.linkSync(outsideTool, path.join(inherited, "tools", "solver.py"));
+    assert.throws(() => prepareFrontier({ ...options(path.join(base, "next-owner"), validator), mode: "cumulative" },
+      path.join(base, "next-bundle"), inherited), /Hardlink/);
+  } finally { fs.rmSync(base, { recursive: true, force: true }); }
+});
 
 function walk(root: string): string[] {
   const output: string[] = [];

@@ -87,6 +87,127 @@
   border-color: color-mix(in srgb, var(--warning) 32%, var(--border));
 }
 
+.activity-panel {
+  margin-bottom: 24px;
+  padding: 18px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 9px;
+}
+
+.activity-summary,
+.activity-note {
+  color: var(--text-muted);
+  font-size: 10px;
+}
+
+.activity-list {
+  display: grid;
+  gap: 6px;
+  max-height: 340px;
+  overflow-y: auto;
+}
+
+.activity-row {
+  display: grid;
+  grid-template-columns: minmax(170px, 1.5fr) minmax(110px, 1fr) 55px 55px minmax(115px, .8fr);
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 9px 11px;
+  color: var(--text-primary);
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  text-align: left;
+  cursor: pointer;
+  font: inherit;
+}
+
+.activity-row:hover,
+.activity-row.is-selected {
+  border-color: var(--accent);
+}
+
+.activity-identity,
+.activity-usage,
+.activity-progress {
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+}
+
+.activity-identity strong {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 12px;
+}
+
+.activity-identity .activity-checkpoint {
+  color: var(--accent);
+  line-height: 1.35;
+}
+
+.checkpoint-panel {
+  display: grid;
+  gap: 7px;
+  margin-top: 14px;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--bg-tertiary);
+}
+
+.checkpoint-panel > strong {
+  font-size: 11px;
+}
+
+.checkpoint-panel > span {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 7px;
+  font-size: 11px;
+}
+
+.checkpoint-panel small {
+  color: var(--text-muted);
+  font-size: 10px;
+}
+
+.activity-row small {
+  color: var(--text-muted);
+  font-size: 10px;
+}
+
+.activity-usage strong {
+  font-size: 12px;
+}
+
+.activity-progress-track {
+  height: 5px;
+  overflow: hidden;
+  background: var(--bg-primary);
+  border-radius: 999px;
+}
+
+.activity-progress-track > span {
+  display: block;
+  height: 100%;
+  background: var(--accent);
+  border-radius: inherit;
+}
+
+.activity-row .run-state {
+  justify-self: end;
+  text-align: center;
+}
+
+.activity-note {
+  margin: 10px 0 0;
+}
+
 .tracks-link-button,
 .table-link {
   border: 0;
@@ -834,6 +955,24 @@
 }
 
 @media (max-width: 720px) {
+  .activity-panel {
+    padding: 13px;
+  }
+
+  .activity-row {
+    grid-template-columns: minmax(120px, 1fr) 45px 45px;
+    gap: 8px;
+  }
+
+  .activity-progress {
+    display: none;
+  }
+
+  .activity-row .run-state {
+    grid-column: 1 / -1;
+    justify-self: start;
+  }
+
   .tracks-header,
   .budget-panel,
   .tracks-actions {

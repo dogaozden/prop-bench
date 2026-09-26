@@ -1,0 +1,11 @@
+{
+  "id": "g3-2200923",
+  "premises": [
+    "[(~P > ~S) . (~S > ~P)] v [(~P > ~S) . (~S > ~P)]",
+    "(P v P) . (P v P)",
+    "(Q . Q) . (Q . Q)"
+  ],
+  "conclusion": "[~P <> (~~~S)] . {~Q > {[(P v ~P) . (P v ~P)] . [~P v (~~Q)]}}",
+  "difficulty": "Medium",
+  "difficulty_value": 35
+}

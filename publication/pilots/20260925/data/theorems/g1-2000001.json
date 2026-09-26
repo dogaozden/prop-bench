@@ -1,0 +1,9 @@
+{
+  "id": "g1-2000001",
+  "premises": [
+    "~(S v S)"
+  ],
+  "conclusion": "(~S v ~S) . {[~~~(S . ~R)] . [~~~(S . ~R)]}",
+  "difficulty": "Medium",
+  "difficulty_value": 35
+}

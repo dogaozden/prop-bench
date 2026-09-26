@@ -169,3 +169,57 @@ fn strict_accepts_engine_derived_nested_scope_and_counts_all_subproof_lines() {
     assert_eq!(result["line_count"], 4);
     assert_eq!(result["errors"], json!([]));
 }
+
+
+#[test]
+fn strict_rejects_multibyte_proof_whitespace_without_panicking() {
+    for whitespace in ['\u{00a0}', '\u{2003}', '\u{202f}'] {
+        for formula in [format!("{whitespace}Q"), format!("Q{whitespace}"), format!("({whitespace}Q)")] {
+            let files = CaseFiles::new(
+                theorem(&["P > Q", "P"], "Q"),
+                json!([{"line_number": 3, "formula": formula, "justification": "MP 1,2", "depth": 0}]),
+            );
+            let output = run_validate(&files, true);
+            assert_eq!(output.status.code(), Some(0), "must produce a verdict, not panic: {:?}", output);
+            let result = verdict(&output);
+            assert_eq!(result["valid"], false);
+            assert!(error_text(&result).contains("Non-ASCII whitespace"));
+        }
+    }
+}
+
+#[test]
+fn strict_rejects_multibyte_theorem_whitespace_without_panicking() {
+    for (premises, conclusion) in [
+        (vec!["P\u{00a0}> Q", "P"], "Q"),
+        (vec!["P > Q", "P"], "Q\u{2003}"),
+    ] {
+        let files = CaseFiles::new(
+            theorem(&premises, conclusion),
+            json!([{"line_number": 3, "formula": "Q", "justification": "MP 1,2", "depth": 0}]),
+        );
+        let output = run_validate(&files, true);
+        assert_eq!(output.status.code(), Some(1), "malformed theorem must fail without panic");
+        assert!(String::from_utf8_lossy(&output.stderr).contains("Non-ASCII whitespace"));
+    }
+}
+
+#[test]
+fn strict_preserves_unicode_operators_and_ascii_whitespace() {
+    let files = CaseFiles::new(
+        theorem(&["P", "Q"], "~~(P & Q)"),
+        json!([
+            {"line_number": 3, "formula": "P · Q", "justification": "Conj 1,2", "depth": 0},
+            {"line_number": 4, "formula": "\t¬¬(P · Q)\n", "justification": "DN 3", "depth": 0}
+        ]),
+    );
+    let result = verdict(&run_validate(&files, true));
+    assert_eq!(result["valid"], true);
+    assert_eq!(result["line_count"], 2);
+
+    let implication = CaseFiles::new(
+        theorem(&["P ⊃ Q", "P"], "Q"),
+        json!([{"line_number": 3, "formula": "Q", "justification": "MP 1,2", "depth": 0}]),
+    );
+    assert_eq!(verdict(&run_validate(&implication, true))["valid"], true);
+}

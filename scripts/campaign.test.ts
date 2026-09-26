@@ -9,7 +9,8 @@ import type { PrepareOptions, RunContext, RunReport } from "../tracks/types";
 
 const digest = "a".repeat(64);
 const identity: CampaignIdentity = {
-  set_version: "v2", set_hash: digest, set_ids: Array.from({ length: 24 }, (_, i) => `item-${String(i + 1).padStart(2, "0")}`),
+  set_version: "v2", set_hash: digest,
+  set_ids: ["g1", "g2", "g3"].flatMap(band => Array.from({ length: 8 }, (_, i) => `${band}-${String(i + 1).padStart(2, "0")}`)),
   set_manifest_sha256: digest, rulebook_sha256: digest, validator_sha256: digest, evaluator_hash: digest,
   source_commit: null, runtime: { path: "/fake/codex", version: "test", sha256: digest, source: "test" },
 };
@@ -69,6 +70,8 @@ test("dry run is deterministic and does not create owner or contestant artifacts
     assert.deepEqual(a, b);
     assert.equal((a.manifest as ReturnType<typeof buildManifest>).jobs.length, 96);
     assert.equal((a.manifest as ReturnType<typeof buildManifest>).jobs.filter(job => job.condition === "frontier-cumulative").length, 24);
+    assert.deepEqual((a.manifest as ReturnType<typeof buildManifest>).jobs.slice(0, 12).map(job => job.key),
+      ["g1-01", "g2-01", "g3-01"].flatMap(id => ["unaided-1", "frontier-fresh", "unaided-2", "frontier-cumulative"].map(condition => `${id}--${condition}`)));
     assert.equal(fs.existsSync(f.root), false);
     assert.equal(fs.existsSync(f.bundles), false);
   } finally { f.cleanup(); }
@@ -94,8 +97,9 @@ test("all 96 jobs have receipts, isolated runs, and own fresh ancestry", async (
       assert.equal(cumulative.inherited_snapshot, fresh.final_snapshot);
       assert.notEqual(state.jobs[`${item}--unaided-1`].run_id, state.jobs[`${item}--unaided-2`].run_id);
     }
-    assert.deepEqual(f.calls.slice(0, 4).map(call => call.mode), ["unaided", "fresh", "unaided", "fresh"]);
-    state.jobs["item-01--frontier-fresh"].status = "running"; // final report landed just before controller exit
+    assert.deepEqual(f.calls.slice(0, 4).map(call => call.mode), ["unaided", "fresh", "unaided", "unaided"]);
+    assert.deepEqual(f.calls.slice(0, 4).map(call => call.item), ["g1-01", "g1-01", "g1-01", "g2-01"]);
+    state.jobs["g1-01--frontier-fresh"].status = "running"; // final report landed just before controller exit
     fs.writeFileSync(path.join(f.root, "state.json"), JSON.stringify(state));
     const recovered = await executeCampaign({ root: f.root, bundles: f.bundles, inspectIdentity: () => identity,
       prepare: f.prepare, run: async () => { throw new Error("completed job was dispatched again"); },
@@ -128,8 +132,8 @@ test("quota stop preserves queued jobs; resume never repeats interrupted or cras
     assert.equal(calls, 1);
     const stateFile = path.join(f.root, "state.json");
     const state = JSON.parse(fs.readFileSync(stateFile, "utf8")) as CampaignState;
-    assert.equal(state.jobs["item-01--unaided-1"].status, "interrupted");
-    state.jobs["item-01--frontier-fresh"].status = "running"; // simulated controller crash
+    assert.equal(state.jobs["g1-01--unaided-1"].status, "interrupted");
+    state.jobs["g1-01--frontier-fresh"].status = "running"; // simulated controller crash
     fs.writeFileSync(stateFile, JSON.stringify(state));
     fs.writeFileSync(path.join(f.root, "campaign.lock"), JSON.stringify({ pid: process.pid }));
     await assert.rejects(executeCampaign({ ...options, run: f.run, resume: true }), /already active/);
@@ -138,11 +142,11 @@ test("quota stop preserves queued jobs; resume never repeats interrupted or cras
     assert.equal(resumed.complete, false);
     assert.equal(calls, 1);
     const after = JSON.parse(fs.readFileSync(stateFile, "utf8")) as CampaignState;
-    assert.equal(after.jobs["item-01--unaided-1"].status, "interrupted");
-    assert.equal(after.jobs["item-01--frontier-fresh"].status, "interrupted");
-    assert.equal(after.jobs["item-01--frontier-cumulative"].status, "queued");
+    assert.equal(after.jobs["g1-01--unaided-1"].status, "interrupted");
+    assert.equal(after.jobs["g1-01--frontier-fresh"].status, "interrupted");
+    assert.equal(after.jobs["g1-01--frontier-cumulative"].status, "queued");
     assert.ok((resumed.blocked_dependencies as number) >= 1);
-    delete after.jobs["item-24--unaided-2"];
+    delete after.jobs["g3-08--unaided-2"];
     fs.writeFileSync(stateFile, JSON.stringify(after));
     await assert.rejects(executeCampaign({ ...options, run: f.run, resume: true }), /state does not match complete manifest/);
   } finally { f.cleanup(); }

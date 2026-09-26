@@ -1,0 +1,2086 @@
+{
+  "schema_version": "propbench-publication-analysis-v1",
+  "source_schema_version": "propbench-publication-v1",
+  "source_generated_at": "2026-09-26T05:30:24.789Z",
+  "campaign_id": "5b02fde5-91a6-4c8d-923b-956fee47bc57",
+  "set_version": "v2",
+  "status": "incomplete",
+  "planned_jobs": 96,
+  "completed_jobs": 8,
+  "nonvalid_completed_jobs": 0,
+  "interrupted_jobs": 4,
+  "active_jobs": 0,
+  "pending_jobs": 84,
+  "conditions": {
+    "unaided-1": {
+      "planned": 24,
+      "completed": 6,
+      "valid": 6,
+      "nonvalid_completed": 0,
+      "interrupted": 0,
+      "active": 0,
+      "pending": 18,
+      "outcome_counts": {
+        "valid": 6,
+        "invalid": 0,
+        "parse_error": 0,
+        "transport_error": 0,
+        "protocol_error": 0,
+        "missing": 0,
+        "interrupted": 0
+      },
+      "loss": {
+        "completed_sum": 2.389105962293053,
+        "completed_mean": 0.39818432704884216,
+        "full_census_mean": null,
+        "denominator_completed": 6,
+        "denominator_planned": 24
+      },
+      "valid_proof_lengths": {
+        "sum": 56,
+        "mean": 9.333333333333334,
+        "par_sum_for_valid": 85,
+        "pairs": [
+          {
+            "item_id": "g1-2000001",
+            "lines": 6,
+            "par": 13
+          },
+          {
+            "item_id": "g1-2000011",
+            "lines": 10,
+            "par": 19
+          },
+          {
+            "item_id": "g1-2000013",
+            "lines": 10,
+            "par": 13
+          },
+          {
+            "item_id": "g1-2000021",
+            "lines": 11,
+            "par": 11
+          },
+          {
+            "item_id": "g1-2000025",
+            "lines": 10,
+            "par": 16
+          },
+          {
+            "item_id": "g1-2000031",
+            "lines": 9,
+            "par": 13
+          }
+        ]
+      },
+      "budget_per_job": {
+        "wall_seconds": 900,
+        "max_tool_calls": 0
+      },
+      "native_observations": {
+        "jobs_in_group": 6,
+        "jobs_with_public_run": 6,
+        "tokens": {
+          "input": {
+            "observed_sum": 7706,
+            "runs_with_observation": 6,
+            "jobs_in_group": 6
+          },
+          "output": {
+            "observed_sum": 15208,
+            "runs_with_observation": 6,
+            "jobs_in_group": 6
+          },
+          "thinking": {
+            "observed_sum": null,
+            "runs_with_observation": 0,
+            "jobs_in_group": 6
+          },
+          "total": {
+            "observed_sum": null,
+            "runs_with_observation": 0,
+            "jobs_in_group": 6
+          }
+        },
+        "client_sessions_observed": 6,
+        "runs_with_session_count": 6,
+        "usage_receipts": {
+          "with_usage": 6,
+          "total": 6,
+          "runs_with_coverage": 6
+        },
+        "exact_inference_requests": null,
+        "exact_cost_usd": null,
+        "note": "Native-client token observations can be incomplete; session counts are not exact inference requests and no exact charge is available.",
+        "interrupted": {
+          "jobs_in_group": 0,
+          "jobs_with_public_run": 0,
+          "tokens": {
+            "input": {
+              "observed_sum": null,
+              "runs_with_observation": 0,
+              "jobs_in_group": 0
+            },
+            "output": {
+              "observed_sum": null,
+              "runs_with_observation": 0,
+              "jobs_in_group": 0
+            },
+            "thinking": {
+              "observed_sum": null,
+              "runs_with_observation": 0,
+              "jobs_in_group": 0
+            },
+            "total": {
+              "observed_sum": null,
+              "runs_with_observation": 0,
+              "jobs_in_group": 0
+            }
+          },
+          "client_sessions_observed": 0,
+          "runs_with_session_count": 0,
+          "usage_receipts": {
+            "with_usage": 0,
+            "total": 0,
+            "runs_with_coverage": 0
+          },
+          "exact_inference_requests": null,
+          "exact_cost_usd": null,
+          "note": "Native-client token observations can be incomplete; session counts are not exact inference requests and no exact charge is available."
+        }
+      }
+    },
+    "unaided-2": {
+      "planned": 24,
+      "completed": 0,
+      "valid": 0,
+      "nonvalid_completed": 0,
+      "interrupted": 0,
+      "active": 0,
+      "pending": 24,
+      "outcome_counts": {
+        "valid": 0,
+        "invalid": 0,
+        "parse_error": 0,
+        "transport_error": 0,
+        "protocol_error": 0,
+        "missing": 0,
+        "interrupted": 0
+      },
+      "loss": {
+        "completed_sum": 0,
+        "completed_mean": null,
+        "full_census_mean": null,
+        "denominator_completed": 0,
+        "denominator_planned": 24
+      },
+      "valid_proof_lengths": {
+        "sum": 0,
+        "mean": null,
+        "par_sum_for_valid": 0,
+        "pairs": []
+      },
+      "budget_per_job": {
+        "wall_seconds": 900,
+        "max_tool_calls": 0
+      },
+      "native_observations": {
+        "jobs_in_group": 0,
+        "jobs_with_public_run": 0,
+        "tokens": {
+          "input": {
+            "observed_sum": null,
+            "runs_with_observation": 0,
+            "jobs_in_group": 0
+          },
+          "output": {
+            "observed_sum": null,
+            "runs_with_observation": 0,
+            "jobs_in_group": 0
+          },
+          "thinking": {
+            "observed_sum": null,
+            "runs_with_observation": 0,
+            "jobs_in_group": 0
+          },
+          "total": {
+            "observed_sum": null,
+            "runs_with_observation": 0,
+            "jobs_in_group": 0
+          }
+        },
+        "client_sessions_observed": 0,
+        "runs_with_session_count": 0,
+        "usage_receipts": {
+          "with_usage": 0,
+          "total": 0,
+          "runs_with_coverage": 0
+        },
+        "exact_inference_requests": null,
+        "exact_cost_usd": null,
+        "note": "Native-client token observations can be incomplete; session counts are not exact inference requests and no exact charge is available.",
+        "interrupted": {
+          "jobs_in_group": 0,
+          "jobs_with_public_run": 0,
+          "tokens": {
+            "input": {
+              "observed_sum": null,
+              "runs_with_observation": 0,
+              "jobs_in_group": 0
+            },
+            "output": {
+              "observed_sum": null,
+              "runs_with_observation": 0,
+              "jobs_in_group": 0
+            },
+            "thinking": {
+              "observed_sum": null,
+              "runs_with_observation": 0,
+              "jobs_in_group": 0
+            },
+            "total": {
+              "observed_sum": null,
+              "runs_with_observation": 0,
+              "jobs_in_group": 0
+            }
+          },
+          "client_sessions_observed": 0,
+          "runs_with_session_count": 0,
+          "usage_receipts": {
+            "with_usage": 0,
+            "total": 0,
+            "runs_with_coverage": 0
+          },
+          "exact_inference_requests": null,
+          "exact_cost_usd": null,
+          "note": "Native-client token observations can be incomplete; session counts are not exact inference requests and no exact charge is available."
+        }
+      }
+    },
+    "frontier-fresh": {
+      "planned": 24,
+      "completed": 2,
+      "valid": 2,
+      "nonvalid_completed": 0,
+      "interrupted": 4,
+      "active": 0,
+      "pending": 18,
+      "outcome_counts": {
+        "valid": 2,
+        "invalid": 0,
+        "parse_error": 0,
+        "transport_error": 0,
+        "protocol_error": 0,
+        "missing": 0,
+        "interrupted": 0
+      },
+      "loss": {
+        "completed_sum": 0.8448275862068966,
+        "completed_mean": 0.4224137931034483,
+        "full_census_mean": null,
+        "denominator_completed": 2,
+        "denominator_planned": 24
+      },
+      "valid_proof_lengths": {
+        "sum": 21,
+        "mean": 10.5,
+        "par_sum_for_valid": 30,
+        "pairs": [
+          {
+            "item_id": "g1-2000011",
+            "lines": 10,
+            "par": 19
+          },
+          {
+            "item_id": "g1-2000021",
+            "lines": 11,
+            "par": 11
+          }
+        ]
+      },
+      "budget_per_job": {
+        "wall_seconds": 900,
+        "max_tool_calls": 128
+      },
+      "native_observations": {
+        "jobs_in_group": 2,
+        "jobs_with_public_run": 2,
+        "tokens": {
+          "input": {
+            "observed_sum": 497289,
+            "runs_with_observation": 2,
+            "jobs_in_group": 2
+          },
+          "output": {
+            "observed_sum": 44349,
+            "runs_with_observation": 2,
+            "jobs_in_group": 2
+          },
+          "thinking": {
+            "observed_sum": null,
+            "runs_with_observation": 0,
+            "jobs_in_group": 2
+          },
+          "total": {
+            "observed_sum": null,
+            "runs_with_observation": 0,
+            "jobs_in_group": 2
+          }
+        },
+        "client_sessions_observed": 7,
+        "runs_with_session_count": 2,
+        "usage_receipts": {
+          "with_usage": 7,
+          "total": 7,
+          "runs_with_coverage": 2
+        },
+        "exact_inference_requests": null,
+        "exact_cost_usd": null,
+        "note": "Native-client token observations can be incomplete; session counts are not exact inference requests and no exact charge is available.",
+        "interrupted": {
+          "jobs_in_group": 4,
+          "jobs_with_public_run": 3,
+          "tokens": {
+            "input": {
+              "observed_sum": 186213,
+              "runs_with_observation": 3,
+              "jobs_in_group": 4
+            },
+            "output": {
+              "observed_sum": 31108,
+              "runs_with_observation": 3,
+              "jobs_in_group": 4
+            },
+            "thinking": {
+              "observed_sum": null,
+              "runs_with_observation": 0,
+              "jobs_in_group": 4
+            },
+            "total": {
+              "observed_sum": null,
+              "runs_with_observation": 0,
+              "jobs_in_group": 4
+            }
+          },
+          "client_sessions_observed": 17,
+          "runs_with_session_count": 3,
+          "usage_receipts": {
+            "with_usage": 6,
+            "total": 17,
+            "runs_with_coverage": 3
+          },
+          "exact_inference_requests": null,
+          "exact_cost_usd": null,
+          "note": "Native-client token observations can be incomplete; session counts are not exact inference requests and no exact charge is available."
+        }
+      }
+    },
+    "frontier-cumulative": {
+      "planned": 24,
+      "completed": 0,
+      "valid": 0,
+      "nonvalid_completed": 0,
+      "interrupted": 0,
+      "active": 0,
+      "pending": 24,
+      "outcome_counts": {
+        "valid": 0,
+        "invalid": 0,
+        "parse_error": 0,
+        "transport_error": 0,
+        "protocol_error": 0,
+        "missing": 0,
+        "interrupted": 0
+      },
+      "loss": {
+        "completed_sum": 0,
+        "completed_mean": null,
+        "full_census_mean": null,
+        "denominator_completed": 0,
+        "denominator_planned": 24
+      },
+      "valid_proof_lengths": {
+        "sum": 0,
+        "mean": null,
+        "par_sum_for_valid": 0,
+        "pairs": []
+      },
+      "budget_per_job": {
+        "wall_seconds": 900,
+        "max_tool_calls": 128
+      },
+      "native_observations": {
+        "jobs_in_group": 0,
+        "jobs_with_public_run": 0,
+        "tokens": {
+          "input": {
+            "observed_sum": null,
+            "runs_with_observation": 0,
+            "jobs_in_group": 0
+          },
+          "output": {
+            "observed_sum": null,
+            "runs_with_observation": 0,
+            "jobs_in_group": 0
+          },
+          "thinking": {
+            "observed_sum": null,
+            "runs_with_observation": 0,
+            "jobs_in_group": 0
+          },
+          "total": {
+            "observed_sum": null,
+            "runs_with_observation": 0,
+            "jobs_in_group": 0
+          }
+        },
+        "client_sessions_observed": 0,
+        "runs_with_session_count": 0,
+        "usage_receipts": {
+          "with_usage": 0,
+          "total": 0,
+          "runs_with_coverage": 0
+        },
+        "exact_inference_requests": null,
+        "exact_cost_usd": null,
+        "note": "Native-client token observations can be incomplete; session counts are not exact inference requests and no exact charge is available.",
+        "interrupted": {
+          "jobs_in_group": 0,
+          "jobs_with_public_run": 0,
+          "tokens": {
+            "input": {
+              "observed_sum": null,
+              "runs_with_observation": 0,
+              "jobs_in_group": 0
+            },
+            "output": {
+              "observed_sum": null,
+              "runs_with_observation": 0,
+              "jobs_in_group": 0
+            },
+            "thinking": {
+              "observed_sum": null,
+              "runs_with_observation": 0,
+              "jobs_in_group": 0
+            },
+            "total": {
+              "observed_sum": null,
+              "runs_with_observation": 0,
+              "jobs_in_group": 0
+            }
+          },
+          "client_sessions_observed": 0,
+          "runs_with_session_count": 0,
+          "usage_receipts": {
+            "with_usage": 0,
+            "total": 0,
+            "runs_with_coverage": 0
+          },
+          "exact_inference_requests": null,
+          "exact_cost_usd": null,
+          "note": "Native-client token observations can be incomplete; session counts are not exact inference requests and no exact charge is available."
+        }
+      }
+    }
+  },
+  "native_observations": {
+    "completed": {
+      "jobs_in_group": 8,
+      "jobs_with_public_run": 8,
+      "tokens": {
+        "input": {
+          "observed_sum": 504995,
+          "runs_with_observation": 8,
+          "jobs_in_group": 8
+        },
+        "output": {
+          "observed_sum": 59557,
+          "runs_with_observation": 8,
+          "jobs_in_group": 8
+        },
+        "thinking": {
+          "observed_sum": null,
+          "runs_with_observation": 0,
+          "jobs_in_group": 8
+        },
+        "total": {
+          "observed_sum": null,
+          "runs_with_observation": 0,
+          "jobs_in_group": 8
+        }
+      },
+      "client_sessions_observed": 13,
+      "runs_with_session_count": 8,
+      "usage_receipts": {
+        "with_usage": 13,
+        "total": 13,
+        "runs_with_coverage": 8
+      },
+      "exact_inference_requests": null,
+      "exact_cost_usd": null,
+      "note": "Native-client token observations can be incomplete; session counts are not exact inference requests and no exact charge is available."
+    },
+    "interrupted": {
+      "jobs_in_group": 4,
+      "jobs_with_public_run": 3,
+      "tokens": {
+        "input": {
+          "observed_sum": 186213,
+          "runs_with_observation": 3,
+          "jobs_in_group": 4
+        },
+        "output": {
+          "observed_sum": 31108,
+          "runs_with_observation": 3,
+          "jobs_in_group": 4
+        },
+        "thinking": {
+          "observed_sum": null,
+          "runs_with_observation": 0,
+          "jobs_in_group": 4
+        },
+        "total": {
+          "observed_sum": null,
+          "runs_with_observation": 0,
+          "jobs_in_group": 4
+        }
+      },
+      "client_sessions_observed": 17,
+      "runs_with_session_count": 3,
+      "usage_receipts": {
+        "with_usage": 6,
+        "total": 17,
+        "runs_with_coverage": 3
+      },
+      "exact_inference_requests": null,
+      "exact_cost_usd": null,
+      "note": "Native-client token observations can be incomplete; session counts are not exact inference requests and no exact charge is available."
+    }
+  },
+  "matched_comparisons": {
+    "unaided_1_to_frontier_fresh": {
+      "left": "unaided-1",
+      "right": "frontier-fresh",
+      "planned_pairs": 24,
+      "matched_completed_pairs": 2,
+      "unmatched_pairs": 22,
+      "mean_loss_delta_matched": 0,
+      "full_census_mean_loss_delta": null,
+      "right_improved": 0,
+      "tied": 2,
+      "right_worsened": 0,
+      "both_valid_length_pairs": 2,
+      "mean_absolute_loss_difference_matched": 0,
+      "items": [
+        {
+          "item_id": "g1-2000001",
+          "par": 13,
+          "left_status": "complete",
+          "right_status": "interrupted",
+          "matched_completed": false,
+          "left_verdict": null,
+          "right_verdict": null,
+          "left_lines": null,
+          "right_lines": null,
+          "left_loss": null,
+          "right_loss": null,
+          "loss_delta_right_minus_left": null,
+          "line_delta_when_both_valid": null
+        },
+        {
+          "item_id": "g1-2000011",
+          "par": 19,
+          "left_status": "complete",
+          "right_status": "complete",
+          "matched_completed": true,
+          "left_verdict": "valid",
+          "right_verdict": "valid",
+          "left_lines": 10,
+          "right_lines": 10,
+          "left_loss": 0.3448275862068966,
+          "right_loss": 0.3448275862068966,
+          "loss_delta_right_minus_left": 0,
+          "line_delta_when_both_valid": 0
+        },
+        {
+          "item_id": "g1-2000013",
+          "par": 13,
+          "left_status": "complete",
+          "right_status": "interrupted",
+          "matched_completed": false,
+          "left_verdict": null,
+          "right_verdict": null,
+          "left_lines": null,
+          "right_lines": null,
+          "left_loss": null,
+          "right_loss": null,
+          "loss_delta_right_minus_left": null,
+          "line_delta_when_both_valid": null
+        },
+        {
+          "item_id": "g1-2000021",
+          "par": 11,
+          "left_status": "complete",
+          "right_status": "complete",
+          "matched_completed": true,
+          "left_verdict": "valid",
+          "right_verdict": "valid",
+          "left_lines": 11,
+          "right_lines": 11,
+          "left_loss": 0.5,
+          "right_loss": 0.5,
+          "loss_delta_right_minus_left": 0,
+          "line_delta_when_both_valid": 0
+        },
+        {
+          "item_id": "g1-2000025",
+          "par": 16,
+          "left_status": "complete",
+          "right_status": "interrupted",
+          "matched_completed": false,
+          "left_verdict": null,
+          "right_verdict": null,
+          "left_lines": null,
+          "right_lines": null,
+          "left_loss": null,
+          "right_loss": null,
+          "loss_delta_right_minus_left": null,
+          "line_delta_when_both_valid": null
+        },
+        {
+          "item_id": "g1-2000031",
+          "par": 13,
+          "left_status": "complete",
+          "right_status": "interrupted",
+          "matched_completed": false,
+          "left_verdict": null,
+          "right_verdict": null,
+          "left_lines": null,
+          "right_lines": null,
+          "left_loss": null,
+          "right_loss": null,
+          "loss_delta_right_minus_left": null,
+          "line_delta_when_both_valid": null
+        },
+        {
+          "item_id": "g1-2000034",
+          "par": 15,
+          "left_status": "queued",
+          "right_status": "queued",
+          "matched_completed": false,
+          "left_verdict": null,
+          "right_verdict": null,
+          "left_lines": null,
+          "right_lines": null,
+          "left_loss": null,
+          "right_loss": null,
+          "loss_delta_right_minus_left": null,
+          "line_delta_when_both_valid": null
+        },
+        {
+          "item_id": "g1-2000035",
+          "par": 18,
+          "left_status": "queued",
+          "right_status": "queued",
+          "matched_completed": false,
+          "left_verdict": null,
+          "right_verdict": null,
+          "left_lines": null,
+          "right_lines": null,
+          "left_loss": null,
+          "right_loss": null,
+          "loss_delta_right_minus_left": null,
+          "line_delta_when_both_valid": null
+        },
+        {
+          "item_id": "g2-2100023",
+          "par": 23,
+          "left_status": "queued",
+          "right_status": "queued",
+          "matched_completed": false,
+          "left_verdict": null,
+          "right_verdict": null,
+          "left_lines": null,
+          "right_lines": null,
+          "left_loss": null,
+          "right_loss": null,
+          "loss_delta_right_minus_left": null,
+          "line_delta_when_both_valid": null
+        },
+        {
+          "item_id": "g2-2100030",
+          "par": 17,
+          "left_status": "queued",
+          "right_status": "queued",
+          "matched_completed": false,
+          "left_verdict": null,
+          "right_verdict": null,
+          "left_lines": null,
+          "right_lines": null,
+          "left_loss": null,
+          "right_loss": null,
+          "loss_delta_right_minus_left": null,
+          "line_delta_when_both_valid": null
+        },
+        {
+          "item_id": "g2-2100067",
+          "par": 20,
+          "left_status": "queued",
+          "right_status": "queued",
+          "matched_completed": false,
+          "left_verdict": null,
+          "right_verdict": null,
+          "left_lines": null,
+          "right_lines": null,
+          "left_loss": null,
+          "right_loss": null,
+          "loss_delta_right_minus_left": null,
+          "line_delta_when_both_valid": null
+        },
+        {
+          "item_id": "g2-2100087",
+          "par": 17,
+          "left_status": "queued",
+          "right_status": "queued",
+          "matched_completed": false,
+          "left_verdict": null,
+          "right_verdict": null,
+          "left_lines": null,
+          "right_lines": null,
+          "left_loss": null,
+          "right_loss": null,
+          "loss_delta_right_minus_left": null,
+          "line_delta_when_both_valid": null
+        },
+        {
+          "item_id": "g2-2100100",
+          "par": 18,
+          "left_status": "queued",
+          "right_status": "queued",
+          "matched_completed": false,
+          "left_verdict": null,
+          "right_verdict": null,
+          "left_lines": null,
+          "right_lines": null,
+          "left_loss": null,
+          "right_loss": null,
+          "loss_delta_right_minus_left": null,
+          "line_delta_when_both_valid": null
+        },
+        {
+          "item_id": "g2-2100122",
+          "par": 21,
+          "left_status": "queued",
+          "right_status": "queued",
+          "matched_completed": false,
+          "left_verdict": null,
+          "right_verdict": null,
+          "left_lines": null,
+          "right_lines": null,
+          "left_loss": null,
+          "right_loss": null,
+          "loss_delta_right_minus_left": null,
+          "line_delta_when_both_valid": null
+        },
+        {
+          "item_id": "g2-2100153",
+          "par": 18,
+          "left_status": "queued",
+          "right_status": "queued",
+          "matched_completed": false,
+          "left_verdict": null,
+          "right_verdict": null,
+          "left_lines": null,
+          "right_lines": null,
+          "left_loss": null,
+          "right_loss": null,
+          "loss_delta_right_minus_left": null,
+          "line_delta_when_both_valid": null
+        },
+        {
+          "item_id": "g2-2100178",
+          "par": 20,
+          "left_status": "queued",
+          "right_status": "queued",
+          "matched_completed": false,
+          "left_verdict": null,
+          "right_verdict": null,
+          "left_lines": null,
+          "right_lines": null,
+          "left_loss": null,
+          "right_loss": null,
+          "loss_delta_right_minus_left": null,
+          "line_delta_when_both_valid": null
+        },
+        {
+          "item_id": "g3-2200607",
+          "par": 25,
+          "left_status": "queued",
+          "right_status": "queued",
+          "matched_completed": false,
+          "left_verdict": null,
+          "right_verdict": null,
+          "left_lines": null,
+          "right_lines": null,
+          "left_loss": null,
+          "right_loss": null,
+          "loss_delta_right_minus_left": null,
+          "line_delta_when_both_valid": null
+        },
+        {
+          "item_id": "g3-2200683",
+          "par": 25,
+          "left_status": "queued",
+          "right_status": "queued",
+          "matched_completed": false,
+          "left_verdict": null,
+          "right_verdict": null,
+          "left_lines": null,
+          "right_lines": null,
+          "left_loss": null,
+          "right_loss": null,
+          "loss_delta_right_minus_left": null,
+          "line_delta_when_both_valid": null
+        },
+        {
+          "item_id": "g3-2200923",
+          "par": 26,
+          "left_status": "queued",
+          "right_status": "queued",
+          "matched_completed": false,
+          "left_verdict": null,
+          "right_verdict": null,
+          "left_lines": null,
+          "right_lines": null,
+          "left_loss": null,
+          "right_loss": null,
+          "loss_delta_right_minus_left": null,
+          "line_delta_when_both_valid": null
+        },
+        {
+          "item_id": "g3-2201428",
+          "par": 29,
+          "left_status": "queued",
+          "right_status": "queued",
+          "matched_completed": false,
+          "left_verdict": null,
+          "right_verdict": null,
+          "left_lines": null,
+          "right_lines": null,
+          "left_loss": null,
+          "right_loss": null,
+          "loss_delta_right_minus_left": null,
+          "line_delta_when_both_valid": null
+        },
+        {
+          "item_id": "g3-2201955",
+          "par": 23,
+          "left_status": "queued",
+          "right_status": "queued",
+          "matched_completed": false,
+          "left_verdict": null,
+          "right_verdict": null,
+          "left_lines": null,
+          "right_lines": null,
+          "left_loss": null,
+          "right_loss": null,
+          "loss_delta_right_minus_left": null,
+          "line_delta_when_both_valid": null
+        },
+        {
+          "item_id": "g3-2202121",
+          "par": 23,
+          "left_status": "queued",
+          "right_status": "queued",
+          "matched_completed": false,
+          "left_verdict": null,
+          "right_verdict": null,
+          "left_lines": null,
+          "right_lines": null,
+          "left_loss": null,
+          "right_loss": null,
+          "loss_delta_right_minus_left": null,
+          "line_delta_when_both_valid": null
+        },
+        {
+          "item_id": "g3-2204890",
+          "par": 25,
+          "left_status": "queued",
+          "right_status": "queued",
+          "matched_completed": false,
+          "left_verdict": null,
+          "right_verdict": null,
+          "left_lines": null,
+          "right_lines": null,
+          "left_loss": null,
+          "right_loss": null,
+          "loss_delta_right_minus_left": null,
+          "line_delta_when_both_valid": null
+        },
+        {
+          "item_id": "g3-2205032",
+          "par": 27,
+          "left_status": "queued",
+          "right_status": "queued",
+          "matched_completed": false,
+          "left_verdict": null,
+          "right_verdict": null,
+          "left_lines": null,
+          "right_lines": null,
+          "left_loss": null,
+          "right_loss": null,
+          "loss_delta_right_minus_left": null,
+          "line_delta_when_both_valid": null
+        }
+      ],
+      "wall_allowance_per_job_seconds": 900,
+      "unaided_max_tool_calls": 0,
+      "frontier_max_tool_calls": 128,
+      "interpretation": "Each run has the same 900-second wall allowance. Tool access and native inference differ, so this is neither an equal-compute comparison nor a causal estimate of tool benefit."
+    },
+    "unaided_2_to_frontier_fresh": {
+      "left": "unaided-2",
+      "right": "frontier-fresh",
+      "planned_pairs": 24,
+      "matched_completed_pairs": 0,
+      "unmatched_pairs": 24,
+      "mean_loss_delta_matched": null,
+      "full_census_mean_loss_delta": null,
+      "right_improved": 0,
+      "tied": 0,
+      "right_worsened": 0,
+      "both_valid_length_pairs": 0,
+      "mean_absolute_loss_difference_matched": null,
+      "items": [
+        {
+          "item_id": "g1-2000001",
+          "par": 13,
+          "left_status": "queued",
+          "right_status": "interrupted",
+          "matched_completed": false,
+          "left_verdict": null,
+          "right_verdict": null,
+          "left_lines": null,
+          "right_lines": null,
+          "left_loss": null,
+          "right_loss": null,
+          "loss_delta_right_minus_left": null,
+          "line_delta_when_both_valid": null
+        },
+        {
+          "item_id": "g1-2000011",
+          "par": 19,
+          "left_status": "queued",
+          "right_status": "complete",
+          "matched_completed": false,
+          "left_verdict": null,
+          "right_verdict": null,
+          "left_lines": null,
+          "right_lines": null,
+          "left_loss": null,
+          "right_loss": null,
+          "loss_delta_right_minus_left": null,
+          "line_delta_when_both_valid": null
+        },
+        {
+          "item_id": "g1-2000013",
+          "par": 13,
+          "left_status": "queued",
+          "right_status": "interrupted",
+          "matched_completed": false,
+          "left_verdict": null,
+          "right_verdict": null,
+          "left_lines": null,
+          "right_lines": null,
+          "left_loss": null,
+          "right_loss": null,
+          "loss_delta_right_minus_left": null,
+          "line_delta_when_both_valid": null
+        },
+        {
+          "item_id": "g1-2000021",
+          "par": 11,
+          "left_status": "queued",
+          "right_status": "complete",
+          "matched_completed": false,
+          "left_verdict": null,
+          "right_verdict": null,
+          "left_lines": null,
+          "right_lines": null,
+          "left_loss": null,
+          "right_loss": null,
+          "loss_delta_right_minus_left": null,
+          "line_delta_when_both_valid": null
+        },
+        {
+          "item_id": "g1-2000025",
+          "par": 16,
+          "left_status": "queued",
+          "right_status": "interrupted",
+          "matched_completed": false,
+          "left_verdict": null,
+          "right_verdict": null,
+          "left_lines": null,
+          "right_lines": null,
+          "left_loss": null,
+          "right_loss": null,
+          "loss_delta_right_minus_left": null,
+          "line_delta_when_both_valid": null
+        },
+        {
+          "item_id": "g1-2000031",
+          "par": 13,
+          "left_status": "queued",
+          "right_status": "interrupted",
+          "matched_completed": false,
+          "left_verdict": null,
+          "right_verdict": null,
+          "left_lines": null,
+          "right_lines": null,
+          "left_loss": null,
+          "right_loss": null,
+          "loss_delta_right_minus_left": null,
+          "line_delta_when_both_valid": null
+        },
+        {
+          "item_id": "g1-2000034",
+          "par": 15,
+          "left_status": "queued",
+          "right_status": "queued",
+          "matched_completed": false,
+          "left_verdict": null,
+          "right_verdict": null,
+          "left_lines": null,
+          "right_lines": null,
+          "left_loss": null,
+          "right_loss": null,
+          "loss_delta_right_minus_left": null,
+          "line_delta_when_both_valid": null
+        },
+        {
+          "item_id": "g1-2000035",
+          "par": 18,
+          "left_status": "queued",
+          "right_status": "queued",
+          "matched_completed": false,
+          "left_verdict": null,
+          "right_verdict": null,
+          "left_lines": null,
+          "right_lines": null,
+          "left_loss": null,
+          "right_loss": null,
+          "loss_delta_right_minus_left": null,
+          "line_delta_when_both_valid": null
+        },
+        {
+          "item_id": "g2-2100023",
+          "par": 23,
+          "left_status": "queued",
+          "right_status": "queued",
+          "matched_completed": false,
+          "left_verdict": null,
+          "right_verdict": null,
+          "left_lines": null,
+          "right_lines": null,
+          "left_loss": null,
+          "right_loss": null,
+          "loss_delta_right_minus_left": null,
+          "line_delta_when_both_valid": null
+        },
+        {
+          "item_id": "g2-2100030",
+          "par": 17,
+          "left_status": "queued",
+          "right_status": "queued",
+          "matched_completed": false,
+          "left_verdict": null,
+          "right_verdict": null,
+          "left_lines": null,
+          "right_lines": null,
+          "left_loss": null,
+          "right_loss": null,
+          "loss_delta_right_minus_left": null,
+          "line_delta_when_both_valid": null
+        },
+        {
+          "item_id": "g2-2100067",
+          "par": 20,
+          "left_status": "queued",
+          "right_status": "queued",
+          "matched_completed": false,
+          "left_verdict": null,
+          "right_verdict": null,
+          "left_lines": null,
+          "right_lines": null,
+          "left_loss": null,
+          "right_loss": null,
+          "loss_delta_right_minus_left": null,
+          "line_delta_when_both_valid": null
+        },
+        {
+          "item_id": "g2-2100087",
+          "par": 17,
+          "left_status": "queued",
+          "right_status": "queued",
+          "matched_completed": false,
+          "left_verdict": null,
+          "right_verdict": null,
+          "left_lines": null,
+          "right_lines": null,
+          "left_loss": null,
+          "right_loss": null,
+          "loss_delta_right_minus_left": null,
+          "line_delta_when_both_valid": null
+        },
+        {
+          "item_id": "g2-2100100",
+          "par": 18,
+          "left_status": "queued",
+          "right_status": "queued",
+          "matched_completed": false,
+          "left_verdict": null,
+          "right_verdict": null,
+          "left_lines": null,
+          "right_lines": null,
+          "left_loss": null,
+          "right_loss": null,
+          "loss_delta_right_minus_left": null,
+          "line_delta_when_both_valid": null
+        },
+        {
+          "item_id": "g2-2100122",
+          "par": 21,
+          "left_status": "queued",
+          "right_status": "queued",
+          "matched_completed": false,
+          "left_verdict": null,
+          "right_verdict": null,
+          "left_lines": null,
+          "right_lines": null,
+          "left_loss": null,
+          "right_loss": null,
+          "loss_delta_right_minus_left": null,
+          "line_delta_when_both_valid": null
+        },
+        {
+          "item_id": "g2-2100153",
+          "par": 18,
+          "left_status": "queued",
+          "right_status": "queued",
+          "matched_completed": false,
+          "left_verdict": null,
+          "right_verdict": null,
+          "left_lines": null,
+          "right_lines": null,
+          "left_loss": null,
+          "right_loss": null,
+          "loss_delta_right_minus_left": null,
+          "line_delta_when_both_valid": null
+        },
+        {
+          "item_id": "g2-2100178",
+          "par": 20,
+          "left_status": "queued",
+          "right_status": "queued",
+          "matched_completed": false,
+          "left_verdict": null,
+          "right_verdict": null,
+          "left_lines": null,
+          "right_lines": null,
+          "left_loss": null,
+          "right_loss": null,
+          "loss_delta_right_minus_left": null,
+          "line_delta_when_both_valid": null
+        },
+        {
+          "item_id": "g3-2200607",
+          "par": 25,
+          "left_status": "queued",
+          "right_status": "queued",
+          "matched_completed": false,
+          "left_verdict": null,
+          "right_verdict": null,
+          "left_lines": null,
+          "right_lines": null,
+          "left_loss": null,
+          "right_loss": null,
+          "loss_delta_right_minus_left": null,
+          "line_delta_when_both_valid": null
+        },
+        {
+          "item_id": "g3-2200683",
+          "par": 25,
+          "left_status": "queued",
+          "right_status": "queued",
+          "matched_completed": false,
+          "left_verdict": null,
+          "right_verdict": null,
+          "left_lines": null,
+          "right_lines": null,
+          "left_loss": null,
+          "right_loss": null,
+          "loss_delta_right_minus_left": null,
+          "line_delta_when_both_valid": null
+        },
+        {
+          "item_id": "g3-2200923",
+          "par": 26,
+          "left_status": "queued",
+          "right_status": "queued",
+          "matched_completed": false,
+          "left_verdict": null,
+          "right_verdict": null,
+          "left_lines": null,
+          "right_lines": null,
+          "left_loss": null,
+          "right_loss": null,
+          "loss_delta_right_minus_left": null,
+          "line_delta_when_both_valid": null
+        },
+        {
+          "item_id": "g3-2201428",
+          "par": 29,
+          "left_status": "queued",
+          "right_status": "queued",
+          "matched_completed": false,
+          "left_verdict": null,
+          "right_verdict": null,
+          "left_lines": null,
+          "right_lines": null,
+          "left_loss": null,
+          "right_loss": null,
+          "loss_delta_right_minus_left": null,
+          "line_delta_when_both_valid": null
+        },
+        {
+          "item_id": "g3-2201955",
+          "par": 23,
+          "left_status": "queued",
+          "right_status": "queued",
+          "matched_completed": false,
+          "left_verdict": null,
+          "right_verdict": null,
+          "left_lines": null,
+          "right_lines": null,
+          "left_loss": null,
+          "right_loss": null,
+          "loss_delta_right_minus_left": null,
+          "line_delta_when_both_valid": null
+        },
+        {
+          "item_id": "g3-2202121",
+          "par": 23,
+          "left_status": "queued",
+          "right_status": "queued",
+          "matched_completed": false,
+          "left_verdict": null,
+          "right_verdict": null,
+          "left_lines": null,
+          "right_lines": null,
+          "left_loss": null,
+          "right_loss": null,
+          "loss_delta_right_minus_left": null,
+          "line_delta_when_both_valid": null
+        },
+        {
+          "item_id": "g3-2204890",
+          "par": 25,
+          "left_status": "queued",
+          "right_status": "queued",
+          "matched_completed": false,
+          "left_verdict": null,
+          "right_verdict": null,
+          "left_lines": null,
+          "right_lines": null,
+          "left_loss": null,
+          "right_loss": null,
+          "loss_delta_right_minus_left": null,
+          "line_delta_when_both_valid": null
+        },
+        {
+          "item_id": "g3-2205032",
+          "par": 27,
+          "left_status": "queued",
+          "right_status": "queued",
+          "matched_completed": false,
+          "left_verdict": null,
+          "right_verdict": null,
+          "left_lines": null,
+          "right_lines": null,
+          "left_loss": null,
+          "right_loss": null,
+          "loss_delta_right_minus_left": null,
+          "line_delta_when_both_valid": null
+        }
+      ],
+      "wall_allowance_per_job_seconds": 900,
+      "unaided_max_tool_calls": 0,
+      "frontier_max_tool_calls": 128,
+      "interpretation": "Each run has the same 900-second wall allowance. Tool access and native inference differ, so this is neither an equal-compute comparison nor a causal estimate of tool benefit."
+    },
+    "frontier_fresh_to_cumulative": {
+      "left": "frontier-fresh",
+      "right": "frontier-cumulative",
+      "planned_pairs": 24,
+      "matched_completed_pairs": 0,
+      "unmatched_pairs": 24,
+      "mean_loss_delta_matched": null,
+      "full_census_mean_loss_delta": null,
+      "right_improved": 0,
+      "tied": 0,
+      "right_worsened": 0,
+      "both_valid_length_pairs": 0,
+      "mean_absolute_loss_difference_matched": null,
+      "items": [
+        {
+          "item_id": "g1-2000001",
+          "par": 13,
+          "left_status": "interrupted",
+          "right_status": "queued",
+          "matched_completed": false,
+          "left_verdict": null,
+          "right_verdict": null,
+          "left_lines": null,
+          "right_lines": null,
+          "left_loss": null,
+          "right_loss": null,
+          "loss_delta_right_minus_left": null,
+          "line_delta_when_both_valid": null
+        },
+        {
+          "item_id": "g1-2000011",
+          "par": 19,
+          "left_status": "complete",
+          "right_status": "queued",
+          "matched_completed": false,
+          "left_verdict": null,
+          "right_verdict": null,
+          "left_lines": null,
+          "right_lines": null,
+          "left_loss": null,
+          "right_loss": null,
+          "loss_delta_right_minus_left": null,
+          "line_delta_when_both_valid": null
+        },
+        {
+          "item_id": "g1-2000013",
+          "par": 13,
+          "left_status": "interrupted",
+          "right_status": "queued",
+          "matched_completed": false,
+          "left_verdict": null,
+          "right_verdict": null,
+          "left_lines": null,
+          "right_lines": null,
+          "left_loss": null,
+          "right_loss": null,
+          "loss_delta_right_minus_left": null,
+          "line_delta_when_both_valid": null
+        },
+        {
+          "item_id": "g1-2000021",
+          "par": 11,
+          "left_status": "complete",
+          "right_status": "queued",
+          "matched_completed": false,
+          "left_verdict": null,
+          "right_verdict": null,
+          "left_lines": null,
+          "right_lines": null,
+          "left_loss": null,
+          "right_loss": null,
+          "loss_delta_right_minus_left": null,
+          "line_delta_when_both_valid": null
+        },
+        {
+          "item_id": "g1-2000025",
+          "par": 16,
+          "left_status": "interrupted",
+          "right_status": "queued",
+          "matched_completed": false,
+          "left_verdict": null,
+          "right_verdict": null,
+          "left_lines": null,
+          "right_lines": null,
+          "left_loss": null,
+          "right_loss": null,
+          "loss_delta_right_minus_left": null,
+          "line_delta_when_both_valid": null
+        },
+        {
+          "item_id": "g1-2000031",
+          "par": 13,
+          "left_status": "interrupted",
+          "right_status": "queued",
+          "matched_completed": false,
+          "left_verdict": null,
+          "right_verdict": null,
+          "left_lines": null,
+          "right_lines": null,
+          "left_loss": null,
+          "right_loss": null,
+          "loss_delta_right_minus_left": null,
+          "line_delta_when_both_valid": null
+        },
+        {
+          "item_id": "g1-2000034",
+          "par": 15,
+          "left_status": "queued",
+          "right_status": "queued",
+          "matched_completed": false,
+          "left_verdict": null,
+          "right_verdict": null,
+          "left_lines": null,
+          "right_lines": null,
+          "left_loss": null,
+          "right_loss": null,
+          "loss_delta_right_minus_left": null,
+          "line_delta_when_both_valid": null
+        },
+        {
+          "item_id": "g1-2000035",
+          "par": 18,
+          "left_status": "queued",
+          "right_status": "queued",
+          "matched_completed": false,
+          "left_verdict": null,
+          "right_verdict": null,
+          "left_lines": null,
+          "right_lines": null,
+          "left_loss": null,
+          "right_loss": null,
+          "loss_delta_right_minus_left": null,
+          "line_delta_when_both_valid": null
+        },
+        {
+          "item_id": "g2-2100023",
+          "par": 23,
+          "left_status": "queued",
+          "right_status": "queued",
+          "matched_completed": false,
+          "left_verdict": null,
+          "right_verdict": null,
+          "left_lines": null,
+          "right_lines": null,
+          "left_loss": null,
+          "right_loss": null,
+          "loss_delta_right_minus_left": null,
+          "line_delta_when_both_valid": null
+        },
+        {
+          "item_id": "g2-2100030",
+          "par": 17,
+          "left_status": "queued",
+          "right_status": "queued",
+          "matched_completed": false,
+          "left_verdict": null,
+          "right_verdict": null,
+          "left_lines": null,
+          "right_lines": null,
+          "left_loss": null,
+          "right_loss": null,
+          "loss_delta_right_minus_left": null,
+          "line_delta_when_both_valid": null
+        },
+        {
+          "item_id": "g2-2100067",
+          "par": 20,
+          "left_status": "queued",
+          "right_status": "queued",
+          "matched_completed": false,
+          "left_verdict": null,
+          "right_verdict": null,
+          "left_lines": null,
+          "right_lines": null,
+          "left_loss": null,
+          "right_loss": null,
+          "loss_delta_right_minus_left": null,
+          "line_delta_when_both_valid": null
+        },
+        {
+          "item_id": "g2-2100087",
+          "par": 17,
+          "left_status": "queued",
+          "right_status": "queued",
+          "matched_completed": false,
+          "left_verdict": null,
+          "right_verdict": null,
+          "left_lines": null,
+          "right_lines": null,
+          "left_loss": null,
+          "right_loss": null,
+          "loss_delta_right_minus_left": null,
+          "line_delta_when_both_valid": null
+        },
+        {
+          "item_id": "g2-2100100",
+          "par": 18,
+          "left_status": "queued",
+          "right_status": "queued",
+          "matched_completed": false,
+          "left_verdict": null,
+          "right_verdict": null,
+          "left_lines": null,
+          "right_lines": null,
+          "left_loss": null,
+          "right_loss": null,
+          "loss_delta_right_minus_left": null,
+          "line_delta_when_both_valid": null
+        },
+        {
+          "item_id": "g2-2100122",
+          "par": 21,
+          "left_status": "queued",
+          "right_status": "queued",
+          "matched_completed": false,
+          "left_verdict": null,
+          "right_verdict": null,
+          "left_lines": null,
+          "right_lines": null,
+          "left_loss": null,
+          "right_loss": null,
+          "loss_delta_right_minus_left": null,
+          "line_delta_when_both_valid": null
+        },
+        {
+          "item_id": "g2-2100153",
+          "par": 18,
+          "left_status": "queued",
+          "right_status": "queued",
+          "matched_completed": false,
+          "left_verdict": null,
+          "right_verdict": null,
+          "left_lines": null,
+          "right_lines": null,
+          "left_loss": null,
+          "right_loss": null,
+          "loss_delta_right_minus_left": null,
+          "line_delta_when_both_valid": null
+        },
+        {
+          "item_id": "g2-2100178",
+          "par": 20,
+          "left_status": "queued",
+          "right_status": "queued",
+          "matched_completed": false,
+          "left_verdict": null,
+          "right_verdict": null,
+          "left_lines": null,
+          "right_lines": null,
+          "left_loss": null,
+          "right_loss": null,
+          "loss_delta_right_minus_left": null,
+          "line_delta_when_both_valid": null
+        },
+        {
+          "item_id": "g3-2200607",
+          "par": 25,
+          "left_status": "queued",
+          "right_status": "queued",
+          "matched_completed": false,
+          "left_verdict": null,
+          "right_verdict": null,
+          "left_lines": null,
+          "right_lines": null,
+          "left_loss": null,
+          "right_loss": null,
+          "loss_delta_right_minus_left": null,
+          "line_delta_when_both_valid": null
+        },
+        {
+          "item_id": "g3-2200683",
+          "par": 25,
+          "left_status": "queued",
+          "right_status": "queued",
+          "matched_completed": false,
+          "left_verdict": null,
+          "right_verdict": null,
+          "left_lines": null,
+          "right_lines": null,
+          "left_loss": null,
+          "right_loss": null,
+          "loss_delta_right_minus_left": null,
+          "line_delta_when_both_valid": null
+        },
+        {
+          "item_id": "g3-2200923",
+          "par": 26,
+          "left_status": "queued",
+          "right_status": "queued",
+          "matched_completed": false,
+          "left_verdict": null,
+          "right_verdict": null,
+          "left_lines": null,
+          "right_lines": null,
+          "left_loss": null,
+          "right_loss": null,
+          "loss_delta_right_minus_left": null,
+          "line_delta_when_both_valid": null
+        },
+        {
+          "item_id": "g3-2201428",
+          "par": 29,
+          "left_status": "queued",
+          "right_status": "queued",
+          "matched_completed": false,
+          "left_verdict": null,
+          "right_verdict": null,
+          "left_lines": null,
+          "right_lines": null,
+          "left_loss": null,
+          "right_loss": null,
+          "loss_delta_right_minus_left": null,
+          "line_delta_when_both_valid": null
+        },
+        {
+          "item_id": "g3-2201955",
+          "par": 23,
+          "left_status": "queued",
+          "right_status": "queued",
+          "matched_completed": false,
+          "left_verdict": null,
+          "right_verdict": null,
+          "left_lines": null,
+          "right_lines": null,
+          "left_loss": null,
+          "right_loss": null,
+          "loss_delta_right_minus_left": null,
+          "line_delta_when_both_valid": null
+        },
+        {
+          "item_id": "g3-2202121",
+          "par": 23,
+          "left_status": "queued",
+          "right_status": "queued",
+          "matched_completed": false,
+          "left_verdict": null,
+          "right_verdict": null,
+          "left_lines": null,
+          "right_lines": null,
+          "left_loss": null,
+          "right_loss": null,
+          "loss_delta_right_minus_left": null,
+          "line_delta_when_both_valid": null
+        },
+        {
+          "item_id": "g3-2204890",
+          "par": 25,
+          "left_status": "queued",
+          "right_status": "queued",
+          "matched_completed": false,
+          "left_verdict": null,
+          "right_verdict": null,
+          "left_lines": null,
+          "right_lines": null,
+          "left_loss": null,
+          "right_loss": null,
+          "loss_delta_right_minus_left": null,
+          "line_delta_when_both_valid": null
+        },
+        {
+          "item_id": "g3-2205032",
+          "par": 27,
+          "left_status": "queued",
+          "right_status": "queued",
+          "matched_completed": false,
+          "left_verdict": null,
+          "right_verdict": null,
+          "left_lines": null,
+          "right_lines": null,
+          "left_loss": null,
+          "right_loss": null,
+          "loss_delta_right_minus_left": null,
+          "line_delta_when_both_valid": null
+        }
+      ],
+      "lineage_budget_per_item": {
+        "fresh_wall_seconds": 900,
+        "cumulative_additional_wall_seconds": 900,
+        "total_wall_seconds": 1800,
+        "fresh_tool_calls": 128,
+        "cumulative_additional_tool_calls": 128,
+        "total_tool_calls": 256
+      },
+      "interpretation": "Cumulative inherits its own fresh archive and receives another allowance; this is a lineage comparison, not equal total compute."
+    },
+    "unaided_replicate_variability": {
+      "left": "unaided-1",
+      "right": "unaided-2",
+      "planned_pairs": 24,
+      "matched_completed_pairs": 0,
+      "unmatched_pairs": 24,
+      "mean_loss_delta_matched": null,
+      "full_census_mean_loss_delta": null,
+      "right_improved": 0,
+      "tied": 0,
+      "right_worsened": 0,
+      "both_valid_length_pairs": 0,
+      "mean_absolute_loss_difference_matched": null,
+      "items": [
+        {
+          "item_id": "g1-2000001",
+          "par": 13,
+          "left_status": "complete",
+          "right_status": "queued",
+          "matched_completed": false,
+          "left_verdict": null,
+          "right_verdict": null,
+          "left_lines": null,
+          "right_lines": null,
+          "left_loss": null,
+          "right_loss": null,
+          "loss_delta_right_minus_left": null,
+          "line_delta_when_both_valid": null
+        },
+        {
+          "item_id": "g1-2000011",
+          "par": 19,
+          "left_status": "complete",
+          "right_status": "queued",
+          "matched_completed": false,
+          "left_verdict": null,
+          "right_verdict": null,
+          "left_lines": null,
+          "right_lines": null,
+          "left_loss": null,
+          "right_loss": null,
+          "loss_delta_right_minus_left": null,
+          "line_delta_when_both_valid": null
+        },
+        {
+          "item_id": "g1-2000013",
+          "par": 13,
+          "left_status": "complete",
+          "right_status": "queued",
+          "matched_completed": false,
+          "left_verdict": null,
+          "right_verdict": null,
+          "left_lines": null,
+          "right_lines": null,
+          "left_loss": null,
+          "right_loss": null,
+          "loss_delta_right_minus_left": null,
+          "line_delta_when_both_valid": null
+        },
+        {
+          "item_id": "g1-2000021",
+          "par": 11,
+          "left_status": "complete",
+          "right_status": "queued",
+          "matched_completed": false,
+          "left_verdict": null,
+          "right_verdict": null,
+          "left_lines": null,
+          "right_lines": null,
+          "left_loss": null,
+          "right_loss": null,
+          "loss_delta_right_minus_left": null,
+          "line_delta_when_both_valid": null
+        },
+        {
+          "item_id": "g1-2000025",
+          "par": 16,
+          "left_status": "complete",
+          "right_status": "queued",
+          "matched_completed": false,
+          "left_verdict": null,
+          "right_verdict": null,
+          "left_lines": null,
+          "right_lines": null,
+          "left_loss": null,
+          "right_loss": null,
+          "loss_delta_right_minus_left": null,
+          "line_delta_when_both_valid": null
+        },
+        {
+          "item_id": "g1-2000031",
+          "par": 13,
+          "left_status": "complete",
+          "right_status": "queued",
+          "matched_completed": false,
+          "left_verdict": null,
+          "right_verdict": null,
+          "left_lines": null,
+          "right_lines": null,
+          "left_loss": null,
+          "right_loss": null,
+          "loss_delta_right_minus_left": null,
+          "line_delta_when_both_valid": null
+        },
+        {
+          "item_id": "g1-2000034",
+          "par": 15,
+          "left_status": "queued",
+          "right_status": "queued",
+          "matched_completed": false,
+          "left_verdict": null,
+          "right_verdict": null,
+          "left_lines": null,
+          "right_lines": null,
+          "left_loss": null,
+          "right_loss": null,
+          "loss_delta_right_minus_left": null,
+          "line_delta_when_both_valid": null
+        },
+        {
+          "item_id": "g1-2000035",
+          "par": 18,
+          "left_status": "queued",
+          "right_status": "queued",
+          "matched_completed": false,
+          "left_verdict": null,
+          "right_verdict": null,
+          "left_lines": null,
+          "right_lines": null,
+          "left_loss": null,
+          "right_loss": null,
+          "loss_delta_right_minus_left": null,
+          "line_delta_when_both_valid": null
+        },
+        {
+          "item_id": "g2-2100023",
+          "par": 23,
+          "left_status": "queued",
+          "right_status": "queued",
+          "matched_completed": false,
+          "left_verdict": null,
+          "right_verdict": null,
+          "left_lines": null,
+          "right_lines": null,
+          "left_loss": null,
+          "right_loss": null,
+          "loss_delta_right_minus_left": null,
+          "line_delta_when_both_valid": null
+        },
+        {
+          "item_id": "g2-2100030",
+          "par": 17,
+          "left_status": "queued",
+          "right_status": "queued",
+          "matched_completed": false,
+          "left_verdict": null,
+          "right_verdict": null,
+          "left_lines": null,
+          "right_lines": null,
+          "left_loss": null,
+          "right_loss": null,
+          "loss_delta_right_minus_left": null,
+          "line_delta_when_both_valid": null
+        },
+        {
+          "item_id": "g2-2100067",
+          "par": 20,
+          "left_status": "queued",
+          "right_status": "queued",
+          "matched_completed": false,
+          "left_verdict": null,
+          "right_verdict": null,
+          "left_lines": null,
+          "right_lines": null,
+          "left_loss": null,
+          "right_loss": null,
+          "loss_delta_right_minus_left": null,
+          "line_delta_when_both_valid": null
+        },
+        {
+          "item_id": "g2-2100087",
+          "par": 17,
+          "left_status": "queued",
+          "right_status": "queued",
+          "matched_completed": false,
+          "left_verdict": null,
+          "right_verdict": null,
+          "left_lines": null,
+          "right_lines": null,
+          "left_loss": null,
+          "right_loss": null,
+          "loss_delta_right_minus_left": null,
+          "line_delta_when_both_valid": null
+        },
+        {
+          "item_id": "g2-2100100",
+          "par": 18,
+          "left_status": "queued",
+          "right_status": "queued",
+          "matched_completed": false,
+          "left_verdict": null,
+          "right_verdict": null,
+          "left_lines": null,
+          "right_lines": null,
+          "left_loss": null,
+          "right_loss": null,
+          "loss_delta_right_minus_left": null,
+          "line_delta_when_both_valid": null
+        },
+        {
+          "item_id": "g2-2100122",
+          "par": 21,
+          "left_status": "queued",
+          "right_status": "queued",
+          "matched_completed": false,
+          "left_verdict": null,
+          "right_verdict": null,
+          "left_lines": null,
+          "right_lines": null,
+          "left_loss": null,
+          "right_loss": null,
+          "loss_delta_right_minus_left": null,
+          "line_delta_when_both_valid": null
+        },
+        {
+          "item_id": "g2-2100153",
+          "par": 18,
+          "left_status": "queued",
+          "right_status": "queued",
+          "matched_completed": false,
+          "left_verdict": null,
+          "right_verdict": null,
+          "left_lines": null,
+          "right_lines": null,
+          "left_loss": null,
+          "right_loss": null,
+          "loss_delta_right_minus_left": null,
+          "line_delta_when_both_valid": null
+        },
+        {
+          "item_id": "g2-2100178",
+          "par": 20,
+          "left_status": "queued",
+          "right_status": "queued",
+          "matched_completed": false,
+          "left_verdict": null,
+          "right_verdict": null,
+          "left_lines": null,
+          "right_lines": null,
+          "left_loss": null,
+          "right_loss": null,
+          "loss_delta_right_minus_left": null,
+          "line_delta_when_both_valid": null
+        },
+        {
+          "item_id": "g3-2200607",
+          "par": 25,
+          "left_status": "queued",
+          "right_status": "queued",
+          "matched_completed": false,
+          "left_verdict": null,
+          "right_verdict": null,
+          "left_lines": null,
+          "right_lines": null,
+          "left_loss": null,
+          "right_loss": null,
+          "loss_delta_right_minus_left": null,
+          "line_delta_when_both_valid": null
+        },
+        {
+          "item_id": "g3-2200683",
+          "par": 25,
+          "left_status": "queued",
+          "right_status": "queued",
+          "matched_completed": false,
+          "left_verdict": null,
+          "right_verdict": null,
+          "left_lines": null,
+          "right_lines": null,
+          "left_loss": null,
+          "right_loss": null,
+          "loss_delta_right_minus_left": null,
+          "line_delta_when_both_valid": null
+        },
+        {
+          "item_id": "g3-2200923",
+          "par": 26,
+          "left_status": "queued",
+          "right_status": "queued",
+          "matched_completed": false,
+          "left_verdict": null,
+          "right_verdict": null,
+          "left_lines": null,
+          "right_lines": null,
+          "left_loss": null,
+          "right_loss": null,
+          "loss_delta_right_minus_left": null,
+          "line_delta_when_both_valid": null
+        },
+        {
+          "item_id": "g3-2201428",
+          "par": 29,
+          "left_status": "queued",
+          "right_status": "queued",
+          "matched_completed": false,
+          "left_verdict": null,
+          "right_verdict": null,
+          "left_lines": null,
+          "right_lines": null,
+          "left_loss": null,
+          "right_loss": null,
+          "loss_delta_right_minus_left": null,
+          "line_delta_when_both_valid": null
+        },
+        {
+          "item_id": "g3-2201955",
+          "par": 23,
+          "left_status": "queued",
+          "right_status": "queued",
+          "matched_completed": false,
+          "left_verdict": null,
+          "right_verdict": null,
+          "left_lines": null,
+          "right_lines": null,
+          "left_loss": null,
+          "right_loss": null,
+          "loss_delta_right_minus_left": null,
+          "line_delta_when_both_valid": null
+        },
+        {
+          "item_id": "g3-2202121",
+          "par": 23,
+          "left_status": "queued",
+          "right_status": "queued",
+          "matched_completed": false,
+          "left_verdict": null,
+          "right_verdict": null,
+          "left_lines": null,
+          "right_lines": null,
+          "left_loss": null,
+          "right_loss": null,
+          "loss_delta_right_minus_left": null,
+          "line_delta_when_both_valid": null
+        },
+        {
+          "item_id": "g3-2204890",
+          "par": 25,
+          "left_status": "queued",
+          "right_status": "queued",
+          "matched_completed": false,
+          "left_verdict": null,
+          "right_verdict": null,
+          "left_lines": null,
+          "right_lines": null,
+          "left_loss": null,
+          "right_loss": null,
+          "loss_delta_right_minus_left": null,
+          "line_delta_when_both_valid": null
+        },
+        {
+          "item_id": "g3-2205032",
+          "par": 27,
+          "left_status": "queued",
+          "right_status": "queued",
+          "matched_completed": false,
+          "left_verdict": null,
+          "right_verdict": null,
+          "left_lines": null,
+          "right_lines": null,
+          "left_loss": null,
+          "right_loss": null,
+          "loss_delta_right_minus_left": null,
+          "line_delta_when_both_valid": null
+        }
+      ],
+      "interpretation": "Two independent unaided attempts are separate prespecified replicates. No best-of-two pooling is used as a single-attempt condition."
+    }
+  },
+  "interpretation": "This is a descriptive census of 24 public synthetic items. Partial completed subsets are shown with explicit denominators; no population inference is claimed.",
+  "source_export_sha256": "f2415cf98ee232df23ce50e4426b25ba55816074ffafa78019f39f6b3977b7f9"
+}

@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="color-scheme" content="light">
+    <meta name="description" content="PropBench is a public, read-only record of verified propositional proof search under Frontier and Unaided conditions.">
+    <title>PropBench — Interrupted engineering pilot</title>
+    <link rel="icon" href="./favicon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="./style.css">
+    <script type="module" src="./app.js"></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <div class="site-shell">
+      <header class="masthead" id="top">
+        <a class="brand" href="#top" aria-label="PropBench home">
+          <span class="brand-mark" aria-hidden="true"><span>∴</span></span>
+          <span>PROP<span class="brand-light">BENCH</span></span>
+        </a>
+        <nav class="primary-nav" aria-label="Primary">
+          <a href="#tracks">Tracks</a>
+          <a href="#results">Results</a>
+          <a href="#method">Method</a>
+        </nav>
+        <span class="masthead-note">A public research record <span aria-hidden="true">↗</span></span>
+      </header>
+
+      <main id="main"><aside class="interpretation"><p><strong>Interrupted engineering pilot.</strong> Twelve jobs were dispatched: eight completed and four were interrupted. This record is preserved separately from the repaired campaign. <a href="../../">Return to the current study →</a></p></aside>
+        <section class="hero" aria-labelledby="hero-title">
+          <div class="hero-copy">
+            <div class="eyebrow"><span class="eyebrow-rule"></span> PROPOSITIONAL LOGIC · PROOF GOLF</div>
+            <h1 id="hero-title">How short can<br><em>a proof</em> get?</h1>
+            <p class="hero-deck">PropBench records what agents find when asked to shorten formal proofs. Every published length is checked by an independent verifier; every result keeps its tool condition and budget in view.</p>
+            <div class="hero-actions">
+              <a class="button button-primary" href="#results">Explore the evidence <span aria-hidden="true">↗</span></a>
+              <a class="text-link" href="#method">Read the method <span aria-hidden="true">↗</span></a>
+            </div>
+          </div>
+          <aside class="hero-specimen" aria-label="How PropBench measures a proof">
+            <div class="specimen-top"><span>MEASUREMENT NOTE / 01</span><span class="specimen-sun" aria-hidden="true">✳</span></div>
+            <div class="specimen-formula" aria-label="Loss equals verified lines divided by verified lines plus reference par">loss <span>=</span> <span class="fraction"><span>L</span><span>L + P</span></span></div>
+            <div class="specimen-explain"><span><strong>L</strong> Verified proof lines</span><span><strong>P</strong> Achievable reference par</span></div>
+            <div class="specimen-foot">Lower is better · A missing or invalid proof has loss 1 · Par is not a known optimum</div>
+          </aside>
+        </section>
+
+        <div class="chapter-line" aria-hidden="true"><span>01 / THE QUESTION</span><span>FORMAL PROOFS, OBSERVED SEARCH</span></div>
+
+        <section class="intro section-grid" id="tracks" aria-labelledby="tracks-title">
+          <div class="section-label"><span class="section-index">01</span><span>THE TWO CONDITIONS</span></div>
+          <div class="section-body">
+            <h2 id="tracks-title">One theorem set.<br>Two ways to work.</h2>
+            <p class="section-lead">The tracks share the same proof rules and verifier. They differ in what the contestant can do before handing in a proof.</p>
+            <div class="track-grid">
+              <article class="track-card frontier-card">
+                <div class="track-top"><span class="track-number">01 / F</span><span class="track-glyph" aria-hidden="true">↗</span></div>
+                <h3>Frontier</h3>
+                <p class="track-subtitle">Fully tooled line minimization</p>
+                <p>An agent may write scripts, search, build solvers, call its isolated verifier, and delegate within a shared budget. It can test candidates and keep improving them until the run ends.</p>
+                <div class="track-tag">Tool use + verifier feedback</div>
+              </article>
+              <article class="track-card unaided-card">
+                <div class="track-top"><span class="track-number">02 / U</span><span class="track-glyph" aria-hidden="true">→</span></div>
+                <h3>Unaided</h3>
+                <p class="track-subtitle">Proof construction in one pass</p>
+                <p>A fresh model session sees one theorem and returns its final proof. It has no filesystem, shell, scripts, browser, delegation, or verifier feedback. Grading happens afterward.</p>
+                <div class="track-tag">No external tools or feedback</div>
+              </article>
+            </div>
+            <p class="track-note">Frontier’s <strong>fresh</strong> mode begins without prior proof-search history. <strong>Cumulative</strong> mode starts from an explicit earlier snapshot; its inherited work and new budget must be read together. Results from different conditions are not a single ranking.</p>
+          </div>
+        </section>
+
+        <section class="results-section" id="results" aria-labelledby="results-title">
+          <div class="results-head section-grid">
+            <div class="section-label"><span class="section-index">02</span><span>THE OBSERVATIONS</span></div>
+            <div class="section-body">
+              <div class="results-title-row"><div><h2 id="results-title">The evidence,<br>item by item.</h2><p class="section-lead">Explore the planned conditions and published runs, then open a theorem to inspect its verifier outcome and proof.</p></div><span class="data-stamp" id="data-stamp">DATA NOT LOADED</span></div>
+              <div class="resource-links" id="resource-links" aria-label="Research resources"></div>
+              <div class="campaign-summary" id="campaign-summary"></div>
+            </div>
+          </div>
+          <div class="results-workspace" id="results-workspace">
+            <div class="loading-state"><span class="loading-glyph" aria-hidden="true">⌁</span><h3>Reading the publication data</h3><p>The results explorer is loading its local data file.</p></div>
+          </div>
+          <details class="dataset-disclosure" id="dataset-disclosure" hidden>
+            <summary><span><span class="micro-label">FROZEN QUESTION SET</span><strong>Browse the theorems</strong></span><span class="dataset-summary-end"><span id="dataset-count">0 items</span><span aria-hidden="true">＋</span></span></summary>
+            <div class="dataset-view" id="dataset-view"></div>
+          </details>
+        </section>
+
+        <section class="method section-grid" id="method" aria-labelledby="method-title">
+          <div class="section-label"><span class="section-index">03</span><span>HOW TO READ THIS</span></div>
+          <div class="section-body">
+            <h2 id="method-title">A length is a claim.<br>Verification makes it evidence.</h2>
+            <div class="method-grid">
+              <article><span class="method-index">A / INPUT</span><h3>Frozen questions</h3><p>Each run names its theorem selection and set identity. A par is a known achievable proof length for comparison; it does not establish the shortest possible proof.</p></article>
+              <article><span class="method-index">B / REFEREE</span><h3>Independent replay</h3><p>The Rust verifier checks proof rules and scope. It counts submitted lines, including assumptions and closing lines. Premises supplied with the theorem are free.</p></article>
+              <article><span class="method-index">C / SCORE</span><h3>Lengths first</h3><p>For a valid proof, loss is L/(L+P). Invalid or missing proofs have loss 1. Completed runs contribute to the condition mean; interrupted runs remain inspectable and are excluded. Coverage and verified lengths show what the mean conceals.</p></article>
+            </div>
+            <div class="interpretation"><span class="interpretation-mark" aria-hidden="true">!</span><p><strong>Interpretation boundary.</strong> Compare runs only when their protocol, selected items, budgets, and starting state align. The frozen set is small and may be familiar to models. A result documents observed search under stated conditions, not general reasoning ability, human equivalence, or a proof of mathematical optimality.</p></div>
+          </div>
+        </section>
+      </main>
+
+      <footer class="footer">
+        <div class="footer-main"><span class="footer-brand">PROP<span>BENCH</span></span><p>An inspectable record of agents looking for shorter formal proofs.</p><a href="#top">Back to top ↑</a></div>
+        <div class="footer-bottom"><span>READ-ONLY PUBLICATION · NO LIVE MODEL ACCESS</span><span id="footer-provenance">Awaiting published data</span></div>
+      </footer>
+    </div>
+  </body>
+</html>

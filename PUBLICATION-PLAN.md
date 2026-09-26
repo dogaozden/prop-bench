@@ -51,8 +51,15 @@ results include both inherited artifacts and an additional time allowance.
 
 ## Durable local evidence
 
-The current campaign lives in `track-runs/publication-20260925/`; contestant
+The replacement campaign is planned at `track-runs/publication-20260926-v2/`; contestant
 workspaces live outside the owner repository. Public artifacts are generated
 under `publication/`. Runtime/source/control evidence stays local unless it is
 explicitly sanitized into the publication bundle. Exact run identities and
 outcomes are recorded by the campaign runner, not this planning document.
+
+The first campaign at `track-runs/publication-20260925/` is retained as an
+interrupted engineering pilot: eight completed jobs, four interrupted jobs and
+84 undispatched jobs. Its public archive is `publication/pilots/20260925/`.
+The replacement uses fresh sessions and runtime 3, with deterministic band
+interleaving as recorded in [the amendment](research/CAMPAIGN-AMENDMENT.md).
+No results or inherited artifacts cross from the pilot into the replacement.

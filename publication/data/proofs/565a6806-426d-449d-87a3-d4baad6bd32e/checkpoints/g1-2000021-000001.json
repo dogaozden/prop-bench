@@ -1,0 +1,13 @@
+[
+ {"line_number":3,"formula":"~P","justification":"Simp 1","depth":0},
+ {"line_number":4,"formula":"S . S","justification":"Taut 2","depth":0},
+ {"line_number":5,"formula":"S","justification":"Simp 4","depth":0},
+ {"line_number":6,"formula":"~P . S","justification":"Conj 3,5","depth":0},
+ {"line_number":7,"formula":"S . (~P . S)","justification":"Conj 5,6","depth":0},
+ {"line_number":8,"formula":"[S . (~P . S)] v R","justification":"Add 7","depth":0},
+ {"line_number":9,"formula":"{[S . (~P . S)] v R} v {[S . (~P . S)] v R}","justification":"Taut 8","depth":0},
+ {"line_number":10,"formula":"~P . {{[S . (~P . S)] v R} v {[S . (~P . S)] v R}}","justification":"Conj 3,9","depth":0},
+ {"line_number":11,"formula":"(~P . S) . {~P . {{[S . (~P . S)] v R} v {[S . (~P . S)] v R}}}","justification":"Conj 6,10","depth":0},
+ {"line_number":12,"formula":"~(S <> ~R) v {(~P . S) . {~P . {{[S . (~P . S)] v R} v {[S . (~P . S)] v R}}}}","justification":"Add 11","depth":0},
+ {"line_number":13,"formula":"(S <> ~R) > {(~P . S) . {~P . {{[S . (~P . S)] v R} v {[S . (~P . S)] v R}}}}","justification":"Impl 12","depth":0}
+]

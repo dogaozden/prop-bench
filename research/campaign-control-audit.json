@@ -1,0 +1,760 @@
+{
+  "schema_version": "propbench-public-native-control-audit-v1",
+  "status": "final_interrupted_pilot",
+  "intended_job_count": 96,
+  "dispatched_job_count": 12,
+  "cutoff_utc": "2026-09-26T05:34:31.793417+00:00",
+  "campaign_state_updated_at": "2026-09-26T05:29:45.935Z",
+  "campaign_id": "5b02fde5-91a6-4c8d-923b-956fee47bc57",
+  "campaign_manifest_sha256": "e0cfc57cf7f528655cebaaac8d9c80f550b1c4642ddab721bd42e1799bfeda40",
+  "campaign_source_commit": "6ba4637874fea00475276543545bc7876bff1f2e",
+  "observed_head": "6ba4637874fea00475276543545bc7876bff1f2e",
+  "source_commit_matches": true,
+  "evaluator_hash": "9f54be528f50f9c886cd25daf5f5c6eeec85c0bf648e439c6b7adbf8a818f735",
+  "requested_model": "gpt-6-astra",
+  "requested_effort": "xhigh",
+  "requested_provider": "codex-subscription",
+  "audited_client_version": "codex-cli 0.158.0-alpha.2",
+  "audited_client_sha256": "c3e30211bd454da70ceb4d9cbc2e05fe6466812ab05c311c3bbff6addeb14202",
+  "configured_service_tier": "default",
+  "native_thread_tier_acceptance": [
+    "null (native default normalization)",
+    "default"
+  ],
+  "native_subscription_authentication": "Native client account-type checks must resolve ChatGPT; account identifiers and account-plan details are omitted.",
+  "constrained_catalog_sha256": "43d12dd28a2a75b13f141a3f21c848c8451112d8cd719f7b95805ddbd96bfa2e",
+  "normalized_control_configuration_sha256": "043dc426454d4331930e0e736db70042ceac9269f2df76043d80f8a326ab3ad7",
+  "native_tool_catalogs": {
+    "unaided": [],
+    "frontier": [
+      "exec",
+      "delegate"
+    ]
+  },
+  "frontier_image_sha256": "711a221ecfe9e27b8d52f6f278a85dcbde9bea80a8bf2eb9d17d419e4d013a5e",
+  "job_status_counts": {
+    "complete": 8,
+    "interrupted": 4,
+    "queued": 84
+  },
+  "dispatch_stopped": true,
+  "totals": {
+    "session_archives": 36,
+    "audited_native_sessions": 36,
+    "native_thread_receipts": 36,
+    "completed_native_results": 21,
+    "complete_usage_receipts": 21,
+    "native_tool_calls": {
+      "exec": 146,
+      "delegate": 24
+    },
+    "native_error_counts": {}
+  },
+  "findings": [],
+  "observed_interruptions": [
+    {
+      "run_id": "8e45de92-9a88-4df4-ba80-562ac6e78606",
+      "job": "g1-2000001--frontier-fresh",
+      "classification": "owner_process_exit_during_native_cleanup"
+    },
+    {
+      "run_id": "5e0595dc-16f7-4507-bf41-8cfc03498f48",
+      "job": "g1-2000013--frontier-fresh",
+      "classification": "malformed_tool_input_guard_rejection"
+    },
+    {
+      "run_id": "8bbe21a1-80af-4c46-a50e-e8db4992a869",
+      "job": "g1-2000025--frontier-fresh",
+      "classification": "malformed_tool_input_guard_rejection"
+    },
+    {
+      "run_id": "d401f1a5-6386-44b6-9de8-76c538db5324",
+      "job": "g1-2000031--frontier-fresh",
+      "classification": "malformed_tool_input_guard_rejection"
+    }
+  ],
+  "rejected_tool_inputs": [
+    {
+      "run_id": "5e0595dc-16f7-4507-bf41-8cfc03498f48",
+      "tool": "exec",
+      "argument_keys": [
+        "command",
+        "timeout"
+      ],
+      "finding": "malformed_dynamic_tool_input",
+      "callback_observed": false
+    },
+    {
+      "run_id": "8bbe21a1-80af-4c46-a50e-e8db4992a869",
+      "tool": "exec",
+      "argument_keys": [
+        "command",
+        "timeout"
+      ],
+      "finding": "malformed_dynamic_tool_input",
+      "callback_observed": false
+    },
+    {
+      "run_id": "d401f1a5-6386-44b6-9de8-76c538db5324",
+      "tool": "exec",
+      "argument_keys": [
+        "command",
+        "timeout"
+      ],
+      "finding": "malformed_dynamic_tool_input",
+      "callback_observed": false
+    }
+  ],
+  "check_scope": [
+    "Compare every captured native control audit against the canary catalog and configuration after excluding per-session file paths.",
+    "Check binary identity, requested/returned model and effort, normal tier, native subscription account type, empty environments/instruction sources/runtime roots, and readonly/never permissions.",
+    "Validate available tool names, callback boundary, callback/completion identity, terminal item types, and pinned Docker execution receipts.",
+    "Summarize native completed-result usage and final-report coverage without publishing generated text or raw events."
+  ],
+  "limitations": [
+    "Native identity, account type, resolved controls, tool availability and token usage are client-reported provenance checked by a pinned audited adapter; this is not cryptographic proof of the provider-side model or its hidden request contents.",
+    "A normal native thread tier may serialize as null; default tier and disabled fast mode are also enforced by configuration and frozen turn-start source.",
+    "Terminal notifications contain a display summary, so the audit also checks streamed items and callbacks.",
+    "Usage totals include only completed native result receipts. Pending, interrupted or cutoff sessions may have incomplete usage; missing usage is unknown, never zero. Native internal requests and retries are not separately metered.",
+    "This audit finalizes the interrupted pilot after all dispatched jobs became terminal; queued jobs were not dispatched and are not audit coverage. Provisional earlier snapshots were non-atomic.",
+    "No proof-quality ranking, optimality, or broad model-strength conclusion follows from this control audit."
+  ],
+  "runs": [
+    {
+      "job": "g1-2000001--unaided-1",
+      "run_id": "1812727c-7b42-4e24-9731-682cc0764133",
+      "status": "complete",
+      "native_session_archives": 1,
+      "audited_native_sessions": 1,
+      "native_thread_receipts": 1,
+      "completed_native_results": 1,
+      "complete_usage_receipts": 1,
+      "pending_or_incomplete_native_results": 0,
+      "usage_from_completed_native_results": {
+        "input_tokens": 1253,
+        "output_tokens": 1970
+      },
+      "native_tool_calls": {},
+      "execution_attempt_records": 0,
+      "pending_or_unconfirmed_execution_records": 0,
+      "isolated_execution_receipts": 0,
+      "matching_isolated_execution_receipts": 0,
+      "control_checks_passed": {
+        "runtime_identity": 1,
+        "requested_model_effort": 1,
+        "restricted_catalog": 1,
+        "restricted_config": 1,
+        "empty_environment_and_allowed_tools": 1,
+        "native_subscription_auth": 1,
+        "returned_model_effort": 1,
+        "normal_tier": 1,
+        "no_inherited_context": 1,
+        "readonly_never": 1
+      },
+      "native_error_counts": {},
+      "partial_lines_at_live_cutoff": 0,
+      "report": {
+        "evaluation_status": "complete",
+        "returned_models": [
+          "gpt-6-astra"
+        ],
+        "returned_backends": [
+          "codex-subscription:codex-cli 0.158.0-alpha.2"
+        ],
+        "client_sessions": 1,
+        "usage": {
+          "input_tokens": 1253,
+          "output_tokens": 1970
+        },
+        "usage_coverage": {
+          "attempts": 1,
+          "attempts_with_usage": 1
+        },
+        "execution_commands": null
+      }
+    },
+    {
+      "job": "g1-2000001--frontier-fresh",
+      "run_id": "8e45de92-9a88-4df4-ba80-562ac6e78606",
+      "status": "interrupted",
+      "native_session_archives": 6,
+      "audited_native_sessions": 6,
+      "native_thread_receipts": 6,
+      "completed_native_results": 2,
+      "complete_usage_receipts": 2,
+      "pending_or_incomplete_native_results": 4,
+      "usage_from_completed_native_results": {
+        "input_tokens": 164756,
+        "output_tokens": 20231
+      },
+      "native_tool_calls": {
+        "exec": 29,
+        "delegate": 5
+      },
+      "execution_attempt_records": 29,
+      "pending_or_unconfirmed_execution_records": 0,
+      "isolated_execution_receipts": 29,
+      "matching_isolated_execution_receipts": 29,
+      "control_checks_passed": {
+        "runtime_identity": 6,
+        "requested_model_effort": 6,
+        "restricted_catalog": 6,
+        "restricted_config": 6,
+        "empty_environment_and_allowed_tools": 6,
+        "native_subscription_auth": 6,
+        "returned_model_effort": 6,
+        "normal_tier": 6,
+        "no_inherited_context": 6,
+        "readonly_never": 6
+      },
+      "native_error_counts": {},
+      "partial_lines_at_live_cutoff": 0,
+      "report": null
+    },
+    {
+      "job": "g1-2000011--unaided-1",
+      "run_id": "e27718a7-757c-465d-87a2-f045958e00c9",
+      "status": "complete",
+      "native_session_archives": 1,
+      "audited_native_sessions": 1,
+      "native_thread_receipts": 1,
+      "completed_native_results": 1,
+      "complete_usage_receipts": 1,
+      "pending_or_incomplete_native_results": 0,
+      "usage_from_completed_native_results": {
+        "input_tokens": 1315,
+        "output_tokens": 4546
+      },
+      "native_tool_calls": {},
+      "execution_attempt_records": 0,
+      "pending_or_unconfirmed_execution_records": 0,
+      "isolated_execution_receipts": 0,
+      "matching_isolated_execution_receipts": 0,
+      "control_checks_passed": {
+        "runtime_identity": 1,
+        "requested_model_effort": 1,
+        "restricted_catalog": 1,
+        "restricted_config": 1,
+        "empty_environment_and_allowed_tools": 1,
+        "native_subscription_auth": 1,
+        "returned_model_effort": 1,
+        "normal_tier": 1,
+        "no_inherited_context": 1,
+        "readonly_never": 1
+      },
+      "native_error_counts": {},
+      "partial_lines_at_live_cutoff": 0,
+      "report": {
+        "evaluation_status": "complete",
+        "returned_models": [
+          "gpt-6-astra"
+        ],
+        "returned_backends": [
+          "codex-subscription:codex-cli 0.158.0-alpha.2"
+        ],
+        "client_sessions": 1,
+        "usage": {
+          "input_tokens": 1315,
+          "output_tokens": 4546
+        },
+        "usage_coverage": {
+          "attempts": 1,
+          "attempts_with_usage": 1
+        },
+        "execution_commands": null
+      }
+    },
+    {
+      "job": "g1-2000011--frontier-fresh",
+      "run_id": "a837146a-7124-46b9-babc-4e6ff9c11d7c",
+      "status": "complete",
+      "native_session_archives": 4,
+      "audited_native_sessions": 4,
+      "native_thread_receipts": 4,
+      "completed_native_results": 4,
+      "complete_usage_receipts": 4,
+      "pending_or_incomplete_native_results": 0,
+      "usage_from_completed_native_results": {
+        "input_tokens": 229003,
+        "output_tokens": 21798
+      },
+      "native_tool_calls": {
+        "exec": 26,
+        "delegate": 3
+      },
+      "execution_attempt_records": 26,
+      "pending_or_unconfirmed_execution_records": 0,
+      "isolated_execution_receipts": 26,
+      "matching_isolated_execution_receipts": 26,
+      "control_checks_passed": {
+        "runtime_identity": 4,
+        "requested_model_effort": 4,
+        "restricted_catalog": 4,
+        "restricted_config": 4,
+        "empty_environment_and_allowed_tools": 4,
+        "native_subscription_auth": 4,
+        "returned_model_effort": 4,
+        "normal_tier": 4,
+        "no_inherited_context": 4,
+        "readonly_never": 4
+      },
+      "native_error_counts": {},
+      "partial_lines_at_live_cutoff": 0,
+      "report": {
+        "evaluation_status": "complete",
+        "returned_models": [
+          "gpt-6-astra"
+        ],
+        "returned_backends": [
+          "codex-subscription:codex-cli 0.158.0-alpha.2"
+        ],
+        "client_sessions": 4,
+        "usage": {
+          "input_tokens": 229003,
+          "output_tokens": 21798
+        },
+        "usage_coverage": {
+          "attempts": 4,
+          "attempts_with_usage": 4
+        },
+        "execution_commands": 26
+      }
+    },
+    {
+      "job": "g1-2000013--unaided-1",
+      "run_id": "4a3bfc97-5669-4c17-aa1b-df24cc48d125",
+      "status": "complete",
+      "native_session_archives": 1,
+      "audited_native_sessions": 1,
+      "native_thread_receipts": 1,
+      "completed_native_results": 1,
+      "complete_usage_receipts": 1,
+      "pending_or_incomplete_native_results": 0,
+      "usage_from_completed_native_results": {
+        "input_tokens": 1271,
+        "output_tokens": 2293
+      },
+      "native_tool_calls": {},
+      "execution_attempt_records": 0,
+      "pending_or_unconfirmed_execution_records": 0,
+      "isolated_execution_receipts": 0,
+      "matching_isolated_execution_receipts": 0,
+      "control_checks_passed": {
+        "runtime_identity": 1,
+        "requested_model_effort": 1,
+        "restricted_catalog": 1,
+        "restricted_config": 1,
+        "empty_environment_and_allowed_tools": 1,
+        "native_subscription_auth": 1,
+        "returned_model_effort": 1,
+        "normal_tier": 1,
+        "no_inherited_context": 1,
+        "readonly_never": 1
+      },
+      "native_error_counts": {},
+      "partial_lines_at_live_cutoff": 0,
+      "report": {
+        "evaluation_status": "complete",
+        "returned_models": [
+          "gpt-6-astra"
+        ],
+        "returned_backends": [
+          "codex-subscription:codex-cli 0.158.0-alpha.2"
+        ],
+        "client_sessions": 1,
+        "usage": {
+          "input_tokens": 1271,
+          "output_tokens": 2293
+        },
+        "usage_coverage": {
+          "attempts": 1,
+          "attempts_with_usage": 1
+        },
+        "execution_commands": null
+      }
+    },
+    {
+      "job": "g1-2000013--frontier-fresh",
+      "run_id": "5e0595dc-16f7-4507-bf41-8cfc03498f48",
+      "status": "interrupted",
+      "native_session_archives": 5,
+      "audited_native_sessions": 5,
+      "native_thread_receipts": 5,
+      "completed_native_results": 2,
+      "complete_usage_receipts": 2,
+      "pending_or_incomplete_native_results": 3,
+      "usage_from_completed_native_results": {
+        "input_tokens": 78752,
+        "output_tokens": 12563
+      },
+      "native_tool_calls": {
+        "exec": 21,
+        "delegate": 4
+      },
+      "execution_attempt_records": 21,
+      "pending_or_unconfirmed_execution_records": 0,
+      "isolated_execution_receipts": 21,
+      "matching_isolated_execution_receipts": 21,
+      "control_checks_passed": {
+        "runtime_identity": 5,
+        "requested_model_effort": 5,
+        "restricted_catalog": 5,
+        "restricted_config": 5,
+        "empty_environment_and_allowed_tools": 5,
+        "native_subscription_auth": 5,
+        "returned_model_effort": 5,
+        "normal_tier": 5,
+        "no_inherited_context": 5,
+        "readonly_never": 5
+      },
+      "native_error_counts": {},
+      "partial_lines_at_live_cutoff": 0,
+      "report": {
+        "evaluation_status": "interrupted",
+        "returned_models": [
+          "gpt-6-astra"
+        ],
+        "returned_backends": [
+          "codex-subscription:codex-cli 0.158.0-alpha.2"
+        ],
+        "client_sessions": 5,
+        "usage": {
+          "input_tokens": 78752,
+          "output_tokens": 12563
+        },
+        "usage_coverage": {
+          "attempts": 5,
+          "attempts_with_usage": 2
+        },
+        "execution_commands": 21
+      }
+    },
+    {
+      "job": "g1-2000021--unaided-1",
+      "run_id": "1ce36a88-f8d4-4543-aaff-cb85666acbde",
+      "status": "complete",
+      "native_session_archives": 1,
+      "audited_native_sessions": 1,
+      "native_thread_receipts": 1,
+      "completed_native_results": 1,
+      "complete_usage_receipts": 1,
+      "pending_or_incomplete_native_results": 0,
+      "usage_from_completed_native_results": {
+        "input_tokens": 1283,
+        "output_tokens": 2498
+      },
+      "native_tool_calls": {},
+      "execution_attempt_records": 0,
+      "pending_or_unconfirmed_execution_records": 0,
+      "isolated_execution_receipts": 0,
+      "matching_isolated_execution_receipts": 0,
+      "control_checks_passed": {
+        "runtime_identity": 1,
+        "requested_model_effort": 1,
+        "restricted_catalog": 1,
+        "restricted_config": 1,
+        "empty_environment_and_allowed_tools": 1,
+        "native_subscription_auth": 1,
+        "returned_model_effort": 1,
+        "normal_tier": 1,
+        "no_inherited_context": 1,
+        "readonly_never": 1
+      },
+      "native_error_counts": {},
+      "partial_lines_at_live_cutoff": 0,
+      "report": {
+        "evaluation_status": "complete",
+        "returned_models": [
+          "gpt-6-astra"
+        ],
+        "returned_backends": [
+          "codex-subscription:codex-cli 0.158.0-alpha.2"
+        ],
+        "client_sessions": 1,
+        "usage": {
+          "input_tokens": 1283,
+          "output_tokens": 2498
+        },
+        "usage_coverage": {
+          "attempts": 1,
+          "attempts_with_usage": 1
+        },
+        "execution_commands": null
+      }
+    },
+    {
+      "job": "g1-2000021--frontier-fresh",
+      "run_id": "565a6806-426d-449d-87a3-d4baad6bd32e",
+      "status": "complete",
+      "native_session_archives": 3,
+      "audited_native_sessions": 3,
+      "native_thread_receipts": 3,
+      "completed_native_results": 3,
+      "complete_usage_receipts": 3,
+      "pending_or_incomplete_native_results": 0,
+      "usage_from_completed_native_results": {
+        "input_tokens": 268286,
+        "output_tokens": 22551
+      },
+      "native_tool_calls": {
+        "exec": 27,
+        "delegate": 2
+      },
+      "execution_attempt_records": 27,
+      "pending_or_unconfirmed_execution_records": 0,
+      "isolated_execution_receipts": 27,
+      "matching_isolated_execution_receipts": 27,
+      "control_checks_passed": {
+        "runtime_identity": 3,
+        "requested_model_effort": 3,
+        "restricted_catalog": 3,
+        "restricted_config": 3,
+        "empty_environment_and_allowed_tools": 3,
+        "native_subscription_auth": 3,
+        "returned_model_effort": 3,
+        "normal_tier": 3,
+        "no_inherited_context": 3,
+        "readonly_never": 3
+      },
+      "native_error_counts": {},
+      "partial_lines_at_live_cutoff": 0,
+      "report": {
+        "evaluation_status": "complete",
+        "returned_models": [
+          "gpt-6-astra"
+        ],
+        "returned_backends": [
+          "codex-subscription:codex-cli 0.158.0-alpha.2"
+        ],
+        "client_sessions": 3,
+        "usage": {
+          "input_tokens": 268286,
+          "output_tokens": 22551
+        },
+        "usage_coverage": {
+          "attempts": 3,
+          "attempts_with_usage": 3
+        },
+        "execution_commands": 27
+      }
+    },
+    {
+      "job": "g1-2000025--unaided-1",
+      "run_id": "13e4807a-35f3-46c0-9da0-7f819a32d8ce",
+      "status": "complete",
+      "native_session_archives": 1,
+      "audited_native_sessions": 1,
+      "native_thread_receipts": 1,
+      "completed_native_results": 1,
+      "complete_usage_receipts": 1,
+      "pending_or_incomplete_native_results": 0,
+      "usage_from_completed_native_results": {
+        "input_tokens": 1283,
+        "output_tokens": 2311
+      },
+      "native_tool_calls": {},
+      "execution_attempt_records": 0,
+      "pending_or_unconfirmed_execution_records": 0,
+      "isolated_execution_receipts": 0,
+      "matching_isolated_execution_receipts": 0,
+      "control_checks_passed": {
+        "runtime_identity": 1,
+        "requested_model_effort": 1,
+        "restricted_catalog": 1,
+        "restricted_config": 1,
+        "empty_environment_and_allowed_tools": 1,
+        "native_subscription_auth": 1,
+        "returned_model_effort": 1,
+        "normal_tier": 1,
+        "no_inherited_context": 1,
+        "readonly_never": 1
+      },
+      "native_error_counts": {},
+      "partial_lines_at_live_cutoff": 0,
+      "report": {
+        "evaluation_status": "complete",
+        "returned_models": [
+          "gpt-6-astra"
+        ],
+        "returned_backends": [
+          "codex-subscription:codex-cli 0.158.0-alpha.2"
+        ],
+        "client_sessions": 1,
+        "usage": {
+          "input_tokens": 1283,
+          "output_tokens": 2311
+        },
+        "usage_coverage": {
+          "attempts": 1,
+          "attempts_with_usage": 1
+        },
+        "execution_commands": null
+      }
+    },
+    {
+      "job": "g1-2000025--frontier-fresh",
+      "run_id": "8bbe21a1-80af-4c46-a50e-e8db4992a869",
+      "status": "interrupted",
+      "native_session_archives": 6,
+      "audited_native_sessions": 6,
+      "native_thread_receipts": 6,
+      "completed_native_results": 2,
+      "complete_usage_receipts": 2,
+      "pending_or_incomplete_native_results": 4,
+      "usage_from_completed_native_results": {
+        "input_tokens": 63356,
+        "output_tokens": 10497
+      },
+      "native_tool_calls": {
+        "exec": 22,
+        "delegate": 5
+      },
+      "execution_attempt_records": 22,
+      "pending_or_unconfirmed_execution_records": 0,
+      "isolated_execution_receipts": 22,
+      "matching_isolated_execution_receipts": 22,
+      "control_checks_passed": {
+        "runtime_identity": 6,
+        "requested_model_effort": 6,
+        "restricted_catalog": 6,
+        "restricted_config": 6,
+        "empty_environment_and_allowed_tools": 6,
+        "native_subscription_auth": 6,
+        "returned_model_effort": 6,
+        "normal_tier": 6,
+        "no_inherited_context": 6,
+        "readonly_never": 6
+      },
+      "native_error_counts": {},
+      "partial_lines_at_live_cutoff": 0,
+      "report": {
+        "evaluation_status": "interrupted",
+        "returned_models": [
+          "gpt-6-astra"
+        ],
+        "returned_backends": [
+          "codex-subscription:codex-cli 0.158.0-alpha.2"
+        ],
+        "client_sessions": 6,
+        "usage": {
+          "input_tokens": 63356,
+          "output_tokens": 10497
+        },
+        "usage_coverage": {
+          "attempts": 6,
+          "attempts_with_usage": 2
+        },
+        "execution_commands": 22
+      }
+    },
+    {
+      "job": "g1-2000031--unaided-1",
+      "run_id": "2e11ecca-796f-44a3-910f-69b68a3cc56f",
+      "status": "complete",
+      "native_session_archives": 1,
+      "audited_native_sessions": 1,
+      "native_thread_receipts": 1,
+      "completed_native_results": 1,
+      "complete_usage_receipts": 1,
+      "pending_or_incomplete_native_results": 0,
+      "usage_from_completed_native_results": {
+        "input_tokens": 1301,
+        "output_tokens": 1590
+      },
+      "native_tool_calls": {},
+      "execution_attempt_records": 0,
+      "pending_or_unconfirmed_execution_records": 0,
+      "isolated_execution_receipts": 0,
+      "matching_isolated_execution_receipts": 0,
+      "control_checks_passed": {
+        "runtime_identity": 1,
+        "requested_model_effort": 1,
+        "restricted_catalog": 1,
+        "restricted_config": 1,
+        "empty_environment_and_allowed_tools": 1,
+        "native_subscription_auth": 1,
+        "returned_model_effort": 1,
+        "normal_tier": 1,
+        "no_inherited_context": 1,
+        "readonly_never": 1
+      },
+      "native_error_counts": {},
+      "partial_lines_at_live_cutoff": 0,
+      "report": {
+        "evaluation_status": "complete",
+        "returned_models": [
+          "gpt-6-astra"
+        ],
+        "returned_backends": [
+          "codex-subscription:codex-cli 0.158.0-alpha.2"
+        ],
+        "client_sessions": 1,
+        "usage": {
+          "input_tokens": 1301,
+          "output_tokens": 1590
+        },
+        "usage_coverage": {
+          "attempts": 1,
+          "attempts_with_usage": 1
+        },
+        "execution_commands": null
+      }
+    },
+    {
+      "job": "g1-2000031--frontier-fresh",
+      "run_id": "d401f1a5-6386-44b6-9de8-76c538db5324",
+      "status": "interrupted",
+      "native_session_archives": 6,
+      "audited_native_sessions": 6,
+      "native_thread_receipts": 6,
+      "completed_native_results": 2,
+      "complete_usage_receipts": 2,
+      "pending_or_incomplete_native_results": 4,
+      "usage_from_completed_native_results": {
+        "input_tokens": 44105,
+        "output_tokens": 8048
+      },
+      "native_tool_calls": {
+        "exec": 21,
+        "delegate": 5
+      },
+      "execution_attempt_records": 21,
+      "pending_or_unconfirmed_execution_records": 0,
+      "isolated_execution_receipts": 21,
+      "matching_isolated_execution_receipts": 21,
+      "control_checks_passed": {
+        "runtime_identity": 6,
+        "requested_model_effort": 6,
+        "restricted_catalog": 6,
+        "restricted_config": 6,
+        "empty_environment_and_allowed_tools": 6,
+        "native_subscription_auth": 6,
+        "returned_model_effort": 6,
+        "normal_tier": 6,
+        "no_inherited_context": 6,
+        "readonly_never": 6
+      },
+      "native_error_counts": {},
+      "partial_lines_at_live_cutoff": 0,
+      "report": {
+        "evaluation_status": "interrupted",
+        "returned_models": [
+          "gpt-6-astra"
+        ],
+        "returned_backends": [
+          "codex-subscription:codex-cli 0.158.0-alpha.2"
+        ],
+        "client_sessions": 6,
+        "usage": {
+          "input_tokens": 44105,
+          "output_tokens": 8048
+        },
+        "usage_coverage": {
+          "attempts": 6,
+          "attempts_with_usage": 2
+        },
+        "execution_commands": 21
+      }
+    }
+  ]
+}
