@@ -1,0 +1,46 @@
+{
+  "schema": "propbench-synthetic-capture-canary-result-v1",
+  "status": "passed",
+  "synthetic": true,
+  "injected_known_answer": true,
+  "unscored": true,
+  "excluded_from_benchmark": true,
+  "run_id": "4cf2de5f-e206-4224-ae81-60d4f54f4bd0",
+  "evaluator_hash": "b6246c136e91d5a0610f6a9ec5fff0585644e47c93b9512e9bdbe198f0597a95",
+  "model": "gpt-6-astra",
+  "effort": "xhigh",
+  "normal_service_tier": true,
+  "client_sha256": "c3e30211bd454da70ceb4d9cbc2e05fe6466812ab05c311c3bbff6addeb14202",
+  "client_version": "codex-cli 0.158.0-alpha.2",
+  "runtime": {
+    "backend": "docker",
+    "image_id": "sha256:b86705d37917c9e9cdcd98c139b4a052bb77cad812e6f80c03f461db0bce9859",
+    "architecture": "arm64"
+  },
+  "referee_sha256": "90c4b05d1c1f1a2be9294fe19184276ab20584a28660ea35bfbb954f65891f97",
+  "elapsed_ms": 13726,
+  "native_sessions": 1,
+  "tool_calls": 2,
+  "execution_commands": 2,
+  "checkpoints": 2,
+  "benign_draft_ignored_at_both_checkpoints": true,
+  "first_selected_proof_preserved_after_live_overwrite": true,
+  "draft_absent_from_owner_submissions_and_archive": true,
+  "strict_owner_replay": {
+    "valid": true,
+    "line_count": 1,
+    "errors": []
+  },
+  "selected_proof_sha256": "e6ea548ff7c790de164075efe2b83d5a8c2f70c24b5abdf5a9aaefba0551f37c",
+  "native_process_and_stdio_cleanup_confirmed": true,
+  "completed_native_usage": {
+    "input_tokens": 1912,
+    "output_tokens": 185
+  },
+  "source_commit": "a171d05836888c35c68bcc24564cfe1661c74231",
+  "completed_at": "2026-09-26T06:43:04.182Z",
+  "checkpoint_receipt_sha256": [
+    "1ec3ef23bf2cc3ec1938bed65cec6f449c6d9b8688d2c19c0709f07b62550e5d",
+    "b6157cd19b6eccc37bd79e7db5726e53f4448969932cf9acde23ac911ebd7a3a"
+  ]
+}

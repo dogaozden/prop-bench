@@ -35,6 +35,7 @@ The public replay passed **51 proof artifacts**: 40 final incumbents and 11 acce
 - Campaign source: [`64b2026`](https://github.com/dogaozden/prop-bench/tree/64b2026857d0dc9da54497eca50cf7a63534e95f).
 - Results bytes SHA-256: `73cf5bdbf0aed3d8c203980b619c52806341687cb20c71b7d38476cbdfcca0c9`.
 - [Replay receipt](../publication/data/verification.json), [control audit](replacement-campaign-control-audit.md), [runtime audit](validation-runtime-3-audit.md), and [offline reproduction](REPRODUCIBILITY.md).
+- [Clean-checkout replay](clean-release-replay.md) and the subsequent [native capture-repair regression](capture-repair-canary.md) passed. The supplied-answer regression is excluded from these benchmark results.
 
 The completed runs record 103 native sessions, 3,288,243 input-token observations and 386,465 output-token observations. Usage was present in 77 of 103 session receipts. These observations may be incomplete; reasoning/total-token coverage, exact inference requests and exact charges are unavailable. Native sessions are not equivalent to model requests.
 

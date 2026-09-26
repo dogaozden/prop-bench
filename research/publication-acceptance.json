@@ -1,0 +1,56 @@
+{
+  "schema_version": "propbench-publication-acceptance-v1",
+  "source_commit": "a171d05836888c35c68bcc24564cfe1661c74231",
+  "campaign_source_commit": "64b2026857d0dc9da54497eca50cf7a63534e95f",
+  "static_zip_sha256": "0c1140bb1028776ea00b0eee04ce5d7eb4d25f134545b858f3c54f2a44b42be6",
+  "archive_files": 143,
+  "manifest_assets_verified": 142,
+  "browser": {
+    "passed": true,
+    "subpath": "/research/propbench/",
+    "widths": [
+      1280,
+      390,
+      320
+    ],
+    "planned_rows": 24,
+    "completed": 43,
+    "unstarted": 53,
+    "cumulative_example_lines": 9,
+    "console_errors": [],
+    "zip_assets_verified": 142
+  },
+  "privacy_scan": {
+    "new_or_changed_files_reviewed": 111,
+    "secret_hits": 0,
+    "actual_host_path_hits": 0,
+    "excluded_pattern_only_hit": "scripts/package-publication.py"
+  },
+  "local_checks": {
+    "typescript": "passed",
+    "track_tests_passed": 115,
+    "track_tests_skipped": 0,
+    "pipeline_tests_passed": 95,
+    "site_tests_passed": 19
+  },
+  "native_capture_repair_canary": {
+    "status": "passed",
+    "receipt": "capture-repair-canary.json",
+    "injected_known_answer": true,
+    "excluded_from_benchmark": true
+  },
+  "clean_checkout_replay": {
+    "status": "passed",
+    "receipt": "clean-release-replay.json",
+    "primary_artifacts_replayed": 51,
+    "pilot_artifacts_replayed": 17,
+    "network_denied_during_replay": true
+  },
+  "ci": {
+    "status": "passed",
+    "source_commit": "a171d05836888c35c68bcc24564cfe1661c74231",
+    "run_id": 36224566507,
+    "url": "https://github.com/dogaozden/prop-bench/actions/runs/36224566507"
+  },
+  "deployment_status": "prepared for static hosting; external website not deployed"
+}

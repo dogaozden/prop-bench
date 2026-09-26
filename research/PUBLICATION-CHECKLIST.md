@@ -43,9 +43,8 @@ Completed release checks:
   exercise the nine-line cumulative proof, guide, exact downloads and pilot link.
 - [x] Verify the post-campaign capture repair with 115 track tests (zero skips,
   real Docker runtime), 95 pipeline tests, 19 site tests and TypeScript.
-- [ ] Record the targeted live native regression of the repaired capture path.
-- [ ] Run the documented reduced-validator replay from a clean release checkout
-  and record the final CI/source identity.
+- [x] Record the [targeted live native regression](capture-repair-canary.md) of the repaired capture path.
+- [x] Run the documented reduced-validator replay from a [clean release checkout](clean-release-replay.md), with network and original-checkout access denied.
+- [x] Record the passing CI/source identity in the [release acceptance record](RELEASE-ACCEPTANCE.md).
 
-The last two checks are release follow-ups, not permission requests. Public
-website deployment is outside this preparation task.
+Public website deployment is outside this preparation task.

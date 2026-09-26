@@ -20,6 +20,9 @@ checks from results. It does not assert that a planned campaign has run.
 - [Observed Frontier methods](FRONTIER-METHODS.md)
 - [Interrupted pilot control audit](campaign-control-audit.md)
 - [Final replacement control audit](replacement-campaign-control-audit.md)
+- [Native capture-repair regression](capture-repair-canary.md)
+- [Clean checkout offline replay](clean-release-replay.md)
+- [Release acceptance and upload package](RELEASE-ACCEPTANCE.md)
 
 The relevant evidence hierarchy is: independently replayed proof bytes; sealed
 run and runtime identities; complete attempt/session/tool records; then derived

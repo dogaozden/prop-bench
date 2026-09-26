@@ -8,6 +8,12 @@ achievable promise than exact regeneration of a hosted model's behavior.
 
 ## Offline verification from a clean checkout
 
+The [release acceptance replay](clean-release-replay.md) passed from a fresh
+checkout of `a171d05836888c35c68bcc24564cfe1661c74231`: 51 primary and 17 archived
+pilot proof artifacts. Both replay commands ran with network access and reads
+from the original checkout denied. This verifies the public evidence; it does
+not complete either stopped campaign or reproduce hosted inference.
+
 Check out the release containing the public evidence bundle. With Node 22 or
 later and the repository's Rust toolchain available, run:
 
